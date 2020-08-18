@@ -1,0 +1,13 @@
+test: ./runtest.sh
+tier: 2
+duration: 5m
+
+#contact: Radovan Sroka <rsroka@redhat.com>
+
+tags: [generic]
+
+/fapolicyd:
+    component: fapolicyd
+
+/luksmeta:
+    component: luksmeta
