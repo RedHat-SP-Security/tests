@@ -1,5 +1,5 @@
 test: ./runtest.sh
-tier: 2
+tier: 1
 duration: 5m
 
 #contact: Radovan Sroka <rsroka@redhat.com>
