@@ -11,3 +11,6 @@ tags: [generic]
 
 /luksmeta:
     component: luksmeta
+
+/usbguard:
+    component: usbguard
