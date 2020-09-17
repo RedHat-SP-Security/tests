@@ -1,2 +1,5 @@
 path: /usbguard/Sanity/bz1772149-try-to-parse-match-all-rule
 tier: 1
+require:
+  - usbguard
+  - usbguard-tools

@@ -1,2 +1,7 @@
 path: /usbguard/Sanity/selinux
 tier: 1
+require:
+  - usbguard
+  - usbguard-selinux
+  - library(distribution/dpcommon)
+  - library(selinux-policy/common)
