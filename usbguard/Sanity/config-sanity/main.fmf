@@ -1,2 +1,6 @@
 path: /usbguard/Sanity/config-sanity
 tier: 1
+require:
+  - usbguard
+  - library(distribution/dpcommon)
+  - library(distribution/Cleanup)

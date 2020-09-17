@@ -1,2 +1,4 @@
 path: /usbguard/Sanity/service-sanity
 tier: 1
+require:
+  - usbguard
