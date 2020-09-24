@@ -1,6 +1,29 @@
-path: /usbguard/Sanity/config-sanity
-tier: 1
+summary: tries out valid and invalid config file keywords
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- usbguard
+test: ./runtest.sh
 require:
-  - usbguard
-  - library(distribution/dpcommon)
-  - library(distribution/Cleanup)
+- library(distribution/dpcommon)
+- library(distribution/Cleanup)
+- usbguard
+duration: 10m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- NoRHEL6
+- SP-TBU
+- TIPfail
+- TIPfail_Security
+- Tier1
+- Tier1security
+tier: '1'
+relevancy: |
+    arch = s390x: False
+    distro < rhel-7.6: False
+extra-summary: /CoreOS/usbguard/Sanity/config-sanity
+extra-task: /CoreOS/usbguard/Sanity/config-sanity
+extra-nitrate: TC#0560519

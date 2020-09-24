@@ -1,5 +1,7 @@
 path: /usbguard/Sanity/selinux
 tier: 1
+tag:
+  - Fedora_missing_external_dependencies
 require:
   - usbguard
   - usbguard-selinux
