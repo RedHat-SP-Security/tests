@@ -5,6 +5,7 @@ duration: 5m
 #contact: Radovan Sroka <rsroka@redhat.com>
 
 tags: [generic]
+tag: []
 
 /fapolicyd:
     component: fapolicyd
