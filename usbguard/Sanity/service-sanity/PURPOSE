@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/usbguard/Sanity/service-sanity
+Description: exercises usbguard service-related daemon functionality
+Author: Jiri Jaburek <jjaburek@redhat.com>

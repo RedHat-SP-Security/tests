@@ -1,0 +1,18 @@
+component:
+- rsyslog7
+- rsyslog
+- rsyslog5
+environment:
+    rsyslogSyntax: new
+tag:
+- CI-Tier-1
+- NoRHEL4
+- Tier2
+- Tier2security
+- notip
+- rsyslogSyntaxNEW
+relevancy: |
+    distro < rhel-6: False
+    distro = rhel-6 && component = rsyslog: False
+extra-summary: rsyslogSyntax=new /CoreOS/rsyslog/Sanity/test-various-configuration-directives
+extra-nitrate: TC#0419215

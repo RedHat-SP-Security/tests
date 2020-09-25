@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/aide/Sanity/aide-db-update-and-compare
+Description: tests --update and --compare aide commands
+Author: Karel Srot <ksrot@redhat.com>

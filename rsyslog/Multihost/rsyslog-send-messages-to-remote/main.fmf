@@ -1,0 +1,22 @@
+summary: Check that rsyslog send messages to remote if in forked debug mode
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog7
+- rsyslog
+- rsyslog5
+test: ./runtest.sh
+path: /Multihost/rsyslog-send-messages-to-remote
+require:
+- library(distribution/dpcommon)
+- library(distribution/RpmSnapshot)
+- library(distribution/epel)
+- library(rsyslog/basic)
+- library(distribution/sync)
+recommend:
+- rsyslog
+- ansible
+- rhel-system-roles
+duration: 60m
+enabled: true
+extra-task: /CoreOS/rsyslog/Multihost/rsyslog-send-messages-to-remote

@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/rsyslog/Regression/bz1223566-RFE-imrelp-does-not-support-binding-to-a-specific
+Description: Test for BZ#1223566 (RFE imrelp does not support binding to a specific)
+Author: Stefan Dordevic <sdordevi@redhat.com>
+Bug summary: RFE: imrelp does not support binding to a specific ruleset before rsyslog 8.x
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1223566

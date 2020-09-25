@@ -1,0 +1,27 @@
+summary: sudo-with-expired-passwords
+description: |
+    Bug summary: Backporting  sudo bug with expired passwords
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1672876
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- sudo
+test: ./runtest.sh
+require:
+- library(distribution/testUser)
+- library(distribution/Cleanup)
+recommend:
+- sudo
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- RHEL7
+- SP-TBU
+- TIPpass_Security
+- Tier1
+tier: '1'
+relevancy: |
+    distro != rhel-7: False
+extra-summary: /CoreOS/sudo/Regression/bz1672876-Backporting-sudo-bug-with-expired-passwords
+extra-task: /CoreOS/sudo/Regression/bz1672876-Backporting-sudo-bug-with-expired-passwords
+extra-nitrate: TC#0599537

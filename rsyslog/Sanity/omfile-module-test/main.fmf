@@ -1,0 +1,39 @@
+summary: Basic testing of omfile rsyslog module
+description: |+
+    Basic testing of omfile module. Following directives are used/tested:
+
+    $OMFileZipLevel
+    $OMFileIOBufferSize
+    $OMFileFlushOnTXEnd
+    logging to logfile with relative path
+
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog7
+- rsyslog
+- rsyslog
+- rsyslog5
+test: ./runtest.sh
+require:
+- library(rsyslog/basic)
+recommend:
+- rsyslog
+- /usr/bin/file
+- /usr/bin/gunzip
+environment:
+    rsyslogSyntax: old
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- TIPpass_Security
+- Tier1
+- Tier1security
+- rsyslogSyntaxOLD
+tier: '1'
+relevancy: |
+    distro = rhel-4: False
+extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/omfile-module-test
+extra-task: /CoreOS/rsyslog/Sanity/omfile-module-test
+extra-nitrate: TC#0059837

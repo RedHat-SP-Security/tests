@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/sudo/Regression/bz497873-sudo-gives-bogus-group-membership-if-runas_default-is-used
+Description: It tests sudo correctness of users' groups.
+Author: Ales Marecek <amarecek@redhat.com>

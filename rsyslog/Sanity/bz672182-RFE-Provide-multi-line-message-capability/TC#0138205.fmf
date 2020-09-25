@@ -1,0 +1,19 @@
+component:
+- rsyslog7
+- rsyslog
+- rsyslog
+- rsyslog5
+environment:
+    rsyslogSyntax: old
+tag:
+- CI-Tier-1
+- TIPpass
+- TIPpass_Security
+- Tier2
+- Tier2security
+- TierCandidatesPASS
+- rhel-6.3
+- rsyslogSyntaxOLD
+tier: '2'
+extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/bz672182-RFE-Provide-multi-line-message-capability
+extra-nitrate: TC#0138205

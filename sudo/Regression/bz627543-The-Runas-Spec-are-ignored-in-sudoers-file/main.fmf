@@ -1,0 +1,25 @@
+summary: Test for bz627543 (The Runas_Spec are ignored in sudoers file)
+description: |
+    Bug summary: The Runas_Spec are ignored in sudoers file
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=627543
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- sudo
+test: ./runtest.sh
+recommend:
+- sudo
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- SP-TBU
+- TIPpass_Security
+- Tier1
+- Tier1security
+- fedora-wanted
+- rhel-5.8
+- rhel9-wanted
+tier: '1'
+extra-summary: ' /CoreOS/sudo/Regression/bz627543-The-Runas-Spec-are-ignored-in-sudoers-file '
+extra-task: /CoreOS/sudo/Regression/bz627543-The-Runas-Spec-are-ignored-in-sudoers-file
+extra-nitrate: TC#0122813

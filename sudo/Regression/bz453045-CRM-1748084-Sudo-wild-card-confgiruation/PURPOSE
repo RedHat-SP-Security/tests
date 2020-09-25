@@ -1,0 +1,9 @@
+PURPOSE of /CoreOS/sudo/Regression/bz453045-CRM-1748084-Sudo-wild-card-confgiruation
+Description: Test for bz453045 (CRM# 1748084 Sudo wild card confgiruation..)
+Author: Zbysek MRAZ <zmraz@redhat.com>
+Bug summary: CRM# 1748084 Sudo wild card confgiruation..
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=453045
+
+Description:
+
+Escalated to Bugzilla from IssueTracker

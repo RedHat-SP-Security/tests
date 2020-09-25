@@ -1,0 +1,28 @@
+summary: basic sanity check for mmkubernetes module
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog
+test: ./runtest.sh
+require:
+- library(distribution/dpcommon)
+- library(rsyslog/basic)
+recommend:
+- rsyslog
+- rsyslog-mmjsonparse
+- rsyslog-mmkubernetes
+duration: 5m
+enabled: true
+tag:
+- NoRHEL4
+- NoRHEL5
+- TIPpass_Security
+- Tier1
+- Tier1security
+- rhel-8.0
+tier: '1'
+relevancy: |
+    distro = rhel-4, rhel-5: False
+extra-summary: /CoreOS/rsyslog/Sanity/mmkubernetes-module-test
+extra-task: /CoreOS/rsyslog/Sanity/mmkubernetes-module-test
+extra-nitrate: TC#0597854

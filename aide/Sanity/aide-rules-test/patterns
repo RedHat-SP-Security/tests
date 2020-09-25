@@ -1,0 +1,16 @@
+Permission test;data/perm;Perm
+Inode test;data/inode;Inode
+Link count test;data/hlink;Linkcount
+UID test;data/user;Uid
+GID test;data/group;Gid
+size test;data/size;Size
+Shrink size test;data/Ssize;Size
+selinux test;data/selinux;SELinux
+mtime test;data/mtime;Mtime
+atime test;data/atime;Atime
+ctime test;data/ctime;Ctime
+sha256 test;data/sha256;SHA256
+sha512 test;data/sha512;SHA512
+xattrs test;data/xattrs;XAttrs user.comment
+acl test;data/acl;ACL
+e2fsattrs test;data/e2fsattrs;E2FSAttrs

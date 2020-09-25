@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/usbguard/Sanity/selinux
+Description: Test for BZ#1683567 ([RFE] SELinux policy (daemons) changes required)
+Author: Dalibor Pospisil <dapospis@redhat.com>
+Bug summary: [RFE] SELinux policy (daemons) changes required for package: usbguard
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1683567

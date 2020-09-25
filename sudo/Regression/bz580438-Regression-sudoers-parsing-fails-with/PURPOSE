@@ -1,0 +1,75 @@
+PURPOSE of /CoreOS/sudo/Regression/bz580438-Regression-sudoers-parsing-fails-with
+Description: Test for bz580438 (Regression: sudoers parsing fails with)
+Author: Your Name <ejsi@redhat.com>
+Bug summary: Regression: sudoers parsing fails with Defaults_Type target including "!user"
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=580438
+
+Description:
+
+Description of problem:
+
+When using a "!user" in User_List in a Default_Type, sudo and visudo fail parsing sudoers.
+
+
+Version-Release number of selected component (if applicable):
+
+Bug does appear in sudo-1.7.2p1-5.el5 (as in RHEL5.5),
+does not appear in sudo-1.6.9p17-5.el5 (as in RHEL5.4).
+
+
+How reproducible:
+
+Anywhere anytime.
+
+
+Steps to Reproduce:
+
+1. Add in sudoers:
+
+Defaults: requiretty
+Defaults:user !requiretty
+
+2. Execute as any user:
+
+$ sudo ls
+
+3. Replace lines from step 1 in sudoers by:
+
+Defaults:!user requiretty
+
+4. Repeat step 2.
+
+
+Actual results:
+
+First alternative is accepted, second fails with the following error:
+
+>>> /etc/sudoers: syntax error near line 62 <<<
+sudo: parse error in /etc/sudoers near line 64
+sudo: no valid sudoers sources found, quitting
+
+
+Expected results:
+
+Both alternatives should be accepted.
+
+
+Additional info:
+
+This situation is compatible with the sudoers grammar, as defined in the manpage. Extract:
+
+        Default_Type ::= 'Defaults' |
+                         'Defaults' '@' Host_List |
+                         'Defaults' ':' User_List |
+                         'Defaults' '!' Cmnd_List |
+                         'Defaults' '>' Runas_List
+
+        User_List ::= User |
+                      User ',' User_List
+
+        User ::= '!'* username |
+                 '!'* '#'uid |
+                 '!'* '%'group |
+                 '!'* '+'netgroup |
+                 '!'* '%:'nonunix_group |
+                 '!'* User_Alias

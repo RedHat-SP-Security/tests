@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/rsyslog/Regression/bz1627799-RFE-Support-Intermediate-Certificate-Chains-in
+Description: Test for BZ#1627799 ([RFE] Support Intermediate Certificate Chains in)
+Author: Dalibor Pospisil <dapospis@redhat.com>
+Bug summary: [RFE]: Support Intermediate Certificate Chains in rsyslog
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1627799

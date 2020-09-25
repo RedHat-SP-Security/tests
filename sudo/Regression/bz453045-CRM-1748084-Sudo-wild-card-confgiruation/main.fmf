@@ -1,0 +1,25 @@
+summary: Test for bz453045 (CRM# 1748084 Sudo wild card confgiruation..)
+description: |
+    Bug summary: CRM# 1748084 Sudo wild card confgiruation..
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=453045
+
+    Description:
+
+    Escalated to Bugzilla from IssueTracker
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- sudo
+test: ./runtest.sh
+recommend:
+- sudo
+duration: 10m
+enabled: true
+tag:
+- SP-TBU
+- TIPpass_Security
+- Tier1
+- Tier1security
+tier: '1'
+extra-summary: /CoreOS/sudo/Regression/bz453045-CRM-1748084-Sudo-wild-card-confgiruation
+extra-task: /CoreOS/sudo/Regression/bz453045-CRM-1748084-Sudo-wild-card-confgiruation
+extra-nitrate: TC#0061948

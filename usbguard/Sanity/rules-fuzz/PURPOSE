@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/usbguard/Sanity/rules-fuzz
+Description: performs fuzz testing on config/rules files
+Author: Jiri Jaburek <jjaburek@redhat.com>

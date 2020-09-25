@@ -1,0 +1,29 @@
+summary: Test for bz740420 (Add a /etc/rsyslog.d config directory)
+description: |
+    Bug summary: Add a /etc/rsyslog.d config directory
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=740420
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog7
+- rsyslog
+- rsyslog
+- rsyslog5
+test: ./runtest.sh
+require:
+- library(rsyslog/basic)
+- test(/CoreOS/beaker/plugin-tcf)
+recommend:
+- rsyslog
+duration: 5m
+enabled: true
+tag:
+- SP-TBU
+- TIPpass_Security
+- Tier1
+- Tier1security
+- rhel-6.3
+- rsyslogSyntaxOLD
+tier: '1'
+extra-summary: /CoreOS/rsyslog/Regression/bz740420-Add-a-etc-rsyslog-d-config-directory
+extra-task: /CoreOS/rsyslog/Regression/bz740420-Add-a-etc-rsyslog-d-config-directory
+extra-nitrate: TC#0136560

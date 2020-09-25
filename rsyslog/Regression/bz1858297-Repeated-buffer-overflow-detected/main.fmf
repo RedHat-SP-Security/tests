@@ -1,0 +1,33 @@
+summary: Test for BZ#1858297 (Repeated "buffer overflow detected" [rhel-7.9.z])
+description: |
+    Bug summary: Repeated "buffer overflow detected" [rhel-7.9.z]
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1858297
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog
+test: ./runtest.sh
+require:
+- library(distribution/dpcommon)
+- library(rsyslog/basic)
+recommend:
+- rsyslog
+- /usr/bin/nc
+- gnutls
+- gnutls-utils
+- rsyslog-gnutls
+duration: 25m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- TIPpass
+- Tier2
+- rhel-7.7.z
+- rhel-7.9
+tier: '2'
+relevancy: |
+    distro = rhel-4, rhel-5: False
+extra-summary: /CoreOS/rsyslog/Regression/bz1858297-Repeated-buffer-overflow-detected
+extra-task: /CoreOS/rsyslog/Regression/bz1858297-Repeated-buffer-overflow-detected
+extra-nitrate: TC#0608025

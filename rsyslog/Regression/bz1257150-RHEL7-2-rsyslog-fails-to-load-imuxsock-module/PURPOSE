@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/rsyslog/Regression/bz1257150-RHEL7-2-rsyslog-fails-to-load-imuxsock-module
+Description: Test for BZ#1257150 ([RHEL7.2] rsyslog fails to  load imuxsock module)
+Author: Marek Marusic <mmarusic@redhat.com>
+Bug summary: [RHEL7.2] rsyslog fails to  load imuxsock module without imjournal module
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1257150

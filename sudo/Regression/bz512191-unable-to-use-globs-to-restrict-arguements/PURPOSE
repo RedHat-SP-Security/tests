@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/sudo/Regression/bz512191-unable-to-use-globs-to-restrict-arguements
+Description: It tests wildcard restrictions.
+Author: Ales Marecek <amarecek@redhat.com>

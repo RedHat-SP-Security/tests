@@ -1,9 +1,31 @@
-path: /usbguard/Sanity/selinux
-tier: 1
-tag:
-  - Fedora_missing_external_dependencies
+summary: Test for BZ#1683567 ([RFE] SELinux policy (daemons) changes required)
+description: |
+    Bug summary: [RFE] SELinux policy (daemons) changes required for package: usbguard
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1683567
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- usbguard
+test: ./runtest.sh
 require:
-  - usbguard
-  - usbguard-selinux
-  - library(distribution/dpcommon)
-  - library(selinux-policy/common)
+- library(distribution/dpcommon)
+- library(selinux-policy/common)
+recommend:
+- usbguard
+- usbguard-selinux
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- TIPpass
+- Tier2
+- rhel-8.3.0
+tier: '2'
+relevancy: |
+    distro < rhel-8: False
+    distro < rhel-8.3: False
+    arch = s390x: false
+extra-summary: /CoreOS/usbguard/Sanity/selinux
+extra-task: /CoreOS/usbguard/Sanity/selinux
+extra-nitrate: TC#0607358

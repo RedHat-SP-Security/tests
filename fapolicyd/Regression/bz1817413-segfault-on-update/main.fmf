@@ -1,0 +1,28 @@
+summary: Crash on update of the db while killing the daemon
+description: |
+    Bug summary: Rebase FAPOLICYD to the latest upstream version
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1817413
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component: []
+test: ./runtest.sh
+require:
+- library(distribution/Cleanup)
+- library(fapolicyd/common)
+recommend:
+- fapolicyd
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- TIPfail
+- Tier3
+- rhel-8.3.0
+tier: '3'
+relevancy: |
+    distro < rhel-8: False
+    distro < rhel-8.3: False
+extra-summary: /CoreOS/fapolicyd/Regression/bz1817413-segfault-on-update
+extra-task: /CoreOS/fapolicyd/Regression/bz1817413-segfault-on-update
+extra-nitrate: TC#0607380

@@ -1,0 +1,11 @@
+PURPOSE of /CoreOS/rsyslog/Sanity/test-various-configuration-directives
+Description: Tests various configuration directives
+Author: Karel Srot <ksrot@redhat.com>
+
+The test tests various configuration directives 
+(see http://www.rsyslog.com/doc-rsyslog_conf_global.html)
+
+At the moment there are testcases for:
+$ActionExecOnlyOnceEveryInterval
+$ActionSendTCPRebindInterval
+

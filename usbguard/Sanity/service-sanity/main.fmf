@@ -1,4 +1,26 @@
-path: /usbguard/Sanity/service-sanity
-tier: 1
-require:
-  - usbguard
+summary: exercises usbguard service-related daemon functionality
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- usbguard
+test: ./runtest.sh
+recommend:
+- usbguard
+duration: 10m
+enabled: true
+tag:
+- CI-Tier-1
+- CI-Tier-1-FIPS
+- NoRHEL4
+- NoRHEL5
+- NoRHEL6
+- TIPfail_Security
+- TIPpass
+- Tier1
+- Tier1security
+tier: '1'
+relevancy: |
+    arch = s390x: False
+extra-summary: /CoreOS/usbguard/Sanity/service-sanity
+extra-task: /CoreOS/usbguard/Sanity/service-sanity
+extra-nitrate: TC#0559491

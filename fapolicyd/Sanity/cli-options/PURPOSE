@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/fapolicyd/Sanity/cli-options
+Description: Test for BZ#1817413 (Rebase FAPOLICYD to the latest upstream version)
+Author: Dalibor Pospisil <dapospis@redhat.com>
+Bug summary: Rebase FAPOLICYD to the latest upstream version
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1817413

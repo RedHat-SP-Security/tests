@@ -1,0 +1,27 @@
+summary: Test for BZ#1683567 ([RFE] SELinux policy (daemons) changes required)
+description: |
+    Bug summary: [RFE] SELinux policy (daemons) changes required for package: usbguard
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1683567
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component: []
+test: ./runtest.sh
+require:
+- library(distribution/dpcommon)
+- library(selinux-policy/common)
+- library(fapolicyd/common)
+recommend:
+- fapolicyd
+- fapolicyd-selinux
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- TIPfail
+- rhel-8.3.0
+relevancy: |
+    distro = rhel-4, rhel-5: False
+extra-summary: /CoreOS/fapolicyd/Sanity/selinux
+extra-task: /CoreOS/fapolicyd/Sanity/selinux
+extra-nitrate: TC#0607391

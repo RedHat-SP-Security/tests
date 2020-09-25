@@ -1,0 +1,12 @@
+component:
+- rsyslog7
+- rsyslog
+- rsyslog5
+environment:
+    rsyslogSyntax: new
+tag:
+- CI-Tier-1
+- notip
+- rsyslogSyntaxNEW
+extra-summary: rsyslogSyntax=new /CoreOS/rsyslog/Sanity/bz672182-RFE-Provide-rate-limiting-support
+extra-nitrate: TC#0419217

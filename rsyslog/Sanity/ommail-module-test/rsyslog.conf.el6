@@ -1,0 +1,65 @@
+#rsyslog v3 config file
+
+# if you experience problems, check
+# http://www.rsyslog.com/troubleshoot for assistance
+
+#### MODULES ####
+
+$ModLoad imuxsock.so	# provides support for local system logging (e.g. via logger command)
+$ModLoad imklog.so	# provides kernel logging support (previously done by rklogd)
+
+
+#### ommail module configuration ####
+$ModLoad ommail
+$ActionMailSMTPServer 127.0.0.1
+$ActionMailFrom rsyslog@localhost
+$ActionMailTo operator1@localhost
+$ActionMailTo operator2@localhost
+$template mailSubject,"rsyslog ommail test on %hostname%"
+$template mailBody,"RSYSLOG Alert\r\nmsg='%msg%'"
+$ActionMailSubject mailSubject
+
+
+#### GLOBAL DIRECTIVES ####
+
+# Use default timestamp format
+$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
+
+#### RULES ####
+
+
+
+# Log all kernel messages to the console.
+# Logging much else clutters up the screen.
+#kern.*                                                 /dev/console
+
+# Log anything (except mail) of level info or higher.
+# Don't log private authentication messages!
+*.info;mail.none;authpriv.none;cron.none                /var/log/messages
+
+# The authpriv file has restricted access.
+authpriv.*                                              /var/log/secure
+
+# Log all the mail messages in one place.
+mail.*                                                  -/var/log/maillog
+
+
+# Log cron stuff
+cron.*                                                  /var/log/cron
+
+# Everybody gets emergency messages
+*.emerg                                                 *
+
+# Save news errors of level crit and higher in a special file.
+uucp,news.crit                                          /var/log/spooler
+
+# Save boot messages also to boot.log
+local7.*                                                /var/log/boot.log
+
+# test message
+local2.debug   /var/log/ommail-test.log
+
+
+# make sure we receive a mail only once in 60 s
+$ActionExecOnlyOnceEveryInterval 60
+if $msg contains 'ommail test' then :ommail:;mailBody

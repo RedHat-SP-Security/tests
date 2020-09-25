@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/fapolicyd/Regression/bz1747494-suspicious-logs-on-service-start
+Description: Test for BZ#1747494 (suspicious logs on service start )
+Author: Radovan Sroka <rsroka@redhat.com>
+Bug summary: suspicious logs on service start 
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1747494

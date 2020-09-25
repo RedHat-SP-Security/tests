@@ -1,0 +1,24 @@
+summary: tests aide --config-check command
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- aide
+test: ./runtest.sh
+recommend:
+- aide
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- SP-TBU
+- TIPpass_Security
+- Tier1
+- Tier1security
+tier: '1'
+relevancy: |
+    distro = rhel-4, rhel-5: False
+extra-summary: /CoreOS/aide/Sanity/aide-config-check-command
+extra-task: /CoreOS/aide/Sanity/aide-config-check-command
+extra-nitrate: TC#0548409

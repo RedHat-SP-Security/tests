@@ -1,0 +1,16 @@
+summary: Tests if aide properly handles default rules
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- aide
+test: ./runtest.sh
+path: /Sanity/aide-rules-test
+recommend:
+- aide
+- attr
+- acl
+- e2fsprogs
+duration: 15m
+enabled: true
+tier: '1'
+extra-task: /CoreOS/aide/Sanity/aide-rules-test

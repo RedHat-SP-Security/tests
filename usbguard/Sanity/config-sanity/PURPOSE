@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/usbguard/Sanity/config-sanity
+Description: tries out valid and invalid config file keywords
+Author: Jiri Jaburek <jjaburek@redhat.com>

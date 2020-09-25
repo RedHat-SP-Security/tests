@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/rsyslog/Regression/bz1038136-journald-syslog-forwarding-doesn-t-work
+Description: Test for BZ#1038136 (journald syslog forwarding doesn't work)
+Author: Karel Srot <ksrot@redhat.com>
+Bug summary: journald syslog forwarding doesn't work
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1038136

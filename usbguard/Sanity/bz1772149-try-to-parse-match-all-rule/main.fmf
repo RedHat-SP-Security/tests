@@ -1,5 +1,20 @@
-path: /usbguard/Sanity/bz1772149-try-to-parse-match-all-rule
-tier: 1
-require:
-  - usbguard
-  - usbguard-tools
+summary: Tryies to parse match-all rule
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- usbguard
+test: ./runtest.sh
+recommend:
+- usbguard-tools
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- TIPpass_Security
+- rhel-8.2
+relevancy: |
+    distro < rhel-8: False
+    distro < rhel-8.2: False
+extra-summary: /CoreOS/usbguard/Sanity/bz1772149-try-to-parse-match-all-rule
+extra-task: /CoreOS/usbguard/Sanity/bz1772149-try-to-parse-match-all-rule
+extra-nitrate: TC#0605037

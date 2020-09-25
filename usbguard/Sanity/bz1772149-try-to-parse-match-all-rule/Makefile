@@ -28,7 +28,7 @@ export TESTVERSION=1.0
 
 BUILT_FILES=
 
-FILES=$(METADATA) runtest.sh Makefile
+FILES=$(METADATA) runtest.sh Makefile PURPOSE
 
 .PHONY: all install download clean
 

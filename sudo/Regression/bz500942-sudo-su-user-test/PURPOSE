@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/sudo/Regression/bz500942-sudo-su-user-test
+Description: It tests desired behaviour: sudo su - user
+Author: Ales Marecek <amarecek@redhat.com>

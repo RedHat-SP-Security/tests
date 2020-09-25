@@ -1,0 +1,13 @@
+environment:
+    SYSLOG_FORMAT: 'true'
+tag:
+- CI-Tier-1
+- SP-TBU
+- TIPpass
+- TIPpass_Security
+- Tier1
+- Tier1security
+- TierCandidatesPASS
+relevancy: "distro < rhel-6: False \n"
+extra-summary: SYSLOG_FORMAT=true /CoreOS/aide/Sanity/aide-rules-test
+extra-nitrate: TC#0544948

@@ -1,0 +1,8 @@
+PURPOSE of /CoreOS/rsyslog/Sanity/ommail-module-test
+Description: tests basic ommail module functionality
+Author: Karel Srot <ksrot@redhat.com>
+
+Basic functionality test of the ommail rsyslog module.
+Checking that rsyslog sends a mail with the log message
+to two users and also check the functionality of 
+$ActionExecOnlyOnceEveryInterval directive.

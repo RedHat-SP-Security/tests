@@ -1,0 +1,9 @@
+tag:
+- TIPpass_Security
+- Tier3
+- fedora-wanted
+- notip
+- rsyslogSyntaxOLD
+tier: '3'
+extra-summary: /CoreOS/rsyslog/Multihost/rsyslog-send-messages-to-remote
+extra-nitrate: TC#0167028

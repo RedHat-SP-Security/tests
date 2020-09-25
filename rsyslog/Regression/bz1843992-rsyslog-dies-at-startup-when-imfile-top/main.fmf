@@ -1,0 +1,29 @@
+summary: Test for BZ#1843992 (rsyslog dies at startup when imfile "top)
+description: |
+    Bug summary: rsyslog dies at startup when imfile "top directory" is a symlink to unaccessible directory due to SELinux policy
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1843992
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog
+test: ./runtest.sh
+require:
+- library(distribution/dpcommon)
+- library(rsyslog/basic)
+recommend:
+- rsyslog
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- TIPfail
+- Tier3
+- rhel-7.9.0
+tier: '3'
+relevancy: |
+    distro = rhel-4, rhel-5: False
+    distro < rhel-7.9: false
+extra-summary: /CoreOS/rsyslog/Regression/bz1843992-rsyslog-dies-at-startup-when-imfile-top
+extra-task: /CoreOS/rsyslog/Regression/bz1843992-rsyslog-dies-at-startup-when-imfile-top
+extra-nitrate: TC#0607500

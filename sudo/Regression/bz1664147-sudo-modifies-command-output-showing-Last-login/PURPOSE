@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/sudo/Regression/bz1664147-sudo-modifies-command-output-showing-Last-login
+Description: Test for BZ#1664147 (sudo modifies command output, showing "Last login)
+Author: Dalibor Pospisil <dapospis@redhat.com>
+Bug summary: sudo modifies command output, showing "Last login: ..." info
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1664147
