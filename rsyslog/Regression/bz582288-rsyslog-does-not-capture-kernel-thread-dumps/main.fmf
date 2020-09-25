@@ -1,0 +1,38 @@
+summary: Test for bz582288 (rsyslog does not capture kernel thread dumps)
+description: "Bug summary: rsyslog does not capture kernel thread dumps\nBugzilla\
+    \ link: https://bugzilla.redhat.com/show_bug.cgi?id=582288\n\nDescription:\n\n\
+    Description of problem:\nrsyslog-3.22.1-3.el5 does not log kernel thread dumps,\
+    \ but sysklogd-1.4.1-44.el5 does\n\n\nVersion-Release number of selected component\
+    \ (if applicable):\nrpm -q rsyslog sysklogd redhat-release kernel\nrsyslog-3.22.1-3.el5\n\
+    sysklogd-1.4.1-44.el5\nredhat-release-5Server-5.5.0.2\nkernel-2.6.18-194.el5\n\
+    \n\nHow reproducible:\nAlways\n\nSteps to Reproduce:\n1. add line 'kern.*  /var/log/kernel'\
+    \ to /etc/rsyslog.conf\n2. /sbin/service rsyslog restart\n3. follow directions\
+    \ from http://kbase.redhat.com/faq/docs/DOC-2024 to\n   configure SysRq\n4. echo\
+    \ \"t\" > /proc/sysrq-trigger\n5. cat /var/log/kernel\n  \nActual results:\nNo\
+    \ logging to /var/log/kernel\n\n\nExpected results:\nLots of thread dump info\
+    \ captured in /var/log/kernel\n\nAdditional info:\nRepeat test with sysklogd installed:\n\
+    1. add line 'kern.*  /var/log/kernel' to /etc/syslog.conf\n2. /sbin/service rsyslog\
+    \ stop\n3. /sbin/service syslog start\n4. follow directions from http://kbase.redhat.com/faq/docs/DOC-2024\
+    \ to\n   configure SysRq\n5. echo \"t\" > /proc/sysrq-trigger\n6. cat /var/log/kernel\
+    \ \n7. /var/log/kernel has expected thread dump information.\n\nOther normal kernel\
+    \ messages are logged by rsyslog (disk errors, network\nerrrors, etc).\n"
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog7
+- rsyslog
+- rsyslog
+- rsyslog5
+test: ./runtest.sh
+recommend:
+- rsyslog
+duration: 5m
+enabled: true
+tag:
+- TIPpass_Security
+- Tier1
+- Tier1security
+- rsyslogSyntaxOLD
+tier: '1'
+extra-summary: /CoreOS/rsyslog/Regression/bz582288-rsyslog-does-not-capture-kernel-thread-dumps
+extra-task: /CoreOS/rsyslog/Regression/bz582288-rsyslog-does-not-capture-kernel-thread-dumps
+extra-nitrate: TC#0059832

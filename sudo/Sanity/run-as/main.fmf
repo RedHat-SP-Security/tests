@@ -1,0 +1,30 @@
+summary: Test feature 'run as'. This means -u, -g options.
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- sudo
+test: ./runtest.sh
+require:
+- library(distribution/tcf)
+- library(distribution/Cleanup)
+- library(distribution/testUser)
+- library(distribution/ConditionalPhases)
+recommend:
+- sudo
+duration: 5m
+enabled: true
+tag:
+- NoRHEL4
+- NoRHEL5
+- SP-TBU
+- TIPpass_Security
+- Tier1
+- Tier1security
+- TierCandidatesPASS
+- rhel-7.4
+tier: '1'
+relevancy: |
+    distro = rhel-4, rhel-5: False
+extra-summary: /CoreOS/sudo/Sanity/run-as
+extra-task: /CoreOS/sudo/Sanity/run-as
+extra-nitrate: TC#0547089

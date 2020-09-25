@@ -1,0 +1,20 @@
+summary: It tests wildcard restrictions.
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- sudo
+test: ./runtest.sh
+recommend:
+- sudo
+duration: 10m
+enabled: true
+tag:
+- CI-Tier-1
+- SP-TBU
+- TIPpass_Security
+- Tier1
+- Tier1security
+tier: '1'
+extra-summary: /CoreOS/sudo/Regression/bz512191-unable-to-use-globs-to-restrict-arguements
+extra-task: /CoreOS/sudo/Regression/bz512191-unable-to-use-globs-to-restrict-arguements
+extra-nitrate: TC#0061953

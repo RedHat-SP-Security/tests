@@ -1,0 +1,23 @@
+summary: various-simple-checks
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog
+test: ./runtest.sh
+require:
+- library(distribution/RpmSnapshot)
+recommend:
+- rsyslog
+duration: 10m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- TIPpass_Security
+- TierCandidatesFAIL
+relevancy: |
+    distro = rhel-4, rhel-5: False
+extra-summary: /CoreOS/rsyslog/Sanity/various-simple-checks
+extra-task: /CoreOS/rsyslog/Sanity/various-simple-checks
+extra-nitrate: TC#0551877

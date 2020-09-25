@@ -1,0 +1,42 @@
+--- ../orig/rsyslog.conf	2014-08-27 13:13:33.704317000 +0200
++++ rsyslog.conf	2014-09-09 09:05:13.116226101 +0200
+@@ -1,11 +1,26 @@
++################################ RSYSLOG-LIB ###################################
++
++##################### RSYSLOG-LIB BEGIN MODULES ################################
++
++##################### RSYSLOG-LIB BEGIN MODLOAD OMFILE TEMPLATE ################
+ # Use traditional timestamp format
+ $ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
++##################### RSYSLOG-LIB END OMFILE TEMPLATE ##########################
+ 
++##################### RSYSLOG-LIB BEGIN MODLOAD IMKLOG #########################
+ # Provides kernel logging support (previously done by rklogd)
+ $ModLoad imklog
++##################### RSYSLOG-LIB END MODLOAD IMKLOG ###########################
++
++##################### RSYSLOG-LIB BEGIN MODLOAD IMUXSOCK #######################
+ # Provides support for local system logging (e.g. via logger command)
+ $ModLoad imuxsock
++##################### RSYSLOG-LIB END MODLOAD IMUXSOCK #########################
+ 
++##################### RSYSLOG-LIB END MODULES ################################
++
++
++##################### RSYSLOG-LIB BEGIN RULES ##################################
+ # Log all kernel messages to the console.
+ # Logging much else clutters up the screen.
+ #kern.*                                                 /dev/console
+@@ -20,7 +35,6 @@
+ # Log all the mail messages in one place.
+ mail.*                                                  -/var/log/maillog
+ 
+-
+ # Log cron stuff
+ cron.*                                                  /var/log/cron
+ 
+@@ -32,3 +46,4 @@
+ 
+ # Save boot messages also to boot.log
+ local7.*                                                /var/log/boot.log
++##################### RSYSLOG-LIB END RULES #####################################

@@ -1,0 +1,48 @@
+summary: basic testing of rsyslog imfile module
+description: |+
+    Basic testing of imfile ryslog module
+
+    Using following directives:
+
+    $ModLoad imfile.so
+    $InputFilePollInterval
+    $InputFileName
+    $InputFileTag
+    $InputFileStateFile
+    $InputFileSeverity
+    $InputFileFacility
+    $InputRunFileMonitor
+
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog7
+- rsyslog
+- rsyslog
+- rsyslog5
+test: ./runtest.sh
+require:
+- library(rsyslog/basic)
+- library(distribution/ConditionalPhases)
+- library(distribution/Cleanup)
+recommend:
+- rsyslog
+environment:
+    rsyslogSyntax: old
+duration: 25m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- TIPpass_Security
+- Tier2
+- Tier2security
+- rhel-7.7
+- rhel-8.0
+- rhel-8.1
+- rsyslogSyntaxOLD
+tier: '2'
+relevancy: |
+    distro = rhel-4: False
+extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/imfile-module-test
+extra-task: /CoreOS/rsyslog/Sanity/imfile-module-test
+extra-nitrate: TC#0059835

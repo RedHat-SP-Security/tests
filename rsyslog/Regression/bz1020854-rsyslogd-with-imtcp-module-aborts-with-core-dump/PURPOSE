@@ -1,0 +1,8 @@
+PURPOSE of /CoreOS/rsyslog/Regression/bz1020854-rsyslogd-with-imtcp-module-aborts-with-core-dump
+Description: Test for BZ#1020854 (rsyslogd with imtcp module aborts with core-dump)
+Author: Karel Srot <ksrot@redhat.com>
+Bug summary: rsyslogd with imtcp module aborts with core-dump when stopping
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1020854
+
+Since syslog.socket is currently useless this test just checks whether syslog.socket doesn't
+trigger rsyslog.service execution.

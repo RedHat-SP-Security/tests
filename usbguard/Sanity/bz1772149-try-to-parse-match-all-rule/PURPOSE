@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/usbguard/Sanity/bz1772149-try-to-parse-match-all-rule
+Description: Tries to parse match-all rule
+Author: Marek Tamaskovic <mtamasko@redhat.com>

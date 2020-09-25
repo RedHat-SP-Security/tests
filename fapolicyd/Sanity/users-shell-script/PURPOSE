@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/fapolicyd/Sanity/users-shell-script
+Description: Test for BZ#1801872 (user may run and surce a shell script)
+Author: Dalibor Pospisil <dapospis@redhat.com>
+Bug summary: Update fapolicyd.rules
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1801872

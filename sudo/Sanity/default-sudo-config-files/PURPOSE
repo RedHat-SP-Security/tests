@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/sudo/Sanity/default-sudo-config-files
+Description: Test for BZ#1215400 (default /etc/sudoers file error)
+Author: Dalibor Pospisil <dapospis@redhat.com>
+Bug summary: default /etc/sudoers file error
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1215400

@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/rsyslog/Regression/bz847568-The-IncludeConfig-behavior-of-rsyslog-is-wrong
+Description: Test for BZ#847568 (The $IncludeConfig behavior of rsyslog is wrong.)
+Author: Karel Srot <ksrot@redhat.com>
+Bug summary: The $IncludeConfig behavior of rsyslog is wrong.
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=847568

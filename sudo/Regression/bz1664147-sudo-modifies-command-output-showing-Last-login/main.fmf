@@ -1,0 +1,32 @@
+summary: Test for BZ#1664147 (sudo modifies command output, showing "Last login)
+description: |
+    Bug summary: sudo modifies command output, showing "Last login: ..." info
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1664147
+contact: Shridhar Gadekar <sgadekar@redhat.com>
+component:
+- sudo
+test: ./runtest.sh
+require:
+- library(distribution/testUser)
+- library(distribution/Cleanup)
+- library(pam/basic)
+- library(sudo/common)
+recommend:
+- sudo
+- pam
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- TIPpass_Security
+- Tier2
+- rhel-7.6
+tier: '2'
+relevancy: |
+    distro < rhel-8: False
+    distro < rhel-8.2: False
+extra-summary: /CoreOS/sudo/Regression/bz1664147-sudo-modifies-command-output-showing-Last-login
+extra-task: /CoreOS/sudo/Regression/bz1664147-sudo-modifies-command-output-showing-Last-login
+extra-nitrate: TC#0590346

@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/aide/Sanity/aide-conf-selection-lines
+Description: Check the proper file verficaton accroding to the selectors in aide.conf
+Author: Martin Zeleny <mzeleny@redhat.com>

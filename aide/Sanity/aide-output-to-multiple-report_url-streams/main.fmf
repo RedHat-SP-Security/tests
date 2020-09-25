@@ -1,0 +1,24 @@
+summary: Checks that aide can output to multiple streams
+description: |
+    Tests aide ability to log to multiple output streams simultaneously,
+    in particular to:
+      stdout
+      stderr
+      log file
+      syslog
+      file descriptor
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- aide
+test: ./runtest.sh
+path: /Sanity/aide-output-to-multiple-report_url-streams
+recommend:
+- aide
+- coreutils
+- rsyslog
+duration: 5m
+enabled: true
+tier: '1'
+relevancy: |
+    distro = rhel-4, rhel-5: False
+extra-task: /CoreOS/aide/Sanity/aide-output-to-multiple-report_url-streams

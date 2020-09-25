@@ -1,0 +1,20 @@
+summary: 'It tests desired behaviour: sudo su - user'
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- sudo
+test: ./runtest.sh
+recommend:
+- sudo
+duration: 10m
+enabled: true
+tag:
+- CI-Tier-1
+- SP-TBU
+- TIPpass_Security
+- Tier1
+- Tier1security
+tier: '1'
+extra-summary: /CoreOS/sudo/Regression/bz500942-sudo-su-user-test
+extra-task: /CoreOS/sudo/Regression/bz500942-sudo-su-user-test
+extra-nitrate: TC#0061952

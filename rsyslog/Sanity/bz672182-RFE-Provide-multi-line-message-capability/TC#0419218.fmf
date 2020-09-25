@@ -1,0 +1,15 @@
+component:
+- rsyslog7
+- rsyslog
+- rsyslog5
+environment:
+    rsyslogSyntax: new
+tag:
+- fedora-wanted
+- notip
+- rsyslogSyntaxNEW
+relevancy: |
+    distro < rhel-6: False
+    distro = rhel-6 && component = rsyslog: False
+extra-summary: rsyslogSyntax=new /CoreOS/rsyslog/Sanity/bz672182-RFE-Provide-multi-line-message-capability
+extra-nitrate: TC#0419218

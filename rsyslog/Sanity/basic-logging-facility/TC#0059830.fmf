@@ -1,0 +1,20 @@
+component:
+- rsyslog7
+- rsyslog
+- rsyslog
+- rsyslog5
+environment:
+    rsyslogSyntax: old
+tag:
+- CI-Tier-1
+- NoRHEL4
+- SP-TBU
+- TIPpass_Security
+- Tier1
+- Tier1security
+- rsyslogSyntaxOLD
+tier: '1'
+relevancy: |
+    distro = rhel-4: False
+extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/basic-logging-facility
+extra-nitrate: TC#0059830

@@ -1,0 +1,11 @@
+PURPOSE of /CoreOS/rsyslog/Sanity/omfile-module-test
+Description: Basic testing of omfile rsyslog module
+Author: Karel Srot <ksrot@redhat.com>
+
+Basic testing of omfile module. Following directives are used/tested:
+
+$OMFileZipLevel
+$OMFileIOBufferSize
+$OMFileFlushOnTXEnd
+logging to logfile with relative path
+

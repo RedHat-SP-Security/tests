@@ -1,0 +1,11 @@
+PURPOSE of /CoreOS/aide/Sanity/aide-output-to-multiple-report_url-streams
+Description: Checks that aide can output to multiple streams
+Author: Karel Srot <ksrot@redhat.com>
+
+Tests aide ability to log to multiple output streams simultaneously,
+in particular to:
+  stdout
+  stderr
+  log file
+  syslog
+  file descriptor

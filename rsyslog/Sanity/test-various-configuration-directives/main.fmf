@@ -1,0 +1,22 @@
+summary: Tests various configuration directives
+description: "The test tests various configuration directives \n(see http://www.rsyslog.com/doc-rsyslog_conf_global.html)\n\
+    \nAt the moment there are testcases for:\n$ActionExecOnlyOnceEveryInterval\n$ActionSendTCPRebindInterval\n\
+    \n"
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog
+test: ./runtest.sh
+path: /Sanity/test-various-configuration-directives
+require:
+- library(rsyslog/basic)
+- library(distribution/ConditionalPhases)
+- library(distribution/Cleanup)
+recommend:
+- rsyslog
+- lsof
+- /usr/bin/nc
+- rsyslog-mmjsonparse
+duration: 5m
+enabled: true
+tier: '2'
+extra-task: /CoreOS/rsyslog/Sanity/test-various-configuration-directives

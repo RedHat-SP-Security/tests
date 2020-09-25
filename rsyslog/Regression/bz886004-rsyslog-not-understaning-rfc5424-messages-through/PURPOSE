@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/rsyslog/Regression/bz886004-rsyslog-not-understaning-rfc5424-messages-through
+Description: Test for BZ#886004 (rsyslog not understaning rfc5424 messages through)
+Author: Karel Srot <ksrot@redhat.com>
+Bug summary: rsyslog not understaning rfc5424 messages through unix socket
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=886004

@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/rsyslog/Regression/bz1763746-rsyslog-doesn-t-read-lines-from-imfile-after
+Description: Test for BZ#1763746 (rsyslog doesn't read lines from imfile after)
+Author: Dalibor Pospisil <dapospis@redhat.com>
+Bug summary: rsyslog doesn't read lines from imfile after rotation of logs
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1763746

@@ -1,0 +1,34 @@
+summary: Simple test of ompipe rsyslog module
+description: |
+    Simple test if rsyslog is able to log into a pipe.
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog7
+- rsyslog
+- rsyslog
+- rsyslog5
+test: ./runtest.sh
+require:
+- library(distribution/dpcommon)
+- library(rsyslog/basic)
+recommend:
+- rsyslog
+environment:
+    rsyslogSyntax: old
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- TIPpass
+- TIPpass_Security
+- Tier2
+- Tier2security
+- rhel-7.6
+- rsyslogSyntaxOLD
+tier: '2'
+relevancy: |
+    distro = rhel-4: False
+extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/ompipe-module-test
+extra-task: /CoreOS/rsyslog/Sanity/ompipe-module-test
+extra-nitrate: TC#0059838

@@ -1,0 +1,28 @@
+summary: tests basic ommail module functionality
+description: "Basic functionality test of the ommail rsyslog module.\nChecking that\
+    \ rsyslog sends a mail with the log message\nto two users and also check the functionality\
+    \ of \n$ActionExecOnlyOnceEveryInterval directive.\n"
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog7
+- rsyslog
+- rsyslog5
+test: ./runtest.sh
+recommend:
+- rsyslog
+- util-linux-ng
+duration: 5m
+enabled: true
+tag:
+- TIPpass_FIPS
+- TIPpass_Security
+- Tier1
+- Tier1security
+- TierCandidatesPASS
+- fedora-wanted
+- rhel-6.2
+- rsyslogSyntaxOLD
+tier: '1'
+extra-summary: /CoreOS/rsyslog/Sanity/ommail-module-test
+extra-task: /CoreOS/rsyslog/Sanity/ommail-module-test
+extra-nitrate: TC#0100206

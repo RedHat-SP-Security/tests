@@ -1,0 +1,5 @@
+summary: Provides function to define cleanup stack which can do its work at any time
+    of the test run.
+contact:
+- Dalibor Pospisil <dapospis@redhat.com>
+extra-task: /distribution/Library/Cleanup

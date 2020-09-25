@@ -1,0 +1,28 @@
+summary: Test for BZ#842689 ([TestOnly] test logrotate script functionality)
+description: |
+    Bug summary: [TestOnly]: test logrotate script functionality
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=842689
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- aide
+test: ./runtest.sh
+recommend:
+- aide
+- logrotate
+- cronie
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- TIPpass
+- TIPpass_Security
+- Tier2
+- Tier2security
+tier: '2'
+relevancy: |
+    distro = rhel-5: False
+extra-summary: /CoreOS/aide/Regression/bz842689-TestOnly-test-logrotate-script-functionality
+extra-task: /CoreOS/aide/Regression/bz842689-TestOnly-test-logrotate-script-functionality
+extra-nitrate: TC#0338143

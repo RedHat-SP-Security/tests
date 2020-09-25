@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/sudo/Regression/bz627543-The-Runas-Spec-are-ignored-in-sudoers-file
+Description: Test for bz627543 (The Runas_Spec are ignored in sudoers file)
+Author: Ales Marecek <amarecek@redhat.com>
+Bug summary: The Runas_Spec are ignored in sudoers file
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=627543

@@ -1,0 +1,43 @@
+summary: Test for bz469653 (sudo -l segfaults when executed in ElectricFence)
+description: |
+    Bug summary: "sudo -l" segfaults
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=469653
+
+    Description:
+
+    Version-Release number of selected component (if applicable):
+    sudo-1.6.9p17-2
+
+    How reproducible:
+    Always
+
+    Steps to Reproduce:
+    1. Install ElectricFence
+    2. # LD_PRELOAD=/usr/lib/libefence.so EF_PROTECT_BELOW=1 sudo -l
+
+    Actual results:
+    Segmentation fault
+
+    Expected results:
+    Displays the list of commands I am allowed to execute.
+
+    This bug was originally filed against Fedora 9 (#466292) but it should be fixed in RHEL also. A patch for this already exists and is pretty simple (it is attached in the bugreport mentioned above). The patch was also accepted by upstream and the next stable release (1.6.9p18) of sudo won't contain this bug anymore.
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- sudo
+test: ./runtest.sh
+recommend:
+- sudo
+- ElectricFence
+duration: 10m
+enabled: true
+tag:
+- CI-Tier-1
+- SP-TBU
+- TIPpass_Security
+- Tier1
+- Tier1security
+tier: '1'
+extra-summary: /CoreOS/sudo/Regression/bz469653-sudo-l-segfaults-when-executed-in-ElectricFence
+extra-task: /CoreOS/sudo/Regression/bz469653-sudo-l-segfaults-when-executed-in-ElectricFence
+extra-nitrate: TC#0062384

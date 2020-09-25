@@ -1,0 +1,13 @@
+Owner:           Dalibor Pospisil <dapospis@redhat.com>
+Name:            /CoreOS/rsyslog/Library/basic
+TestVersion:     1.0
+Path:            /mnt/tests/CoreOS/rsyslog/Library/basic
+Description:     Basic functions to support rsyslog
+Type:            Library
+TestTime:        5m
+Provides:        library(rsyslog/basic)
+RhtsRequires:    library(distribution/dpcommon)
+RhtsRequires:    library(distribution/Log)
+RhtsRequires:    patch /usr/sbin/semanage
+Requires:        rsyslog patch /usr/sbin/semanage
+License:         GPLv2

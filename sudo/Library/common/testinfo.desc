@@ -1,0 +1,14 @@
+Owner:           Dalibor Pospisil <dapospis@redhat.com>
+Name:            /CoreOS/sudo/Library/common
+TestVersion:     1.0
+Path:            /mnt/tests/CoreOS/sudo/Library/common
+Description:     A library for manipulation with sudoers entries locally and in ldap via sudo-ldap or sssd.
+Type:            Library
+TestTime:        5m
+RunFor:          
+RhtsRequires:    sudo
+Provides:        library(sudo/common)
+Priority:        Normal
+License:         GPLv2+
+Confidential:    no
+Destructive:     no

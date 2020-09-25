@@ -1,0 +1,27 @@
+summary: Test for BZ#1746464 (default fapolicyd policy prevents ansible from running
+    )
+description: "Bug summary: default fapolicyd policy prevents ansible from running\
+    \ \nBugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1746464\n"
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component: []
+test: ./runtest.sh
+require:
+- library(fapolicyd/common)
+- library(distribution/epel)
+recommend:
+- fapolicyd
+- sed
+- dnf
+duration: 15m
+enabled: true
+tag:
+- CI-Tier-1
+- TIPpass
+- rhel-8.2
+relevancy: |+
+    distro < rhel-8: false
+    distro < rhel-8.2: false
+
+extra-summary: /CoreOS/fapolicyd/Regression/bz1746464-default-fapolicyd-policy-prevents-ansible-from-running
+extra-task: /CoreOS/fapolicyd/Regression/bz1746464-default-fapolicyd-policy-prevents-ansible-from-running
+extra-nitrate: TC#0605038
