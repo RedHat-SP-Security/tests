@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/clevis/Sanity/luks-edit
+Description: Tests for the clevis luks edit command
+Author: Sergio Correia <scorreia@redhat.com>

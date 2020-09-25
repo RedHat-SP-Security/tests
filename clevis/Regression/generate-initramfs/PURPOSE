@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/clevis/Regression/generate-initramfs
+Description: Do not break generating initramfs by 'dracut -f' when clevis-dracut is installed.
+Author: Martin Zeleny <mzeleny@redhat.com>

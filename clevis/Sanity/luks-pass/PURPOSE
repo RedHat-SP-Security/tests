@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/clevis/Sanity/luks-pass
+Description: Test the 'clevis luks pass' subcommand with the device and slot as a parameter and check the passphrase used to bind that particular slot.
+Author: Martin Zeleny <mzeleny@redhat.com>

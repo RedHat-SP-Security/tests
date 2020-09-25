@@ -1,0 +1,32 @@
+summary: Test calls upstream test suite.
+description: ''
+contact: Martin Zelený <mzeleny@redhat.com>
+component: []
+test: ./runtest.sh
+recommend:
+- libcap-ng
+- libcap-ng-devel
+- libattr-devel
+- pkgconfig
+- python-devel
+- kernel-headers
+- gcc
+- swig
+- python3-devel
+- rpm-build
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- TIPpass_Security
+- Tier1
+- Tier1security
+- rhel8-buildroot
+tier: '1'
+relevancy: |
+    distro = rhel-4, rhel-5: False
+extra-summary: '/CoreOS/libcap-ng/Sanity/smoke-test '
+extra-task: /CoreOS/libcap-ng/Sanity/smoke-test
+extra-nitrate: TC#0067930

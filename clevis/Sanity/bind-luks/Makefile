@@ -1,7 +1,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#   Makefile of /CoreOS/luksmeta/Regression/bz1461448-running-luksmeta-on-a-non-LUKS-device-returns-IO-error
-#   Description: runs luksmeta on a non-LUKS block device
+#   Makefile of /CoreOS/clevis/Sanity/bind-luks
+#   Description: uses LUKS block device to test clevis luksmeta binding
 #   Author: Jiri Jaburek <jjaburek@redhat.com>
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,7 +24,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-export TEST=/CoreOS/luksmeta/Regression/bz1461448-running-luksmeta-on-a-non-LUKS-device-returns-IO-error
+export TEST=/CoreOS/clevis/Sanity/bind-luks
 export TESTVERSION=1.0
 
 BUILT_FILES=
@@ -50,16 +50,16 @@ $(METADATA): Makefile
 	@echo "Name:            $(TEST)" >> $(METADATA)
 	@echo "TestVersion:     $(TESTVERSION)" >> $(METADATA)
 	@echo "Path:            $(TEST_DIR)" >> $(METADATA)
-	@echo "Description:     runs luksmeta on a non-LUKS block device" >> $(METADATA)
-	@echo "Type:            Regression" >> $(METADATA)
-	@echo "TestTime:        10m" >> $(METADATA)
-	@echo "RunFor:          luksmeta" >> $(METADATA)
-	@echo "Requires:        luksmeta device-mapper" >> $(METADATA)
+	@echo "Description:     uses LUKS block device to test clevis luksmeta binding" >> $(METADATA)
+	@echo "Type:            Sanity" >> $(METADATA)
+	@echo "TestTime:        5m" >> $(METADATA)
+	@echo "RunFor:          clevis tang jose" >> $(METADATA)
+	@echo "Requires:        clevis clevis-luks luksmeta tang expect socat psmisc wget" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2" >> $(METADATA)
 	@echo "Confidential:    no" >> $(METADATA)
 	@echo "Destructive:     no" >> $(METADATA)
-	@echo "Bug:             1461448" >> $(METADATA)
 	@echo "Releases:        -RHEL4 -RHELClient5 -RHELServer5 -RHEL6" >> $(METADATA)
+	@echo "Bug:             1623867" >> $(METADATA)
 
 	rhts-lint $(METADATA)

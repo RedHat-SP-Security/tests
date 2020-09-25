@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/clevis/Sanity/automate-clevis-luks-bind
+Description: This test validates the newly added -y (assume-yes) parameter that helps automate clevis luks bind
+Author: Sergio Correia <scorreia@redhat.com>

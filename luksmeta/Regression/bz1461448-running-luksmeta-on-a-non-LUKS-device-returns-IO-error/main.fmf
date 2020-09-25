@@ -1,2 +1,23 @@
-path: /luksmeta/Regression/bz1461448-running-luksmeta-on-a-non-LUKS-device-returns-IO-error
-tier: 1
+summary: runs luksmeta on a non-LUKS block device
+description: ''
+contact: Martin Zelený <mzeleny@redhat.com>
+component:
+- luksmeta
+test: ./runtest.sh
+recommend:
+- luksmeta
+- device-mapper
+duration: 10m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- NoRHEL6
+- TIPfail_Security
+- Tier1
+- Tier1security
+tier: '1'
+extra-summary: /CoreOS/luksmeta/Regression/bz1461448-running-luksmeta-on-a-non-LUKS-device-returns-IO-error
+extra-task: /CoreOS/luksmeta/Regression/bz1461448-running-luksmeta-on-a-non-LUKS-device-returns-IO-error
+extra-nitrate: TC#0561562

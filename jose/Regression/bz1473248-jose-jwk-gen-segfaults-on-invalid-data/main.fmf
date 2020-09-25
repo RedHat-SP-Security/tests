@@ -1,0 +1,21 @@
+summary: runs jose jwg gen with invalid input
+description: ''
+contact: Martin Zelený <mzeleny@redhat.com>
+component:
+- jose
+test: ./runtest.sh
+recommend:
+- jose
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- TIPfail_Security
+- Tier1
+- Tier1security
+tier: '1'
+extra-summary: /CoreOS/jose/Regression/bz1473248-jose-jwk-gen-segfaults-on-invalid-data
+extra-task: /CoreOS/jose/Regression/bz1473248-jose-jwk-gen-segfaults-on-invalid-data
+extra-nitrate: TC#0561564

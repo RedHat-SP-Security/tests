@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/clevis/Sanity/pin-sss
+Description: tests the sss pin functionality of clevis
+Author: Jiri Jaburek <jjaburek@redhat.com>

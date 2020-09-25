@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/clevis/Sanity/pin-tang
+Description: tests the tang pin functionality of clevis
+Author: Jiri Jaburek <jjaburek@redhat.com>

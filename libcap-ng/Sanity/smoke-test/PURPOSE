@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/libcap-ng/Sanity/smoke-test
+Description: Test calls upstream test suite.
+Author: Ondrej Moris <omoris@redhat.com>
