@@ -1,0 +1,24 @@
+summary: Run tang server, which stays running after test finishes. For manual testing
+    with --reserve parameter.
+description: ''
+contact: Martin Zelený <mzeleny@redhat.com>
+component:
+- tang
+test: ./runtest.sh
+recommend:
+- tang
+- http-parser
+- curl
+duration: 24h
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- Tier1
+tier: '1'
+relevancy: |
+    distro < rhel-7: False
+extra-summary: /CoreOS/tang/Sanity/simple-tang-server-start
+extra-task: /CoreOS/tang/Sanity/simple-tang-server-start
+extra-nitrate: TC#0605937

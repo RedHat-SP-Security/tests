@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/clevis/Sanity/tang-high-availability
+Description: verifies sharing keys between tang servers
+Author: Jiri Jaburek <jjaburek@redhat.com>

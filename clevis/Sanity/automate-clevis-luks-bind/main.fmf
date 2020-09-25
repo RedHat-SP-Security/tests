@@ -1,0 +1,30 @@
+summary: This test validates the newly added -y (assume-yes) parameter that helps
+    automate clevis luks bind
+description: ''
+contact: Martin Zelený <mzeleny@redhat.com>
+component:
+- clevis
+test: ./runtest.sh
+recommend:
+- clevis
+- clevis-luks
+- tang
+- cryptsetup
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- NoRHEL6
+- NoRHEL7
+- SP-TBU
+- TIPpass
+- Tier1
+tier: '1'
+relevancy: |
+    distro < rhel-8: False
+    distro = rhel-alt-7: False
+extra-summary: /CoreOS/clevis/Sanity/automate-clevis-luks-bind
+extra-task: /CoreOS/clevis/Sanity/automate-clevis-luks-bind
+extra-nitrate: TC#0607316

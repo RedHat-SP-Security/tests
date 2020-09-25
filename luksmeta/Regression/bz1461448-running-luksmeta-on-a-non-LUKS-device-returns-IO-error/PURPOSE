@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/luksmeta/Regression/bz1461448-running-luksmeta-on-a-non-LUKS-device-returns-IO-error
+Description: runs luksmeta on a non-LUKS block device
+Author: Jiri Jaburek <jjaburek@redhat.com>

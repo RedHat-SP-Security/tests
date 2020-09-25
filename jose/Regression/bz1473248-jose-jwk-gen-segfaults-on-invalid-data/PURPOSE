@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/jose/Regression/bz1473248-jose-jwk-gen-segfaults-on-invalid-data
+Description: runs jose jwg gen with invalid input
+Author: Jiri Jaburek <jjaburek@redhat.com>

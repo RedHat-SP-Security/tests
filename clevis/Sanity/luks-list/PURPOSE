@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/clevis/Sanity/luks-list
+Description: Sanity check for listing PBD policies and check proper failing message
+Author: Martin Zeleny <mzeleny@redhat.com>

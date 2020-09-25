@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/clevis/Sanity/simple-encrypt-pin-tang
+Description: Simple way how to test 'clevis encrypt tang'
+Author: Martin Zeleny <mzeleny@redhat.com>

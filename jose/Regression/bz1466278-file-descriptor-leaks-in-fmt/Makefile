@@ -1,7 +1,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#   Makefile of /CoreOS/luksmeta/Regression/bz1461448-running-luksmeta-on-a-non-LUKS-device-returns-IO-error
-#   Description: runs luksmeta on a non-LUKS block device
+#   Makefile of /CoreOS/jose/Regression/bz1466278-file-descriptor-leaks-in-fmt
+#   Description: runs jose fmt via valgrind, checking for leaks
 #   Author: Jiri Jaburek <jjaburek@redhat.com>
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,7 +24,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-export TEST=/CoreOS/luksmeta/Regression/bz1461448-running-luksmeta-on-a-non-LUKS-device-returns-IO-error
+export TEST=/CoreOS/jose/Regression/bz1466278-file-descriptor-leaks-in-fmt
 export TESTVERSION=1.0
 
 BUILT_FILES=
@@ -50,16 +50,16 @@ $(METADATA): Makefile
 	@echo "Name:            $(TEST)" >> $(METADATA)
 	@echo "TestVersion:     $(TESTVERSION)" >> $(METADATA)
 	@echo "Path:            $(TEST_DIR)" >> $(METADATA)
-	@echo "Description:     runs luksmeta on a non-LUKS block device" >> $(METADATA)
+	@echo "Description:     runs jose fmt via valgrind, checking for leaks" >> $(METADATA)
 	@echo "Type:            Regression" >> $(METADATA)
 	@echo "TestTime:        10m" >> $(METADATA)
-	@echo "RunFor:          luksmeta" >> $(METADATA)
-	@echo "Requires:        luksmeta device-mapper" >> $(METADATA)
+	@echo "RunFor:          jose" >> $(METADATA)
+	@echo "Requires:        jose valgrind" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2" >> $(METADATA)
 	@echo "Confidential:    no" >> $(METADATA)
 	@echo "Destructive:     no" >> $(METADATA)
-	@echo "Bug:             1461448" >> $(METADATA)
+	@echo "Bug:             1466278" >> $(METADATA)
 	@echo "Releases:        -RHEL4 -RHELClient5 -RHELServer5 -RHEL6" >> $(METADATA)
 
 	rhts-lint $(METADATA)
