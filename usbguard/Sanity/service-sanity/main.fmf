@@ -9,6 +9,7 @@ recommend:
 duration: 10m
 enabled: true
 tag:
+- FedoraCI
 - CI-Tier-1
 - CI-Tier-1-FIPS
 - NoRHEL4
