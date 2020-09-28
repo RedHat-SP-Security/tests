@@ -4,11 +4,11 @@ contact:
 - David Spurek <dspurek@redhat.com>
 component:
 - sudo
-test: ./runtest.sh
 require:
 - library(authconfig/basic)
 - library(distribution/authconf)
-recommend:
 - sudo
+provide:
+- library(sudo/ldap)
 duration: 5m
 extra-task: /CoreOS/sudo/Library/ldap
