@@ -9,6 +9,7 @@ recommend:
 duration: 5m
 enabled: true
 tag:
+- FedoraCI
 - CI-Tier-1
 - TIPpass_Security
 - rhel-8.2
