@@ -1,0 +1,98 @@
+--- ../orig/rsyslog.conf	2014-09-09 09:13:44.355229513 +0200
++++ rsyslog.conf	2014-09-09 09:19:14.301777479 +0200
+@@ -0,0 +1,2 @@
++################################ RSYSLOG-LIB ###################################
++
+@@ -5,46 +7,79 @@
+ 
+ #### MODULES ####
+ 
++##################### RSYSLOG-LIB BEGIN MODULES ################################
++
+ # The imjournal module bellow is now used as a message source instead of imuxsock.
++
++##################### RSYSLOG-LIB BEGIN MODLOAD IMUXSOCK #######################
+ $ModLoad imuxsock # provides support for local system logging (e.g. via logger command)
++
++# Turn off message reception via local log socket;
++# local messages are retrieved through imjournal now.
++$OmitLocalLogging on
++##################### RSYSLOG-LIB END MODLOAD IMUXSOCK #########################
++
++##################### RSYSLOG-LIB BEGIN MODLOAD IMJOURNAL ######################
+ $ModLoad imjournal # provides access to the systemd journal
++
++# File to store the position in the journal
++$IMJournalStateFile imjournal.state
++##################### RSYSLOG-LIB END MODLOAD IMJOURNAL ########################
++
++##################### RSYSLOG-LIB BEGIN MODLOAD IMKLOG #########################
+ #$ModLoad imklog # reads kernel messages (the same are read from journald)
++##################### RSYSLOG-LIB END MODLOAD IMKLOG ###########################
++
++##################### RSYSLOG-LIB BEGIN MODLOAD IMMARK #########################
+ #$ModLoad immark  # provides --MARK-- message capability
++##################### RSYSLOG-LIB END MODLOAD IMMARK ###########################
+ 
++##################### RSYSLOG-LIB BEGIN MODLOAD IMUDP ##########################
+ # Provides UDP syslog reception
+ #$ModLoad imudp
+ #$UDPServerRun 514
++##################### RSYSLOG-LIB END MODLOAD IMUDP ############################
+ 
++##################### RSYSLOG-LIB BEGIN MODLOAD IMTCP ##########################
+ # Provides TCP syslog reception
+ #$ModLoad imtcp
+ #$InputTCPServerRun 514
++##################### RSYSLOG-LIB END MODLOAD IMTCP ############################
++
++##################### RSYSLOG-LIB END MODULES ##################################
+ 
+ 
+ #### GLOBAL DIRECTIVES ####
+ 
++##################### RSYSLOG-LIB BEGIN GLOBALS ################################
++
++##################### RSYSLOG-LIB BEGIN WOKRDIRECTORY ##########################
+ # Where to place auxiliary files
+ $WorkDirectory /var/lib/rsyslog
++##################### RSYSLOG-LIB END WOKRDIRECTORY ############################
+ 
++##################### RSYSLOG-LIB BEGIN MODLOAD OMFILE DEFAULT TEMPLATE ########
+ # Use default timestamp format
+ $ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
++##################### RSYSLOG-LIB END OMFILE DEFAULT TEMPLATE ##################
+ 
++##################### RSYSLOG-LIB BEGIN MODLOAD OMFILE ENABLE SYNC #############
+ # File syncing capability is disabled by default. This feature is usually not required,
+ # not useful and an extreme performance hit
+ #$ActionFileEnableSync on
++##################### RSYSLOG-LIB END MODLOAD OMFILE ENABLE SYNC ###############
+ 
++##################### RSYSLOG-LIB BEGIN INCLUDECONFIG ##########################
+ # Include all config files in /etc/rsyslog.d/
+ $IncludeConfig /etc/rsyslog.d/*.conf
+-
+-# Turn off message reception via local log socket;
+-# local messages are retrieved through imjournal now.
+-$OmitLocalLogging on
+-
+-# File to store the position in the journal
+-$IMJournalStateFile imjournal.state
+-
++##################### RSYSLOG-LIB END INCLUDECONFIG ############################
++
++##################### RSYSLOG-LIB END GLOBALS ##################################
+ 
+ #### RULES ####
+ 
++##################### RSYSLOG-LIB BEGIN RULES ##################################
++
+ # Log all kernel messages to the console.
+ # Logging much else clutters up the screen.
+ #kern.*                                                 /dev/console
+@@ -89,3 +120,4 @@
+ # remote host is: name/ip:port, e.g. 192.168.0.1:514, port optional
+ #*.* @@remote-host:514
+ # ### end of the forwarding rule ###
++##################### RSYSLOG-LIB END RULES #####################################

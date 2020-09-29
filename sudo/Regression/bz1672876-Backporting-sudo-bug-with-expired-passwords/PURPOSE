@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/sudo/Regression/bz1672876-Backporting-sudo-bug-with-expired-passwords
+Description: sudo-with-expired-passwords
+Author: Jiri Vymazal <jvymazal@redhat.com>
+Bug summary: Backporting  sudo bug with expired passwords
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1672876

@@ -1,0 +1,7 @@
+summary: Setup/cleanup standard testing user.
+component: []
+require:
+- library(distribution/Log)
+extra-summary: '[testUser] handle user(s) for testing (distribution/testUser)'
+extra-task: /distribution/Library/testUser
+extra-nitrate: TC#0483519

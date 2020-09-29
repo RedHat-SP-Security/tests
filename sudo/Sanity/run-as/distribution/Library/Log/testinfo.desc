@@ -1,0 +1,10 @@
+Owner:           Dalibor Pospisil <dapospis@redhat.com>
+Name:            /distribution/Library/Log
+TestVersion:     1.0
+Path:            /mnt/tests/distribution/Library/Log
+Description:     Provides yet another logging facility that does not rely on beakerlib while it can integrate with it.
+Type:            Library
+TestTime:        5m
+RhtsRequires:    library(distribution/opts)
+Provides:        library(distribution/Log)
+License:         GPLv2

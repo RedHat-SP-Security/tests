@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/rsyslog/Sanity/mmkubernetes-module-test
+Description: basic sanity check for mmkubernetes module
+Author: Dalibor Pospisil <dapospis@redhat.com>

@@ -1,0 +1,28 @@
+summary: Test for BZ#1257150 ([RHEL7.2] rsyslog fails to  load imuxsock module)
+description: |
+    Bug summary: [RHEL7.2] rsyslog fails to  load imuxsock module without imjournal module
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1257150
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog7
+- rsyslog
+- rsyslog5
+test: ./runtest.sh
+recommend:
+- rsyslog
+duration: 5m
+enabled: true
+tag:
+- NoRHEL4
+- NoRHEL5
+- SP-TBU
+- TIPpass_FIPS
+- TIPpass_Security
+- Tier1
+- Tier1security
+tier: '1'
+relevancy: |
+    distro < rhel-6: False
+extra-summary: /CoreOS/rsyslog/Regression/bz1257150-RHEL7-2-rsyslog-fails-to-load-imuxsock-module
+extra-task: /CoreOS/rsyslog/Regression/bz1257150-RHEL7-2-rsyslog-fails-to-load-imuxsock-module
+extra-nitrate: TC#0501627

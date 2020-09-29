@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/rsyslog/Sanity/bz672182-RFE-Provide-rate-limiting-support
+Description: Test for bz672182 ([RFE] Provide rate limiting support)
+Author: Dalibor Pospisil <dapospis@dapospis.redhat>
+Bug summary: [RFE] Provide rate limiting support
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=672182

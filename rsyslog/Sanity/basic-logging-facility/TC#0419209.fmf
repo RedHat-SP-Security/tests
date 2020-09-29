@@ -1,0 +1,16 @@
+component:
+- rsyslog7
+- rsyslog
+- rsyslog5
+environment:
+    rsyslogSyntax: new
+tag:
+- NoRHEL4
+- fedora-wanted
+- notip
+- rsyslogSyntaxNEW
+relevancy: |
+    distro < rhel-6: False
+    distro = rhel-6 && component = rsyslog: False
+extra-summary: rsyslogSyntax=new /CoreOS/rsyslog/Sanity/basic-logging-facility
+extra-nitrate: TC#0419209

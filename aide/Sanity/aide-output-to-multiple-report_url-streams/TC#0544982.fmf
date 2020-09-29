@@ -1,0 +1,10 @@
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- TIPpass_Security
+- Tier1
+- Tier1security
+- TierCandidatesPASS
+extra-summary: /CoreOS/aide/Sanity/aide-output-to-multiple-report_url-streams
+extra-nitrate: TC#0544982

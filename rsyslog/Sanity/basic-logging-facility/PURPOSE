@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/rsyslog/Sanity/basic-logging-facility
+Description: Tests basic logging facility
+Author: Karel Srot <ksrot@redhat.com>

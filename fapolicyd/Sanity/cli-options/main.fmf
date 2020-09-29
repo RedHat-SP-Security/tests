@@ -1,0 +1,30 @@
+summary: Test for BZ#1817413 (Rebase FAPOLICYD to the latest upstream version)
+description: |
+    Bug summary: Rebase FAPOLICYD to the latest upstream version
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1817413
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component: []
+test: ./runtest.sh
+require:
+- library(distribution/dpcommon)
+- library(distribution/ConditionalPhases)
+- library(fapolicyd/common)
+recommend:
+- fapolicyd
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- SP-TBU
+- TIPfail
+- Tier1
+- rhel-8.3.0
+tier: '1'
+relevancy: |
+    distro < rhel-8: False
+    distro < rhel-8.3: False
+extra-summary: /CoreOS/fapolicyd/Sanity/cli-options
+extra-task: /CoreOS/fapolicyd/Sanity/cli-options
+extra-nitrate: TC#0607379

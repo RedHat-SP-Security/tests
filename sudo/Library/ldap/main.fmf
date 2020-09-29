@@ -1,0 +1,14 @@
+summary: Basic library for manipulation with sudoers entries in ldap via sudo-ldap
+    or sssd.
+contact:
+- David Spurek <dspurek@redhat.com>
+component:
+- sudo
+require:
+- library(authconfig/basic)
+- library(distribution/authconf)
+- sudo
+provide:
+- library(sudo/ldap)
+duration: 5m
+extra-task: /CoreOS/sudo/Library/ldap

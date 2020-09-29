@@ -1,0 +1,35 @@
+summary: performs fuzz testing on config/rules files
+description: ''
+contact: J J <jjaburek@redhat.com>
+component:
+- usbguard
+test: ./runtest.sh
+require:
+- library(distribution/fuzz)
+recommend:
+- usbguard
+- usbguard-tools
+- gcc
+- gcc-c++
+- make
+- curl
+- rpm-build
+- yum-utils
+- dnf-utils
+- git
+duration: 30h
+enabled: true
+tag:
+- NoRHEL4
+- NoRHEL5
+- NoRHEL6
+- TIPpass
+- TIPpass_Security
+- fedora-wanted
+- rhel8-buildroot
+relevancy: |
+    arch != x86_64: False
+    distro < rhel-7.6: False
+extra-summary: /CoreOS/usbguard/Sanity/rules-fuzz
+extra-task: /CoreOS/usbguard/Sanity/rules-fuzz
+extra-nitrate: TC#0560406

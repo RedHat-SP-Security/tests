@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/fapolicyd/Regression/bz1765039-fapolicyd-fails-to-identify-perl-interpreter
+Description: Test for BZ#1765039 (fapolicyd fails to identify perl interpreter )
+Author: Radovan Sroka <rsroka@redhat.com>
+Bug summary: fapolicyd fails to identify perl interpreter 
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1765039

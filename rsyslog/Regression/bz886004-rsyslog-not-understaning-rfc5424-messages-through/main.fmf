@@ -1,0 +1,28 @@
+summary: Test for BZ#886004 (rsyslog not understaning rfc5424 messages through)
+description: |
+    Bug summary: rsyslog not understaning rfc5424 messages through unix socket
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=886004
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog7
+- rsyslog
+- rsyslog5
+test: ./runtest.sh
+recommend:
+- rsyslog
+- gcc
+duration: 5m
+enabled: true
+tag:
+- RHEL8_SP_wanted
+- SP-TBU
+- TIPpass
+- TIPpass_Security
+- Tier1
+- Tier1security
+- TipWaived5
+- rsyslogSyntaxOLD
+tier: '1'
+extra-summary: /CoreOS/rsyslog/Regression/bz886004-rsyslog-not-understaning-rfc5424-messages-through
+extra-task: /CoreOS/rsyslog/Regression/bz886004-rsyslog-not-understaning-rfc5424-messages-through
+extra-nitrate: TC#0235270

@@ -1,0 +1,8 @@
+tag:
+- CI-Tier-1
+- TIPpass
+- TIPpass_Security
+- Tier1
+- Tier1security
+extra-summary: /CoreOS/aide/Sanity/aide-rules-test
+extra-nitrate: TC#0059821

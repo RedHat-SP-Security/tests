@@ -1,0 +1,23 @@
+summary: Test custom aide groups of what should be checked
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- aide
+test: ./runtest.sh
+recommend:
+- aide
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- TIPpass_Security
+- Tier1
+- Tier1security
+tier: '1'
+relevancy: |
+    distro = rhel-4, rhel-5: False
+extra-summary: /CoreOS/aide/Sanity/aide-conf-group-definition
+extra-task: /CoreOS/aide/Sanity/aide-conf-group-definition
+extra-nitrate: TC#0554483

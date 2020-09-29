@@ -1,0 +1,38 @@
+summary: Basic imtcp module testing
+description: |+
+    At the moment the test is using/testing following directives from
+    imtcp module:
+
+    $InputTCPMaxListener
+    $InputTCPServerRun
+    $InputTCPServerBindRuleset
+    $InputTCPServerInputName
+
+    moreover the test is also using/testing:
+
+    logging with dynamic filenames using template
+    $RuleSet
+    TCP IPv4 forwarding
+
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog
+test: ./runtest.sh
+path: /Sanity/imtcp-module-test
+require:
+- library(rsyslog/basic)
+- library(distribution/tcf)
+- library(distribution/Cleanup)
+- library(selinux-policy/common)
+- library(openssl/certgen)
+recommend:
+- rsyslog
+- gnutls
+- gnutls-utils
+- rsyslog-gnutls
+- /usr/bin/host
+- lsof
+- openssl
+duration: 10m
+enabled: true
+extra-task: /CoreOS/rsyslog/Sanity/imtcp-module-test

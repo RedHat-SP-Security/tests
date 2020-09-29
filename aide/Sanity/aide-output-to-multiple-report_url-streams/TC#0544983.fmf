@@ -1,0 +1,13 @@
+environment:
+    SYSLOG_FORMAT: 'true'
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- SP-TBU
+- TIPpass_Security
+- Tier1
+- Tier1security
+- TierCandidatesPASS
+extra-summary: SYSLOG_FORMAT=true /CoreOS/aide/Sanity/aide-output-to-multiple-report_url-streams
+extra-nitrate: TC#0544983

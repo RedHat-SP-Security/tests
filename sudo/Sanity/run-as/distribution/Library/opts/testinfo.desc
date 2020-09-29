@@ -1,0 +1,10 @@
+Owner:           Dalibor Pospisil <dapospis@redhat.com>
+Name:            /distribution/Library/opts
+TestVersion:     1.0
+Path:            /mnt/tests/distribution/Library/opts
+Description:     Provides simple way for defining script's or function's options including help
+Type:            Library
+TestTime:        5m
+RhtsRequires:    library(distribution/Log)
+Provides:        library(distribution/opts)
+License:         GPLv2

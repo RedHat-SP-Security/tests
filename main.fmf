@@ -1,16 +1,4 @@
-test: ./runtest.sh
-tier: 1
-duration: 5m
-
 #contact: Radovan Sroka <rsroka@redhat.com>
 
 tags: [generic]
-
-/fapolicyd:
-    component: fapolicyd
-
-/luksmeta:
-    component: luksmeta
-
-/usbguard:
-    component: usbguard
+tag: []

@@ -1,0 +1,35 @@
+summary: Test for BZ#1215400 (default /etc/sudoers file error)
+description: |
+    Bug summary: default /etc/sudoers file error
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1215400
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- sudo
+test: ./runtest.sh
+require:
+- library(distribution/dpcommon)
+recommend:
+- sudo
+- /usr/bin/rpm2cpio
+- cpio
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- SP-TBU
+- TIP_fedora_fail
+- TIPpass
+- TIPpass_Security
+- Tier1
+- Tier1security
+- TierCandidatesPASS
+- rhel-6.8
+- rhel-7.2
+tier: '1'
+relevancy: |
+    distro < rhel-7: False
+extra-summary: /CoreOS/sudo/Sanity/default-sudo-config-files
+extra-task: /CoreOS/sudo/Sanity/default-sudo-config-files
+extra-nitrate: TC#0497419

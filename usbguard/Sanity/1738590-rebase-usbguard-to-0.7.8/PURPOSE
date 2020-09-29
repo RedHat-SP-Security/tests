@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/usbguard/Sanity/1738590-rebase-usbguard-to-0.7.8
+Description: Test for BZ#1738590 (Rebase USBGUARD to the latest upstream version)
+Author: Attila Lakatos <alakatos@redhat.com>
+Bug summary: Rebase USBGUARD to the latest upstream version
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1738590

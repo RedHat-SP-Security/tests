@@ -1,0 +1,13 @@
+environment:
+    rsyslogSyntax: new
+tag:
+- NoRHEL4
+- NoRHEL5
+- TIPfail
+- TIPfail_Security
+- Tier1
+- Tier1security
+- rsyslogSyntaxNEW
+tier: '1'
+extra-summary: rsyslogSyntax=new /CoreOS/rsyslog/Regression/bz1223566-RFE-imrelp-does-not-support-binding-to-a-specific
+extra-nitrate: TC#0532722

@@ -1,0 +1,33 @@
+summary: Tests various configuration directives
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog
+test: ./runtest.sh
+require:
+- library(rsyslog/basic)
+- library(distribution/ConditionalPhases)
+- library(distribution/Cleanup)
+- library(distribution/tcf)
+recommend:
+- rsyslog
+- /usr/bin/netstat
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- NoRHEL6
+- NoRHEL7
+- TIPfail
+- TIPfail_Security
+- Tier2
+- rhel-8.0.0
+tier: '2'
+relevancy: |
+    distro < rhel-8.2: False
+    distro < rhel-8: False
+extra-summary: /CoreOS/rsyslog/Sanity/config-enabled
+extra-task: /CoreOS/rsyslog/Sanity/config-enabled
+extra-nitrate: TC#0605354

@@ -1,0 +1,24 @@
+summary: Test for BZ#1721496 (Stop littering STDOUT output for dnf plugin in fapolicyd)
+description: |
+    Bug summary: Stop littering STDOUT output for dnf plugin in fapolicyd
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1721496
+contact: None <rsroka@redhat.com>
+component: []
+test: ./runtest.sh
+require:
+- library(fapolicyd/common)
+recommend:
+- fapolicyd
+- sed
+- dnf
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- Tier2
+tier: '2'
+relevancy: |
+    distro < rhel-8: False
+extra-summary: /CoreOS/fapolicyd/Regression/bz1721496-Stop-littering-STDOUT-output-for-dnf
+extra-task: /CoreOS/fapolicyd/Regression/bz1721496-Stop-littering-STDOUT-output-for-dnf
+extra-nitrate: TC#0602522

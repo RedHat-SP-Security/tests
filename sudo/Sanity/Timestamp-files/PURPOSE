@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/sudo/Sanity/Timestamp-files
+Description: Check existence of new directories for timestamp files
+Author: David Spurek <dspurek@redhat.com>

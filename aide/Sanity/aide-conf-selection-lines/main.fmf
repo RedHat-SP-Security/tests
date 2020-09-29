@@ -1,0 +1,25 @@
+summary: Check the proper file verficaton accroding to the selectors in aide.conf
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- aide
+test: ./runtest.sh
+recommend:
+- aide
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- SP-TBU
+- TIPpass
+- TIPpass_Security
+- Tier1
+- Tier1security
+tier: '1'
+relevancy: |
+    distro = rhel-4, rhel-5: False
+extra-summary: /CoreOS/aide/Sanity/aide-conf-selection-lines
+extra-task: /CoreOS/aide/Sanity/aide-conf-selection-lines
+extra-nitrate: TC#0554417

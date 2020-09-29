@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/sudo/Regression/bz1788196-sudo-allows-privilege-escalation-with-expire
+Description: Test for BZ#1788196 (sudo allows privilege escalation with expire)
+Author: Dalibor Pospisil <dapospis@redhat.com>
+Bug summary: sudo allows privilege escalation with expire password
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1788196

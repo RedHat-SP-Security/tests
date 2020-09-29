@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/sudo/Sanity/sudoers-options-sanity-test
+Description: This sanity test checks pre-defined (some are commented) options (examples) in sudoers file.
+Author: Ales Marecek <amarecek@redhat.com>

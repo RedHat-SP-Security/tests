@@ -1,0 +1,2 @@
+allow 1050:0011 name "Yubico Yubikey II" serial "0001234567" via-port "1-2" hash "044b5e168d40ee0245478416caf3d998"
+reject via-port "1-2"

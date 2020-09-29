@@ -1,0 +1,21 @@
+component:
+- rsyslog7
+- rsyslog
+- rsyslog
+- rsyslog5
+environment:
+    rsyslogSyntax: old
+tag:
+- NoRHEL4
+- TIPpass
+- TIPpass_Security
+- Tier2
+- Tier2security
+- TipWaived5
+- fedora-wanted
+- rhel-6.3
+- rsyslogSyntaxOLD
+relevancy: |
+    distro = rhel-4: False
+extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/test-various-configuration-directives
+extra-nitrate: TC#0059839

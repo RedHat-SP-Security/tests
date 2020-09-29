@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/aide/Regression/bz842689-TestOnly-test-logrotate-script-functionality
+Description: Test for BZ#842689 ([TestOnly] test logrotate script functionality)
+Author: Michal Trunecka <mtruneck@redhat.com>
+Bug summary: [TestOnly]: test logrotate script functionality
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=842689
