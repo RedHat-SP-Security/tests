@@ -104,21 +104,23 @@ rlJournalStart
         fi
     rlPhaseEnd
 
-    rlPhaseStart FAIL "Valid sss config with wrong tang config"
-        rlRun "wget -nv -O adv1.json \"http://localhost:$port1/adv\""
-        rlRun "wget -nv -O adv2.json \"http://localhost:$port2/adv\""
-        echo -n "testing data string" > plain
-        rlRun "clevis encrypt sss '{
-                \"t\": 2,
-                \"pins\": {
-                    \"tang\": [
-                        { \"url\": \"http://wronghost\", \"adv\": \"adv1.json\" },
-                        { \"url\": \"http://localhost:9999\", \"adv\": \"adv2.json\" },
-                        { \"url\": \"http://localhost:$port1\", \"adv\": \"nonexisting_file\" }
-                    ]
-                }
-            }' < plain > enc" 1 "Valid sss config with wrong tang config"
-    rlPhaseEnd
+    if ! rlIsRHEL '<8.4'; then # Tests feature added in RHEL-8.4
+        rlPhaseStart FAIL "Valid sss config with wrong tang config"
+            rlRun "wget -nv -O adv1.json \"http://localhost:$port1/adv\""
+            rlRun "wget -nv -O adv2.json \"http://localhost:$port2/adv\""
+            echo -n "testing data string" > plain
+            rlRun "clevis encrypt sss '{
+                    \"t\": 2,
+                    \"pins\": {
+                        \"tang\": [
+                            { \"url\": \"http://wronghost\", \"adv\": \"adv1.json\" },
+                            { \"url\": \"http://localhost:9999\", \"adv\": \"adv2.json\" },
+                            { \"url\": \"http://localhost:$port1\", \"adv\": \"nonexisting_file\" }
+                        ]
+                    }
+                }' < plain > enc" 1 "Valid sss config with wrong tang config"
+        rlPhaseEnd
+    fi
 
     rlPhaseStart FAIL "clevis setup, encrypt using t=2 and 3 servers"
         rlRun "wget -nv -O adv1.json \"http://localhost:$port1/adv\""
