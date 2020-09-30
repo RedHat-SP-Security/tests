@@ -11,7 +11,7 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - aide
 test: ./runtest.sh
-path: /Sanity/aide-output-to-multiple-report_url-streams
+path: /aide/Sanity/aide-output-to-multiple-report_url-streams
 recommend:
 - aide
 - coreutils

@@ -6,7 +6,7 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - rsyslog
 test: ./runtest.sh
-path: /Sanity/test-various-configuration-directives
+path: /rsyslog/Sanity/test-various-configuration-directives
 require:
 - library(rsyslog/basic)
 - library(distribution/ConditionalPhases)

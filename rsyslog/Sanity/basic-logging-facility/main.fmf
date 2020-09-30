@@ -4,7 +4,7 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - rsyslog
 test: ./runtest.sh
-path: /Sanity/basic-logging-facility
+path: /rsyslog/Sanity/basic-logging-facility
 require:
 - library(rsyslog/basic)
 recommend:

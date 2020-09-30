@@ -4,7 +4,7 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - aide
 test: ./runtest.sh
-path: /Sanity/aide-rules-test
+path: /aide/Sanity/aide-rules-test
 recommend:
 - aide
 - attr

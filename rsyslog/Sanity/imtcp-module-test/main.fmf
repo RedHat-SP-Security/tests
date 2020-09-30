@@ -18,7 +18,7 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - rsyslog
 test: ./runtest.sh
-path: /Sanity/imtcp-module-test
+path: /rsyslog/Sanity/imtcp-module-test
 require:
 - library(rsyslog/basic)
 - library(distribution/tcf)
