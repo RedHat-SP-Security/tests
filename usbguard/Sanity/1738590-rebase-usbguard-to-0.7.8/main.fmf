@@ -3,8 +3,6 @@ description: |
     Bug summary: Rebase USBGUARD to the latest upstream version
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1738590
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- usbguard
 test: ./runtest.sh
 require:
 - library(selinux-policy/common)

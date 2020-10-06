@@ -1,8 +1,6 @@
 summary: 'It tests desired behaviour: sudo su - user'
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 recommend:
 - sudo

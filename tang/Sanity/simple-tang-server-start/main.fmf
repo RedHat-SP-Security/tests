@@ -2,8 +2,6 @@ summary: Run tang server, which stays running after test finishes. For manual te
     with --reserve parameter.
 description: ''
 contact: Martin Zelený <mzeleny@redhat.com>
-component:
-- tang
 test: ./runtest.sh
 recommend:
 - tang

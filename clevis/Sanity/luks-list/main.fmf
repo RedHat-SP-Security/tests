@@ -1,8 +1,6 @@
 summary: Sanity check for listing PBD policies and check proper failing message
 description: ''
 contact: Martin Zelený <mzeleny@redhat.com>
-component:
-- clevis
 test: ./runtest.sh
 recommend:
 - clevis

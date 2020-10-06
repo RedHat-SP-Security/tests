@@ -1,8 +1,6 @@
 summary: exercises usbguard service-related daemon functionality
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- usbguard
 test: ./runtest.sh
 recommend:
 - usbguard

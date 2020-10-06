@@ -1,8 +1,6 @@
 summary: tries out valid and invalid config file keywords
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- usbguard
 test: ./runtest.sh
 require:
 - library(distribution/dpcommon)

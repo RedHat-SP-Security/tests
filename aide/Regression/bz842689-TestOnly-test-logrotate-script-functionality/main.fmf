@@ -3,8 +3,6 @@ description: |
     Bug summary: [TestOnly]: test logrotate script functionality
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=842689
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- aide
 test: ./runtest.sh
 recommend:
 - aide

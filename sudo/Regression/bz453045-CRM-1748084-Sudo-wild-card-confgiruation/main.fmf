@@ -7,8 +7,6 @@ description: |
 
     Escalated to Bugzilla from IssueTracker
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 recommend:
 - sudo

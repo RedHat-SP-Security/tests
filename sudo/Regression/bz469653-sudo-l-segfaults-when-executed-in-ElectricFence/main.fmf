@@ -23,8 +23,6 @@ description: |
 
     This bug was originally filed against Fedora 9 (#466292) but it should be fixed in RHEL also. A patch for this already exists and is pretty simple (it is attached in the bugreport mentioned above). The patch was also accepted by upstream and the next stable release (1.6.9p18) of sudo won't contain this bug anymore.
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 recommend:
 - sudo

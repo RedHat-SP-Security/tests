@@ -2,8 +2,6 @@ summary: Test the 'clevis luks pass' subcommand with the device and slot as a pa
     and check the passphrase used to bind that particular slot.
 description: ''
 contact: Martin Zelený <mzeleny@redhat.com>
-component:
-- clevis
 test: ./runtest.sh
 recommend:
 - clevis

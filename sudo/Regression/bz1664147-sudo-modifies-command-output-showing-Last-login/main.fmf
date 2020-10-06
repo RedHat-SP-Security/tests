@@ -3,8 +3,6 @@ description: |
     Bug summary: sudo modifies command output, showing "Last login: ..." info
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1664147
 contact: Shridhar Gadekar <sgadekar@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 require:
 - library(distribution/testUser)

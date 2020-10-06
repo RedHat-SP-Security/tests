@@ -3,8 +3,6 @@ description: |
     Bug summary: The Runas_Spec are ignored in sudoers file
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=627543
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 recommend:
 - sudo

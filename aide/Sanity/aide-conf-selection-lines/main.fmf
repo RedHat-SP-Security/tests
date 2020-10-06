@@ -1,8 +1,6 @@
 summary: Check the proper file verficaton accroding to the selectors in aide.conf
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- aide
 test: ./runtest.sh
 recommend:
 - aide

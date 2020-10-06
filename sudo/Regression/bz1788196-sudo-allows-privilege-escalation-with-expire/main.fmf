@@ -3,8 +3,6 @@ description: |
     Bug summary: sudo allows privilege escalation with expire password
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1788196
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 require:
 - library(distribution/Cleanup)

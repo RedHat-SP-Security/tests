@@ -2,8 +2,6 @@ summary: Basic library for manipulation with sudoers entries in ldap via sudo-ld
     or sssd.
 contact:
 - David Spurek <dspurek@redhat.com>
-component:
-- sudo
 require:
 - library(authconfig/basic)
 - library(distribution/authconf)

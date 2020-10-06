@@ -2,8 +2,6 @@ summary: This test validates the newly added -y (assume-yes) parameter that help
     automate clevis luks bind
 description: ''
 contact: Martin Zelený <mzeleny@redhat.com>
-component:
-- clevis
 test: ./runtest.sh
 recommend:
 - clevis

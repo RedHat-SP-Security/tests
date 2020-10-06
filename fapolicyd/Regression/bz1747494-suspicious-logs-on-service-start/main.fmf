@@ -1,7 +1,6 @@
 summary: Test for BZ#1747494 (suspicious logs on service start )
 description: "Bug summary: suspicious logs on service start \nBugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1747494\n"
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component: []
 test: ./runtest.sh
 require:
 - library(fapolicyd/common)

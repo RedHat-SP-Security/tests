@@ -1,8 +1,6 @@
 summary: Do not break generating initramfs by 'dracut -f' when clevis-dracut is installed.
 description: ''
 contact: Martin Zelený <mzeleny@redhat.com>
-component:
-- clevis
 test: ./runtest.sh
 recommend:
 - clevis-dracut

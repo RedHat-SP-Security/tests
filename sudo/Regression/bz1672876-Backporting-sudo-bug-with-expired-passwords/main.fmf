@@ -3,8 +3,6 @@ description: |
     Bug summary: Backporting  sudo bug with expired passwords
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1672876
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 require:
 - library(distribution/testUser)

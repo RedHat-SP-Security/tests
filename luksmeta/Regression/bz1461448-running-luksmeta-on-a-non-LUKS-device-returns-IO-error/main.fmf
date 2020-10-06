@@ -1,8 +1,6 @@
 summary: runs luksmeta on a non-LUKS block device
 description: ''
 contact: Martin Zelený <mzeleny@redhat.com>
-component:
-- luksmeta
 test: ./runtest.sh
 recommend:
 - luksmeta

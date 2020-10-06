@@ -3,7 +3,6 @@ summary: Test for BZ#1746464 (default fapolicyd policy prevents ansible from run
 description: "Bug summary: default fapolicyd policy prevents ansible from running\
     \ \nBugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1746464\n"
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component: []
 test: ./runtest.sh
 require:
 - library(fapolicyd/common)

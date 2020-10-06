@@ -1,8 +1,6 @@
 summary: Tests if aide properly handles default rules
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- aide
 test: ./runtest.sh
 path: /aide/Sanity/aide-rules-test
 recommend:

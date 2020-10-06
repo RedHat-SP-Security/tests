@@ -1,8 +1,6 @@
 summary: It tests sudo correctness of users' groups.
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 recommend:
 - sudo

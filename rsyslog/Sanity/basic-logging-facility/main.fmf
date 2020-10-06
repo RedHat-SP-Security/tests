@@ -1,8 +1,6 @@
 summary: Tests basic logging facility
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- rsyslog
 test: ./runtest.sh
 path: /rsyslog/Sanity/basic-logging-facility
 require:

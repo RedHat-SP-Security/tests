@@ -1,8 +1,6 @@
 summary: Check all possible exit codes according to the test coverage.
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- aide
 test: ./runtest.sh
 recommend:
 - aide
