@@ -3,8 +3,6 @@ description: |
     Bug summary: rsyslog doesn't read lines from imfile after rotation of logs
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1763746
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- rsyslog
 test: ./runtest.sh
 require:
 - library(distribution/dpcommon)

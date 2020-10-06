@@ -1,8 +1,6 @@
 summary: runs jose fmt via valgrind, checking for leaks
 description: ''
 contact: Martin Zelený <mzeleny@redhat.com>
-component:
-- jose
 test: ./runtest.sh
 recommend:
 - jose

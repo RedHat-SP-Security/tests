@@ -15,8 +15,6 @@ description: |+
     TCP IPv4 forwarding
 
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- rsyslog
 test: ./runtest.sh
 path: /rsyslog/Sanity/imtcp-module-test
 require:

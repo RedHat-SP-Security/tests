@@ -73,8 +73,6 @@ description: |
                      '!'* '%:'nonunix_group |
                      '!'* User_Alias
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 recommend:
 - sudo

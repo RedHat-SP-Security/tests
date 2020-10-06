@@ -1,8 +1,6 @@
 summary: Tests for the clevis luks edit command
 description: ''
 contact: Martin Zelený <mzeleny@redhat.com>
-component:
-- clevis
 test: ./runtest.sh
 recommend:
 - clevis

@@ -1,5 +1,4 @@
 summary: Setup/cleanup standard testing user.
-component: []
 require:
 - library(distribution/Log)
 duration: 5m

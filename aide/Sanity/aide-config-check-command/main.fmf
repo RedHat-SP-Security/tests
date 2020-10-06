@@ -1,8 +1,6 @@
 summary: tests aide --config-check command
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- aide
 test: ./runtest.sh
 recommend:
 - aide

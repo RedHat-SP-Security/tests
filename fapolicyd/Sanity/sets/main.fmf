@@ -4,7 +4,6 @@ summary: The evaluator will configure fapolicyd to allow execution of executable
     executable that is not allowed to run will be denied.
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component: []
 test: ./runtest.sh
 require:
 - library(distribution/ConditionalPhases)

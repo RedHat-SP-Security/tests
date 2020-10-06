@@ -1,8 +1,6 @@
 summary: Check existence of new directories for timestamp files
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 recommend:
 - sudo

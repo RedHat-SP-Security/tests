@@ -1,8 +1,6 @@
 summary: tests --update and --compare aide commands
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- aide
 test: ./runtest.sh
 recommend:
 - aide

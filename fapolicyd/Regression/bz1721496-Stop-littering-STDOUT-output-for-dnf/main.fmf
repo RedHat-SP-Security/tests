@@ -3,7 +3,6 @@ description: |
     Bug summary: Stop littering STDOUT output for dnf plugin in fapolicyd
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1721496
 contact: None <rsroka@redhat.com>
-component: []
 test: ./runtest.sh
 require:
 - library(fapolicyd/common)

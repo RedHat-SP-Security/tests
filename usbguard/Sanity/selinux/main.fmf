@@ -3,8 +3,6 @@ description: |
     Bug summary: [RFE] SELinux policy (daemons) changes required for package: usbguard
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1683567
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- usbguard
 test: ./runtest.sh
 require:
 - library(distribution/dpcommon)

@@ -2,8 +2,6 @@ summary: This sanity test checks pre-defined (some are commented) options (examp
     in sudoers file.
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 require:
 - library(distribution/tcf)

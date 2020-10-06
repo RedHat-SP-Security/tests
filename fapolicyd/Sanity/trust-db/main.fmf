@@ -3,7 +3,6 @@ description: |
     Bug summary: Rebase FAPOLICYD to the latest upstream version
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1817413
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component: []
 test: ./runtest.sh
 require:
 - library(distribution/dpcommon)

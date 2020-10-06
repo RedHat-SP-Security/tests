@@ -1,8 +1,6 @@
 summary: Tryies to parse match-all rule
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- usbguard
 test: ./runtest.sh
 recommend:
 - usbguard-tools

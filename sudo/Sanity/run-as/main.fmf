@@ -1,8 +1,6 @@
 summary: Test feature 'run as'. This means -u, -g options.
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 require:
 - library(distribution/tcf)

@@ -1,8 +1,6 @@
 summary: runs jose jwg gen with invalid input
 description: ''
 contact: Martin Zelený <mzeleny@redhat.com>
-component:
-- jose
 test: ./runtest.sh
 recommend:
 - jose

@@ -1,7 +1,6 @@
 summary: Test calls upstream test suite.
 description: ''
 contact: Martin Zelený <mzeleny@redhat.com>
-component: []
 test: ./runtest.sh
 recommend:
 - libcap-ng

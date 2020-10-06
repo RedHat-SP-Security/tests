@@ -3,8 +3,6 @@ description: "The test tests various configuration directives \n(see http://www.
     \nAt the moment there are testcases for:\n$ActionExecOnlyOnceEveryInterval\n$ActionSendTCPRebindInterval\n\
     \n"
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- rsyslog
 test: ./runtest.sh
 path: /rsyslog/Sanity/test-various-configuration-directives
 require:

@@ -1,8 +1,6 @@
 summary: It tests wildcard restrictions.
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 recommend:
 - sudo

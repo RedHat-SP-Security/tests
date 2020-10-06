@@ -3,7 +3,6 @@ description: |
     Bug summary: Update fapolicyd.rules
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1801872
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component: []
 test: ./runtest.sh
 require:
 - library(distribution/dpcommon)

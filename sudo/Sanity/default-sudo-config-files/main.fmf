@@ -3,8 +3,6 @@ description: |
     Bug summary: default /etc/sudoers file error
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1215400
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-component:
-- sudo
 test: ./runtest.sh
 require:
 - library(distribution/dpcommon)

@@ -1,8 +1,6 @@
 summary: Simple way how to test 'clevis encrypt tang'
 description: ''
 contact: Martin Zelený <mzeleny@redhat.com>
-component:
-- clevis
 test: ./runtest.sh
 recommend:
 - clevis
