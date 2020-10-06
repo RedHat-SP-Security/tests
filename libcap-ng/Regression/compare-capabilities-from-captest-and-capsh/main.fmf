@@ -1,0 +1,30 @@
+summary: Test for BZ#1253220 (captest list sys_psacct instead of sys_pacct)
+description: |
+    Bug summary: captest list sys_psacct instead of sys_pacct
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1253220
+
+    The test compare textual form of capabilities listed by
+     captest --text
+    and respective capabilities converted by
+     capsh
+contact: None <omoris@redhat.com>
+test: ./runtest.sh
+recommend:
+- libcap-ng
+- libcap-ng-utils
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- TIPpass_Security
+- Tier2
+- Tier2security
+- TierCandidatesFAIL
+tier: '2'
+relevancy: |
+    distro = rhel-4, rhel-5: False
+extra-nitrate: TC#0499506
+extra-summary: /CoreOS/libcap-ng/Regression/compare-capabilities-from-captest-and-capsh
+extra-task: /CoreOS/libcap-ng/Regression/compare-capabilities-from-captest-and-capsh

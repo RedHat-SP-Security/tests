@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/libcap-ng/Regression/bz593635-Capabilities-can-t-be-set-on-just-a-thread
+Description: When changing capabilities on a thread, it actually changes the capabilities
+Author: Eduard Benes <ebenes@redhat.com>

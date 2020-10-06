@@ -1,0 +1,10 @@
+PURPOSE of /CoreOS/libcap-ng/Regression/compare-capabilities-from-captest-and-capsh
+Description: Test for BZ#1253220 (captest list sys_psacct instead of sys_pacct)
+Author: Karel Srot <ksrot@redhat.com>
+Bug summary: captest list sys_psacct instead of sys_pacct
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1253220
+
+The test compare textual form of capabilities listed by
+ captest --text
+and respective capabilities converted by
+ capsh

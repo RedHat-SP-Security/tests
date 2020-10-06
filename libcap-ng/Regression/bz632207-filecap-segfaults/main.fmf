@@ -1,0 +1,24 @@
+summary: Test for bz632207 (filecap segfaults)
+description: "Bug summary: filecap segfaults\nBugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=632207\n\
+    \nDescription:\n\nDescription of problem:\nfilecap segfaults when run on a new\
+    \ empty file:\n# touch /tmp/f\n# filecap /tmp/f \nSegmentation fault (core dumped)\n\
+    \nVersion-Release number of selected component (if applicable):\nlibcap-ng-0.6.4-3.el6.x86_64\n\
+    libcap-ng-0.6.4-3.el6.i686\n\nHow reproducible:\nalways\n\nSteps to Reproduce:\n\
+    1. touch /tmp/f; filecap /tmp/f \n \nActual results:\nsegfault\n\nExpected results:\n\
+    no segfault\n\nAdditional info:\n"
+contact: Martin Zelený <mzeleny@redhat.com>
+test: ./runtest.sh
+recommend:
+- libcap-ng
+- libcap-ng-utils
+duration: 15m
+enabled: true
+tag:
+- CI-Tier-1
+- TIPpass_Security
+- Tier2
+- Tier2security
+tier: '2'
+extra-nitrate: TC#0067928
+extra-summary: /CoreOS/libcap-ng/Regression/bz632207-filecap-segfaults
+extra-task: /CoreOS/libcap-ng/Regression/bz632207-filecap-segfaults
