@@ -32,7 +32,6 @@
 
 rlJournalStart && {
   rlPhaseStartSetup && {
-    [[ -z "$BEAKERLIB_LIBRARY_PATH" ]] && BEAKERLIB_LIBRARY_PATH="$(dirname "$(readlink -f "$0")")"
     rlRun "rlImport --all" 0 "Import libraries" || rlDie "cannot continue"
     tcfTry "Setup phase" && {
       tcfRun "rlCheckMakefileRequires"

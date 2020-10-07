@@ -34,7 +34,6 @@ PACKAGE="sudo"
 
 rlJournalStart && {
   rlPhaseStartSetup && {
-    [[ -z "$BEAKERLIB_LIBRARY_PATH" ]] && BEAKERLIB_LIBRARY_PATH="`dirname "$(readlink -f "$0")"`"
     rlRun "rlImport --all" 0 "Import libraries" || rlDie "cannot continue"
     tcfRun "rlCheckMakefileRequires"
     rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"

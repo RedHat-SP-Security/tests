@@ -1,7 +1,0 @@
-summary: Block style coding with ability of skipping parts.
-contact:
-- Dalibor Pospisil <dapospis@redhat.com>
-require:
-- library(distribution/Log)
-duration: 5m
-extra-task: /distribution/Library/tcf
