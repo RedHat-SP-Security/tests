@@ -7,7 +7,6 @@ tag:
 - TIPfail_Security
 - Tier2
 - Tier2security
-- fedora-wanted
 tier: '2'
 extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Regression/bz1223566-RFE-imrelp-does-not-support-binding-to-a-specific
 extra-nitrate: TC#0526690
