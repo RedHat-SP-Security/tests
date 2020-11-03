@@ -10,7 +10,6 @@ tag:
 - TIPfail_Security
 - Tier2
 - Tier2security
-- fedora-wanted
 - rhel-6.3
 - rsyslogSyntaxOLD
 tier: '2'
