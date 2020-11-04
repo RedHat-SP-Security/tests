@@ -1,0 +1,11 @@
+environment:
+  CONDITIONAL_PHASES_WL: only|both
+duration: 5m
+tag:
+- FedoraCI
+- CI-Tier-1
+relevancy: |
+    arch = s390x: False
+    distro < rhel-7.6: False
+extra-summary: CONDITIONAL_PHASES_WL='only|both' /CoreOS/usbguard/Sanity/config-sanity
+extra-nitrate: TC#0608867

@@ -71,33 +71,33 @@ rlJournalStart
     rlPhaseEnd
 
     # [P0] AC: freeze and unfreeze the daemon using SIGSTOP and SIGCONT does not cause daemon’s failure and exit
-    rlPhaseStartTest "Freeze and unfreeze daemon using SIGSTOP+SIGCONT"
+    rlPhaseStartTest "Freeze and unfreeze daemon using SIGSTOP+SIGCONT" && {
         DaemonPID=`pgrep usbguard-daemon`
         rlRun "kill -19 $DaemonPID" 0 "Send SIGSTOP(19) signal to usbguard-daemon"
         rlRun "sleep 10s"
         rlRun "kill -18 $DaemonPID" 0 "Send SIGCONT(18) signal to usbguard-daemon"
         rlRun "sleep 3s"
         rlRun "systemctl is-active usbguard.service" 0 "Checking whether usbguard-daemon survived SIGSTOP+SIGCONT"
-    rlPhaseEnd
+    rlPhaseEnd; }
 
     # [P0] AC: the service unit file ReadWritePaths definition contains also path to /etc/usbguard so the daemon can modify the policy file
-    rlPhaseStartTest "Service unit file ReadWritePaths definition contains /etc/usbguard/"
+    rlPhaseStartTest "Service unit file ReadWritePaths definition contains /etc/usbguard/" && {
        rlAssertGrep '^(ReadWritePaths=).*-/etc/usbguard/' $SERVICE_UNIT -E
-    rlPhaseEnd
+    rlPhaseEnd; }
 
     # Allow comments in $RULES file
     #    - [P0] AC: Lines beginning with '#' accepted
     #    - [P0] AC: The content after '#' is ignored
-    rlPhaseStartTest "Allow comments in $RULES"
+    rlPhaseStartTest "Allow comments in $RULES" && {
         rlRun -s 'usbguard-rule-parser "# Comment test"' 0 "Lines beginning with '#' are accepted by usbguard-rule-parser"
         rlAssertGrep '^OUTPUT: $' $rlRun_LOG -E
-    rlPhaseEnd
+    rlPhaseEnd; }
 
     # rules.d feature
     #    - [P0] AC: daemon configuration accepts RuleFolder option
     #    - [P0] AC: all .conf files located in the directory are processed as it was append to the main rules.conf
     #    - [P1] AC: the naming convention and the order of processing is described in the man page TODO
-    rlPhaseStartTest "Feature rules.d"
+    rlPhaseStartTest "Feature rules.d" && {
         # rlRun "sed -r -i 's/^RuleFolder=.*//' $CONFIG"
         # rlRun "sed -r -i 's|^(RuleFile)=.*|\1=$CUR_DIR\/rules.conf|' $CONFIG"
         removeConfigOption 'RuleFolder'
@@ -140,12 +140,13 @@ rlJournalStart
         rlRun "rm -f $RULESD/*"
         rlServiceStart usbguard
         rlRun "sleep 3s"
-    rlPhaseEnd
+    rlPhaseEnd; }
 
-  [[ -z "$BASEOS_CI" ]] && {
+  #[[ -z "$BASEOS_CI" ]] && {
+  true && {
     # [P1] AC: AuthorizedDefault is accepted in $CONFIG
     # [P2] AC: Accepted values are: keep, none, all, internal
-    rlPhaseStartTest "AuthorizedDefault config option"
+    rlPhaseStartTest "AuthorizedDefault config option" && {
         since=$(date +"%F %T")
         setConfigOption 'AuthorizedDefault' 'all'
         rlServiceStart usbguard
@@ -194,13 +195,13 @@ rlJournalStart
         rlServiceStart usbguard
         rlRun "sleep 2s"
         cp $CONFIG /tmp/A
-    rlPhaseEnd
+    rlPhaseEnd; }
 
     # {allow, block, reject}-device command can handle rule as a param and not only its ID
     #     [P2] AC: commands allow, block, and reject accept a rule as a input
     #     [P2] AC: all devices matching the rule are allowed, blocked, and rejected, respectively
     #     [P3] AC: if -p is used, rules for all the matching devices will be added to the policy file
-    rlPhaseStartTest "{allow, block, reject}-device can handle rule as a parameter, bz1852568"
+    rlPhaseStartTest "{allow, block, reject}-device can handle rule as a parameter, bz1852568" && {
         rlRun "usbguard list-devices"
         echo -n '' > $RULES
         # Get first device rule of the list and remove via-port attribute
@@ -240,16 +241,59 @@ rlJournalStart
         rlAssertNotGrep '(allow|reject)' $rlRun_LOG
 
         rlRun "usbguard allow-device -p block $rule" 0 "Allowing(permanently) every single device in the usbguard list-devices list"
-        rlAssertEquals "$RULES should contain the previously added rule" "1" "`cat $RULES | wc -l`"
+        rlAssertGreaterOrEqual "$RULES should contain the previously added rule" "`cat $RULES | wc -l`" 1
 
         echo -n '' > $RULES
-    rlPhaseEnd
+    rlPhaseEnd; }
+
+    rlPhaseStartTest "{allow, block, reject}-device can handle rule as one parameter" && {
+        rlRun "usbguard list-devices"
+        echo -n '' > $RULES
+        # Get first device rule of the list and remove via-port attribute
+        # because it is not gonna be saved when using -p option
+        # Method 1
+        rule="$(usbguard list-devices | grep -m1 "" | cut -d' ' -f3- | sed 's/[[:space:]]*via-port "[^"]*"//')"; # '
+
+        rlWatchdog "rlRun \"usbguard allow-device 'match \$rule'\" 0 \"Allowing(temporarily) the first device in the usbguard list-devices list\"" 5
+        rlRun -s "usbguard list-devices | grep -m1 ''"
+        rlAssertGrep "allow" $rlRun_LOG
+        rlRun "usbguard list-devices"
+
+        rlWatchdog "rlRun \"usbguard block-device 'allow \$rule'\" 0 \"Blocking(temporarily) the first device in the usbguard list-devices list\"" 5
+        rlRun -s "usbguard list-devices | grep -m1 ''"
+        rlAssertGrep "block" $rlRun_LOG
+
+        rlWatchdog "rlRun \"usbguard allow-device -p 'block \$rule'\" 0 \"Allowing(permanently) the first device in the usbguard list-devices list\"" 5
+        rlRun -s "usbguard list-devices | grep -m1 ''"
+        rlAssertGrep "allow" $rlRun_LOG
+        rlAssertGrep "allow $rule_unformatted" $RULES
+        rlRun "usbguard list-devices"
+
+        echo -n '' > $RULES
+
+        # Method 2
+        rule='id *:*'
+        rlWatchdog "rlRun \"usbguard allow-device 'match \$rule'\" 0 \"Allowing(temporarily) every single device in the usbguard list-devices list\"" 5
+        rlRun -s "usbguard list-devices"
+        rlAssertGrep 'allow' $rlRun_LOG
+        rlAssertNotGrep '(reject|block)' $rlRun_LOG
+
+        rlWatchdog "rlRun \"usbguard block-device 'allow \$rule'\" 0 \"Blocking(temporarily) every single device in the usbguard list-devices list\"" 5
+        rlRun -s "usbguard list-devices"
+        rlAssertGrep 'block' $rlRun_LOG
+        rlAssertNotGrep '(allow|reject)' $rlRun_LOG
+
+        rlWatchdog "rlRun \"usbguard allow-device -p 'block \$rule'\" 0 \"Allowing(permanently) every single device in the usbguard list-devices list\"" 5
+        rlAssertGreaterOrEqual "$RULES should contain the previously added rule" "`cat $RULES | wc -l`" 1
+
+        echo -n '' > $RULES
+    rlPhaseEnd; }
 
     # [P2] AC: daemon config option ‘HidePII’ is recognized
     # [P2] AC: if not set, audit messages does contain s/n and device hash
     # [P2] AC: if false, audit messages does contain s/n and device hash
     # [P2] AC: if true, audit messages does not contain s/n and device hash
-    rlPhaseStartTest "HidePII config option"
+    rlPhaseStartTest "HidePII config option" && {
         echo '' > $AUDIT
         rlRun "sed -r -i 's/^HidePII=.*//' $CONFIG" 0 "Remove HidePII option from $CONFIG, if it's there"
         rlServiceStart usbguard
@@ -269,23 +313,23 @@ rlJournalStart
         rlAssertNotGrep "serial" $AUDIT
         rlAssertNotGrep "hash" $AUDIT
         rlAssertNotGrep "parent-hash" $AUDIT
-    rlPhaseEnd
+    rlPhaseEnd; }
 
     # Added support for portX/connect_type attribute
     #   [P2] AC: rule keyword `with-connect-type` is accepted
     #   [P2] AC: following values are accepted: "hardwired", "hotplug", "not used", "unknown", ""
-    rlPhaseStartTest "New rule attribute: with-connect-type"
+    rlPhaseStartTest "New rule attribute: with-connect-type" && {
         regex='\"[^\"]*\"'
         rlRun -s "usbguard generate-policy | egrep -o \"with-connect-type $regex\" | cut -d' ' -f2-" 0 "Create a list of attributes consisting of only with-connect-type"
         while IFS='' read -r line; do
             regex='^"(hotplug|hardwired|not used|unknown)?"$'
             rlRun "echo $line | egrep $regex" 0 "$line should be match $regex"
         done < $rlRun_LOG
-    rlPhaseEnd
+    rlPhaseEnd; }
 
     # Added temporary option to append-rule
     #   [P2] AC: if `-t` is used the rule is not written to the rules policy file but it is held only in memory so it can be listed
-    rlPhaseStartTest "Append rules temporarily: append-rule -t <rule>"
+    rlPhaseStartTest "Append rules temporarily: append-rule -t <rule>" && {
         rule='allow with-interface { 08:00:00 07:06:00 }'
         rlRun "cp $RULES $TmpFile" 0 "Saving rules to a temporary file for further processing"
         rlRun "rule_id=`usbguard append-rule -t \"$rule\"`" 0 "Create new temporary rule, which is not going to be stored in $RULES"
@@ -294,17 +338,17 @@ rlJournalStart
         rlRun -s "usbguard list-rules"
         rlAssertGrep "$rule" $rlRun_LOG # It means that the new rule is available in memory
         rlRun "usbguard remove-rule $rule_id" 0 "Removing temporary rule from memory"
-    rlPhaseEnd
+    rlPhaseEnd; }
 
     # [P3] AC: daemon’s output ‘Ignoring unknown UEvent action:.*action={,un}bind’ is printed only in debug mode
-    rlPhaseStartTest "Daemon's output is printed only in debug mode"
+    rlPhaseStartTest "Daemon's output is printed only in debug mode" && {
         # TODO
-    rlPhaseEnd
+    rlPhaseEnd; }
 
     # Added devpath option to generate-policy
     # [P3] AC: `usbguard generate-policy -d devices/pci0000:00/0000:00:14.0/usb1`
     #   generates policy only for that specific device, `find /sys/devices | grep 'usb[0-9]\+$'`
-    rlPhaseStartTest "New option for: usbguard generate-policy -d"
+    rlPhaseStartTest "New option for: usbguard generate-policy -d" && {
         device_path=`find /sys/devices | grep 'usb[0-9]\+$' | grep -m1 ""`
         device=`echo $device_path | sed 's/\/sys\///'`
         device_name=`cat $device_path/product`
@@ -312,12 +356,12 @@ rlJournalStart
         rlRun -s "usbguard generate-policy -d $device" 0 "Generating policy for a specific device: $device"
         rlAssertGrep "$device_name" "$rlRun_LOG"
         rlAssertGrep "$device_serial" "$rlRun_LOG"
-    rlPhaseEnd
+    rlPhaseEnd; }
 
     # the D-Bus messages contain also with-connect-type attribute
-    rlPhaseStartTest "D-BUS messages contain with-connect-type rule attribute"
+    rlPhaseStartTest "D-BUS messages contain with-connect-type rule attribute" && {
         # TODO
-    rlPhaseEnd
+    rlPhaseEnd; }
   }
 
     rlPhaseStartCleanup

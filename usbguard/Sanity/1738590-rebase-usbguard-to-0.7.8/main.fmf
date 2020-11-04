@@ -6,6 +6,7 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require:
 - library(selinux-policy/common)
+- library(ControlFlow/ConditionalPhases)
 recommend:
 - usbguard
 - usbguard-tools
@@ -16,6 +17,3 @@ tag:
 - TIPfail
 - TIPfail_Security
 - rhel-8.3.0
-extra-summary: /CoreOS/usbguard/Sanity/1738590-rebase-usbguard-to-0.7.8
-extra-task: /CoreOS/usbguard/Sanity/1738590-rebase-usbguard-to-0.7.8
-extra-nitrate: TC#0607528

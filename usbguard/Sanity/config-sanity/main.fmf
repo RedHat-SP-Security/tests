@@ -3,27 +3,7 @@ description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require:
-- library(distribution/dpcommon)
-- library(distribution/Cleanup)
+- library(ControlFlow/Cleanup)
+- library(ControlFlow/ConditionalPhases)
 recommend:
 - usbguard
-duration: 10m
-enabled: true
-tag:
-- FedoraCI
-- CI-Tier-1
-- NoRHEL4
-- NoRHEL5
-- NoRHEL6
-- SP-TBU
-- TIPfail
-- TIPfail_Security
-- Tier1
-- Tier1security
-tier: '1'
-relevancy: |
-    arch = s390x: False
-    distro < rhel-7.6: False
-extra-summary: /CoreOS/usbguard/Sanity/config-sanity
-extra-task: /CoreOS/usbguard/Sanity/config-sanity
-extra-nitrate: TC#0560519
