@@ -1,0 +1,20 @@
+environment:
+  CONDITIONAL_PHASES_BL: only|both
+duration: 10m
+tag:
+- FedoraCI
+- CI-Tier-1
+- NoRHEL4
+- NoRHEL5
+- NoRHEL6
+- SP-TBU
+- TIPfail
+- TIPfail_Security
+- Tier1
+- Tier1security
+relevancy: |
+    arch = s390x: False
+    distro < rhel-7.6: False
+extra-summary: CONDITIONAL_PHASES_BL='only|both' /CoreOS/usbguard/Sanity/config-sanity
+extra-task: /CoreOS/usbguard/Sanity/config-sanity
+extra-nitrate: TC#0560519

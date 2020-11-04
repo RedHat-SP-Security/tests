@@ -56,6 +56,7 @@ $(METADATA): Makefile
 	@echo "RunFor:          usbguard" >> $(METADATA)
 	@echo "Requires:        usbguard usbguard-tools" >> $(METADATA)
 	@echo "RhtsRequires:    library(selinux-policy/common)" >> $(METADATA)
+	@echo "RhtsRequires:    library(ControlFlow/ConditionalPhases)" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2" >> $(METADATA)
 	@echo "Confidential:    no" >> $(METADATA)
