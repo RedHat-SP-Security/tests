@@ -3,7 +3,6 @@ environment:
     MODES: normal
 tag:
 - Tier2
-- fedora-wanted
 tier: '2'
 extra-summary: ANSIBLE=1 MODES=normal /CoreOS/rsyslog/Multihost/rsyslog-send-messages-to-remote
 extra-nitrate: TC#0167027
