@@ -1,0 +1,29 @@
+summary: Test for BZ#1895467 (fapolicyd breaks system upgrade, leaving system in)
+description: |
+    Bug summary: fapolicyd breaks system upgrade, leaving system in dead state
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1895467
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component: []
+test: ./runtest.sh
+require:
+- library(distribution/Cleanup)
+- lsof
+- fapolicyd
+recommend:
+- library(fapolicyd/common)
+- /usr/bin/python
+- /usr/libexec/platform-python
+- systemd-python3
+- systemd-python
+duration: 5m
+enabled: true
+tag:
+- NoRHEL4
+- NoRHEL5
+- rhel-8.4.0
+- CI-Tier-1
+- FedoraCI
+relevancy: |
+    distro < rhel-8: False
+extra-nitrate: TC#0608926
+extra-summary: /CoreOS/fapolicyd/Regression/bz1895467-fapolicyd-breaks-system-upgrade-leaving-system-in
