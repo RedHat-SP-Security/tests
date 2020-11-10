@@ -104,7 +104,8 @@ rlJournalStart
         fi
     rlPhaseEnd
 
-    if ! rlIsRHEL '<8.4'; then # Tests feature added in RHEL-8.4
+    if [ $(rpm -q --queryformat '%{VERSION}' clevis) -ge 15 ]; then
+        # Tests feature added in clevis-15.1 for RHEL-8.4
         rlPhaseStart FAIL "Valid sss config with wrong tang config"
             rlRun "wget -nv -O adv1.json \"http://localhost:$port1/adv\""
             rlRun "wget -nv -O adv2.json \"http://localhost:$port2/adv\""
