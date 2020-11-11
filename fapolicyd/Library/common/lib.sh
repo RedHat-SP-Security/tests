@@ -25,7 +25,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = fap
-#   library-version = 15
+#   library-version = 18
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 true <<'=cut'
@@ -69,12 +69,32 @@ fapSetup() {
   rlRun "rlServiceStop fapolicyd"
   rlRun "rlFileBackup --namespace fap --clean /etc/fapolicyd/"
   rlRun "rm -f /var/lib/fapolicyd/*"
+  rlRun "rlSEBooleanOn --namespace fap daemons_use_tty"
+  if [[ -z "$(sesearch -A -s init_t -t unconfined_t -c fifo_file -p write)" ]]; then
+    cat > mujfamodul.te <<EOF
+policy_module(mujfamodul,1.0)
+
+require {
+  type unconfined_t;
+  type init_t;
 }
+
+allow init_t unconfined_t : fifo_file { append getattr ioctl lock read write };
+EOF
+    rlRun "make -f /usr/share/selinux/devel/Makefile"
+    rlRun "semodule -i mujfamodul.pp"
+    __INTERNAL_fap_semodule=true
+  fi
+}
+
+__INTERNAL_fap_semodule=false
 
 fapCleanup() {
   fapStop
+  $__INTERNAL_fap_semodule && rlRun "semodule -r mujfamodul"
   rlRun 'rm -rf /var/lib/fapolicyd/*'
   [[ -n "${fapolicyd_out[*]}" ]] && rm -f "${fapolicyd_out[@]}"
+  rlRun "rlSEBooleanRestore --namespace fap"
   rlRun "rlFileRestore --namespace fap"
   rlRun "rlServiceRestore fapolicyd"
 }

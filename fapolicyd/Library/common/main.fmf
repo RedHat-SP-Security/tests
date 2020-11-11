@@ -1,0 +1,4 @@
+summary: fapolicyd test library
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+require:
+- library(selinux-policy/common)

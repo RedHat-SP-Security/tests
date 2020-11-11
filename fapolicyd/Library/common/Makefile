@@ -55,6 +55,7 @@ $(METADATA): Makefile
 	@echo "RunFor:          $(COMPONENT)" >> $(METADATA)
 	@echo "RhtsRequires:    coreutils" >> $(METADATA)
 	@echo "RhtsRequires:    fapolicyd" >> $(METADATA)
+	@echo "RhtsRequires:    library(selinux-policy/common)" >> $(METADATA)
 	@echo "Provides:        library(fapolicyd/common)" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2+" >> $(METADATA)
