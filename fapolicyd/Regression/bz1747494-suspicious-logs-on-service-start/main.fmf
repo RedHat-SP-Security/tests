@@ -3,7 +3,8 @@ description: "Bug summary: suspicious logs on service start \nBugzilla link: htt
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require:
-- library(fapolicyd/common)
+- url: https://github.com/RedHat-SP-Security/tests.git
+  name: /fapolicyd/Library/common
 recommend:
 - fapolicyd
 - sed

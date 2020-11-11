@@ -9,7 +9,8 @@ require:
 - library(distribution/ConditionalPhases)
 - library(distribution/Cleanup)
 - library(distribution/tcf)
-- library(fapolicyd/common)
+- url: https://github.com/RedHat-SP-Security/tests.git
+  name: /fapolicyd/Library/common
 recommend:
 - fapolicyd
 - gcc

@@ -7,7 +7,8 @@ test: ./runtest.sh
 require:
 - library(distribution/dpcommon)
 - library(distribution/testUser)
-- library(fapolicyd/common)
+- url: https://github.com/RedHat-SP-Security/tests.git
+  name: /fapolicyd/Library/common
 recommend:
 - fapolicyd
 - rpmdevtools

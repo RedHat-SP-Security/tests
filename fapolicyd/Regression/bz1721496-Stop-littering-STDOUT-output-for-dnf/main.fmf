@@ -5,7 +5,8 @@ description: |
 contact: None <rsroka@redhat.com>
 test: ./runtest.sh
 require:
-- library(fapolicyd/common)
+- url: https://github.com/RedHat-SP-Security/tests.git
+  name: /fapolicyd/Library/common
 recommend:
 - fapolicyd
 - sed
