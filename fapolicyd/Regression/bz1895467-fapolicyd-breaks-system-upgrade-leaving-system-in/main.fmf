@@ -9,8 +9,9 @@ require:
 - library(distribution/Cleanup)
 - lsof
 - fapolicyd
+- url: https://github.com/RedHat-SP-Security/tests.git
+  name: /fapolicyd/Library/common
 recommend:
-- library(fapolicyd/common)
 - /usr/bin/python
 - /usr/libexec/platform-python
 - systemd-python3
