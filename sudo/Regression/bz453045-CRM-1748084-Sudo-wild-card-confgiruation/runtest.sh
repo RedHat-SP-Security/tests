@@ -27,7 +27,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Include rhts environment
-. /usr/bin/rhts-environment.sh
+. /usr/bin/rhts-environment.sh || :
 . /usr/lib/beakerlib/beakerlib.sh
 
 PACKAGE="sudo"
