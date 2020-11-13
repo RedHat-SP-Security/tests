@@ -177,6 +177,8 @@ rlJournalStart
         done
         return 1
       }
+      rlRun "cat /etc/redhat-release" 0-255
+      rlRun "cat /etc/os-release" 0-255
       if path=$(find_path); then
         ( cd $path; find . -type f | sed 's/^.//' | sort ) > flist
       else
