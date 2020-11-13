@@ -16,7 +16,7 @@ recommend:
 - /usr/libexec/platform-python
 - systemd-python3
 - systemd-python
-duration: 5m
+duration: 15m
 enabled: true
 tag:
 - NoRHEL4

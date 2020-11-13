@@ -80,6 +80,12 @@ EOF
     rlAssertNotGrep 'deny.*python.*:.*test\.py' $fapolicyd_out
   rlPhaseEnd; }
 
+  rlPhaseStartTest "system instalability" && {
+    YUM=`which yum` || YUM=`which dnf`
+    rlRun "mkdir installroot"
+    rlRun "$YUM -y --installroot=$PWD/installroot install fapolicyd"
+  rlPhaseEnd; }
+
   rlPhaseStartCleanup && {
     CleanupDo
   rlPhaseEnd; }

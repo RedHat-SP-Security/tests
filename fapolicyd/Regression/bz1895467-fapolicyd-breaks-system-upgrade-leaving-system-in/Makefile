@@ -52,7 +52,7 @@ $(METADATA): Makefile
 	@echo "Path:            $(TEST_DIR)" >> $(METADATA)
 	@echo "Description:     Test for BZ#1895467 (fapolicyd breaks system upgrade, leaving system in)" >> $(METADATA)
 	@echo "Type:            Regression" >> $(METADATA)
-	@echo "TestTime:        5m" >> $(METADATA)
+	@echo "TestTime:        15m" >> $(METADATA)
 	@echo "RunFor:          fapolicyd" >> $(METADATA)
 	@echo "Requires:        fapolicyd" >> $(METADATA)
 	@echo "Requires:        /usr/bin/python /usr/libexec/platform-python systemd-python3 systemd-python lsof" >> $(METADATA)
