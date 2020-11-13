@@ -35,8 +35,13 @@ PACKAGE="usbguard"
 rlJournalStart
     rlPhaseStartSetup
         rlAssertRpm $PACKAGE
-        since=$(date +"%F %T")
-        rlServiceStart "usbguard" || rlRun "journalctl -u usbguard -l --since '$since' --no-pager"
+        rlRun "cat /etc/usbguard/usbguard-daemon.conf" 0-255
+        rlRun "cat /etc/usbguard/rules.conf" 0-255
+        rlRun "cat /etc/usbguard/rules.d/*" 0-255
+        rlServiceStart "usbguard"
+        rlServiceStop "usbguard"
+        rlRun "sleep 3"
+        rlServiceStart "usbguard"
         rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
         rlRun "pushd $TmpDir"
     rlPhaseEnd
@@ -55,8 +60,7 @@ rlJournalStart
         rlAssertGrep "Active: inactive (dead)" status
         rlRun "ps -C usbguard-daemon -o comm,pid" 1
 
-        since=$(date +"%F %T")
-        rlRun "systemctl restart usbguard" || rlRun "journalctl -u usbguard -l --since '$since' --no-pager"
+        rlRun "systemctl restart usbguard"
         sleep 3
         rlRun "systemctl status usbguard &>status"
         cat status
