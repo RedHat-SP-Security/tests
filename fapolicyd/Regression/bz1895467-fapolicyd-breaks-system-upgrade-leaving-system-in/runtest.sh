@@ -83,7 +83,7 @@ EOF
   rlPhaseStartTest "system instalability" && {
     YUM=`which yum` || YUM=`which dnf`
     rlRun "mkdir installroot"
-    rlRun "$YUM -y --installroot=$PWD/installroot install fapolicyd"
+    rlRun "$YUM -y --setopt=skip_if_unavailable=1 --installroot=$PWD/installroot install fapolicyd"
   rlPhaseEnd; }
 
   rlPhaseStartCleanup && {
