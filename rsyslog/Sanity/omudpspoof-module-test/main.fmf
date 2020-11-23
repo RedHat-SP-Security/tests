@@ -1,0 +1,26 @@
+summary: basic testing of rsyslog omudpspoof module
+description: |+
+    Basic testing of udpspoof ryslog module
+
+contact: Attila Lakatos <alakatos@redhat.com>
+component:
+- rsyslog
+test: ./runtest.sh
+require:
+- url: https://github.com/RedHat-SP-Security/tests.git
+  name: /rsyslog/Library/basic
+- library(distribution/ConditionalPhases)
+- library(distribution/Cleanup)
+- rsyslog
+- rsyslog-udpspoof
+duration: 5m
+enabled: true
+tag:
+- NoRHEL6
+- NoRHEL7
+relevancy: |
+    distro = rhel-6, rhel-7: False
+    distro = rhel-alt-7: False
+extra-nitrate: TC#0608974
+extra-summary: /CoreOS/rsyslog/Sanity/omudpspoof-module-test
+extra-task: /CoreOS/rsyslog/Sanity/omudpspoof-module-test
