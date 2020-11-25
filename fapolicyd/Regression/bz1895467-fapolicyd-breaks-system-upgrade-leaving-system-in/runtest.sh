@@ -41,6 +41,7 @@ PYTHON_SUFFIX=''
 rlJournalStart && {
   rlPhaseStartSetup && {
     rlRun "rlImport --all" 0 "Import libraries" || rlDie "cannot continue"
+    rlRun "rlImport fapolicyd/common" 0 "Import libraries" || rlDie "cannot continue"
     rlRun "rlCheckRequirements $(rlGetMakefileRequires | sed -r 's|\S+/python|$PYTHON|g;s|(systemd-python)\S*|\1${PYTHON_SUFFIX}|g')" || rlDie 'cannot continue'
     rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
     CleanupRegister "rlRun 'rm -r $TmpDir' 0 'Removing tmp directory'"
@@ -83,7 +84,7 @@ EOF
   rlPhaseStartTest "system instalability" && {
     YUM=`which yum` || YUM=`which dnf`
     rlRun "mkdir installroot"
-    rlRun "$YUM -y --setopt=skip_if_unavailable=1 --installroot=$PWD/installroot install fapolicyd"
+    rlRun "$YUM -y --nogpgcheck --setopt=skip_if_unavailable=1 --installroot=$PWD/installroot install fapolicyd"
   rlPhaseEnd; }
 
   rlPhaseStartCleanup && {
