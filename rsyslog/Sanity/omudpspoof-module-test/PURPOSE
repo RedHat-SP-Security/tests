@@ -1,0 +1,6 @@
+PURPOSE of /CoreOS/rsyslog/Sanity/udpspoof-module-test
+Description: basic testing of rsyslog udpspoof module
+Author: Attila Lakatos <alakatos@redhat.com>
+
+Basic testing of udpspoof ryslog module
+
