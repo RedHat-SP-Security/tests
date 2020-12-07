@@ -52,7 +52,7 @@ $(METADATA): Makefile
 	@echo "Path:            $(TEST_DIR)" >> $(METADATA)
 	@echo "Description:     Test for BZ#1683567 ([RFE] SELinux policy (daemons) changes required)" >> $(METADATA)
 	@echo "Type:            Sanity" >> $(METADATA)
-	@echo "TestTime:        5m" >> $(METADATA)
+	@echo "TestTime:        15m" >> $(METADATA)
 	@echo "RunFor:          fapolicyd" >> $(METADATA)
 	@echo "Requires:        fapolicyd fapolicyd-selinux" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/dpcommon)" >> $(METADATA)
