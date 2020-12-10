@@ -21,4 +21,4 @@ adjust:
   enabled: false
   when: distro < rhel-8.1
 extra-summary: /CoreOS/fapolicyd/Sanity/ipa-integration
-extra-nitrate: TC#0605875
+extra-nitrate: TC#0609043
