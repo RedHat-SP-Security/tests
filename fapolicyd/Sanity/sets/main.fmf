@@ -1,16 +1,17 @@
-summary: The evaluator will configure fapolicyd to allow execution of executable based
+summary: test sets feature
+description: |
+    The evaluator will configure fapolicyd to allow execution of executable based
     on path. The evaluator will then attempt to execute two executables. The evaluator
     will ensure that the executable that is allowed to run has been executed and the
     executable that is not allowed to run will be denied.
-description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require:
 - library(distribution/ConditionalPhases)
 - library(distribution/Cleanup)
 - library(distribution/tcf)
-- url: https://github.com/RedHat-SP-Security/tests.git
-  name: /fapolicyd/Library/common
+-   url: https://github.com/RedHat-SP-Security/tests.git
+    name: /fapolicyd/Library/common
 recommend:
 - fapolicyd
 - gcc
@@ -23,8 +24,10 @@ tag:
 - Tier1
 - rhel-8.3.0
 tier: '1'
-relevancy: |
-    distro != rhel-8: False
 extra-summary: /CoreOS/fapolicyd/Sanity/sets
 extra-task: /CoreOS/fapolicyd/Sanity/sets
 extra-nitrate: TC#0607491
+adjust:
+-   enabled: false
+    when: distro ~!= rhel-8
+    continue: false
