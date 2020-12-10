@@ -71,7 +71,7 @@ EOF
     rlRun "cp $PYTHON.mojekopie $PYTHON"
     rlRun "rm -f $PYTHON.mojekopie"
     rlRun "lsof | grep test\.py | grep deleted"
-    rlRun "fapStart"
+    rlRun "fapStart --debug"
     tail -f $fapolicyd_out &
     rlRun "sleep 5"
     kill %+
