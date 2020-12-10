@@ -104,7 +104,10 @@ fapStart() {
   local res fapolicyd_path tail_pid FADEBUG
   res=0
   FADEBUG='--debug-deny'
-  [[ "$1" == "--debug" ]] && FADEBUG='--debug'
+  [[ "$1" == "--debug" ]] && {
+    FADEBUG='--debug'
+    shift
+  }
   fapolicyd_path="$1"
   if [[ -n "$fapolicyd_path" ]]; then
     [[ "$fapolicyd_path" =~ /$ ]] || fapolicyd_path+="/"
