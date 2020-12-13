@@ -16,13 +16,10 @@ enabled: true
 tag:
 - TIPpass_FIPS
 - TIPpass_Security
-- Tier1
-- Tier1security
 - TierCandidatesPASS
 - fedora-wanted
 - rhel-6.2
 - rsyslogSyntaxOLD
-tier: '1'
 extra-summary: /CoreOS/rsyslog/Sanity/ommail-module-test
 extra-task: /CoreOS/rsyslog/Sanity/ommail-module-test
 extra-nitrate: TC#0100206
