@@ -11,7 +11,7 @@ require:
 - fapolicyd
 recommend:
 - ipa-server
-duration: 30m
+duration: 60m
 enabled: true
 tag:
 - CI-Tier-1
