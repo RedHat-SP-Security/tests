@@ -61,7 +61,7 @@ rlJournalStart
     rlPhaseStartCleanup
 	rlFileRestore
 	for _U in ${_U1} ${_U2} ${_U3}; do
-		id ${_U} >/dev/null 2>&1 && rlRun "userdel -r ${_U}" 0 "Deleting testing user: '${_U}'"
+		id ${_U} >/dev/null 2>&1 && rlRun "userdel -fr ${_U}" 0 "Deleting testing user: '${_U}'"
 	done
         rlRun "popd"
         rlRun "rm -r $TmpDir" 0 "Removing tmp directory"
