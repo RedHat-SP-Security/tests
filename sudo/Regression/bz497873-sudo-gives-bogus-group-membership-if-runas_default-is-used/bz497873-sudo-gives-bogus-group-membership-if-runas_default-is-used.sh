@@ -269,7 +269,7 @@ function user_manager {
                 sleep 1  # wait a bit before deleting a user to avoid race condition
 				if [ ! -z "`grep ${2} /etc/passwd`" ]; then
 					#userdel -r ${2} 2>> /dev/null >> /dev/null
-					userdel -r ${2}
+					userdel -fr ${2}
 					if [ $? != 0 ]; then
 						return 1
 					fi
