@@ -23,6 +23,7 @@ tag:
 - Tier1
 - Tier1security
 - rhel8-buildroot
+- rhel9-buildroot
 tier: '1'
 relevancy: |
     distro = rhel-4, rhel-5: False
