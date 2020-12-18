@@ -73,7 +73,7 @@ rlJournalStart
 	rlRun "setsid su - ${_USER_TEST2} -c 'sudo ls /etc/passwd 2>&1' >${_LOG_FILE}" 1 "Running command as ${_USER_TEST2} should fail (requiretty)"
 	rlRun "cat ${_LOG_FILE} | grep '/etc/passwd'" 1 "Checking logfile for command message"
 	rlRun "cat ${_LOG_FILE} | grep 'sudo' | grep 'tty'" 0 "Checking logfile for tty error message"
-	
+
 	rlRun "sed -i '/requiretty/d' ${_SUDOERS_F}" 0 "Cleaning requiretty options"
     rlPhaseEnd
 
@@ -145,8 +145,8 @@ rlJournalStart
     rlPhaseEnd
 
     rlPhaseStartCleanup
-	id ${_USER_TEST} && rlRun "userdel -r ${_USER_TEST}" 0 "Cleaning testuser"
-	id ${_USER_TEST2} && rlRun "userdel -r ${_USER_TEST2}" 0 "Cleaning testuser2"
+	id ${_USER_TEST} && rlRun "userdel -fr ${_USER_TEST}" 0 "Cleaning testuser"
+	id ${_USER_TEST2} && rlRun "userdel -fr ${_USER_TEST2}" 0 "Cleaning testuser2"
 	rlFileRestore
 	rlRun "popd"
 	rlRun "rm -r $TmpDir" 0 "Removing tmp directory"
