@@ -6,7 +6,8 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 path: /rsyslog/Sanity/test-various-configuration-directives
 require:
-- library(rsyslog/basic)
+- url: https://github.com/RedHat-SP-Security/tests.git
+  name: /rsyslog/Library/basic
 - library(distribution/ConditionalPhases)
 - library(distribution/Cleanup)
 recommend:
