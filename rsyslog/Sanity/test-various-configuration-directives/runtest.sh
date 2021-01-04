@@ -127,7 +127,11 @@ EOF
 
   if rsyslogVersion '>=5.8.10'; then   # feature available since 5.8.10
     rlPhaseStartTest "\$PreserveFQDN test, related bz#805424" && {
-
+      fqdn=$(hostname -f)
+      short=$(hostname -s)
+      if [[ "$short" == "$fqdn" ]]; then
+        rlFail "there's no difference between fqdn and shot name on this machine!"
+      else
         rsyslogConfigIsNewSyntax || {
           rsyslogConfigPrepend --begin "MODULES" /etc/rsyslog.conf < <(rsyslogConfigCreateSection FQDN <<EOF
 \$PreserveFQDN on
@@ -143,16 +147,18 @@ global(preserveFQDN="on")
 EOF
         CleanupRegister --mark 'rlRun "rm -f /var/log/rsyslog-PreserveFQDN-test.log"'
         rsyslogServiceStart
-	sleep 3  # wait for rsyslogd to start
-	PID=`pidof rsyslogd`
-	rlRun "logger -p local0.info 'test message from logger command'" 0 "Logging test using logger command"
+        sleep 3  # wait for rsyslogd to start
+        PID=`pidof rsyslogd`
+        rlRun "logger -p local0.info 'test message from logger command'" 0 "Logging test using logger command"
         rsyslogServiceStart
-	sleep 1
-	cat /var/log/rsyslog-PreserveFQDN-test.log
-	rlRun "echo '$HOSTNAME' | grep 'redhat.com'" 0 "Checking that my hostname $HOSTNAME is FQDN"
+        sleep 1
+        cat /var/log/rsyslog-PreserveFQDN-test.log
+        [[ "$HOSTNAME" == "$fqdn" ]]
+        rlAssert0 "Checking that my hostname $HOSTNAME is FQDN" $?
         rlRun "grep -q '$HOSTNAME' /var/log/rsyslog-PreserveFQDN-test.log" 0 "Checking that FQDN is used in log messages"
-	rlIsRHEL 5 || rlRun "grep -v '$HOSTNAME' /var/log/rsyslog-PreserveFQDN-test.log" 1 "Checking that all messages are using the FQDN"  # bz847967 wontfix on RHEL5
-	CleanupDo --mark
+        rlIsRHEL 5 || rlRun "grep -v '$HOSTNAME' /var/log/rsyslog-PreserveFQDN-test.log" 1 "Checking that all messages are using the FQDN"  # bz847967 wontfix on RHEL5
+        CleanupDo --mark
+      fi
     rlPhaseEnd; }
   fi
 
