@@ -250,8 +250,8 @@ EOF
       rlRun "rsyslogServiceStatus"
       rlRun "sleep 3"
       rlRun "logger -p local0.info test"
+      rlRun "sleep 5"
       rlRun "rsyslogServiceStop"
-      rlRun "sleep 2"
       rlRun "cat nc.out"
       rlAssertGrep 'testx' nc.out
       CleanupDo --mark
