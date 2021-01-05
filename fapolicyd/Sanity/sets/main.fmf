@@ -1,17 +1,18 @@
-summary: test sets feature
-description: |
-    The evaluator will configure fapolicyd to allow execution of executable based
+summary: The evaluator will configure fapolicyd to allow execution of executable based
     on path. The evaluator will then attempt to execute two executables. The evaluator
     will ensure that the executable that is allowed to run has been executed and the
     executable that is not allowed to run will be denied.
+description: |
+    Test case has been migrated to git. Any changes made here might be overwritten.
+    See: https://tmt.readthedocs.io/en/latest/questions.html#nitrate-migration
 contact: Dalibor Pospíšil <dapospis@redhat.com>
+component: []
 test: ./runtest.sh
 require:
 - library(distribution/ConditionalPhases)
 - library(distribution/Cleanup)
 - library(distribution/tcf)
--   url: https://github.com/RedHat-SP-Security/tests.git
-    name: /fapolicyd/Library/common
+- library(fapolicyd/common)
 recommend:
 - fapolicyd
 - gcc
@@ -24,10 +25,10 @@ tag:
 - Tier1
 - rhel-8.3.0
 tier: '1'
-extra-summary: /CoreOS/fapolicyd/Sanity/sets
-extra-task: /CoreOS/fapolicyd/Sanity/sets
-extra-nitrate: TC#0607491
 adjust:
 -   enabled: false
-    when: distro ~!= rhel-8
+    when: distro < rhel-8.3
     continue: false
+extra-nitrate: TC#0607491
+extra-summary: /CoreOS/fapolicyd/Sanity/sets
+extra-task: /CoreOS/fapolicyd/Sanity/sets
