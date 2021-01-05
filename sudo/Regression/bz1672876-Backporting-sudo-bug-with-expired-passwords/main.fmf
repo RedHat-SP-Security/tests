@@ -2,7 +2,11 @@ summary: sudo-with-expired-passwords
 description: |
     Bug summary: Backporting  sudo bug with expired passwords
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1672876
+    Test case has been migrated to git. Any changes made here might be overwritten.
+    See: https://tmt.readthedocs.io/en/latest/questions.html#nitrate-migration
 contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- sudo
 test: ./runtest.sh
 require:
 - library(distribution/testUser)
@@ -18,8 +22,10 @@ tag:
 - TIPpass_Security
 - Tier1
 tier: '1'
-relevancy: |
-    distro != rhel-7: False
+adjust:
+-   enabled: false
+    when: distro ~< rhel-7
+    continue: false
+extra-nitrate: TC#0599537
 extra-summary: /CoreOS/sudo/Regression/bz1672876-Backporting-sudo-bug-with-expired-passwords
 extra-task: /CoreOS/sudo/Regression/bz1672876-Backporting-sudo-bug-with-expired-passwords
-extra-nitrate: TC#0599537
