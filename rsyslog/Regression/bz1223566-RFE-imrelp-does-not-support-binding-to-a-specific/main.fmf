@@ -5,10 +5,9 @@ description: |
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 path: /rsyslog/Regression/bz1223566-RFE-imrelp-does-not-support-binding-to-a-specific
-require:
-- library(rsyslog/basic)
+require+:
 - library(selinux-policy/common)
-- library(distribution/Cleanup)
+- library(ControlFlow/Cleanup)
 recommend:
 - rsyslog
 - rsyslog-relp

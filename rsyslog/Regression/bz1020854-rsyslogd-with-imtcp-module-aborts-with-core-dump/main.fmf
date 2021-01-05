@@ -5,6 +5,8 @@ description: |
 
     Since syslog.socket is currently useless this test just checks whether syslog.socket doesn't
     trigger rsyslog.service execution.
+    Test case has been migrated to git. Any changes made here might be overwritten.
+    See: https://tmt.readthedocs.io/en/latest/questions.html#nitrate-migration
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - rsyslog7
@@ -25,8 +27,10 @@ tag:
 - Tier1security
 - rsyslogSyntaxOLD
 tier: '1'
-relevancy: |
-    distro != rhel-7: False
+adjust:
+-   enabled: false
+    when: distro ~< rhel-7
+    continue: false
+extra-nitrate: TC#0338303
 extra-summary: /CoreOS/rsyslog/Regression/bz1020854-rsyslogd-with-imtcp-module-aborts-with-core-dump
 extra-task: /CoreOS/rsyslog/Regression/bz1020854-rsyslogd-with-imtcp-module-aborts-with-core-dump
-extra-nitrate: TC#0338303

@@ -22,7 +22,13 @@ description: |
     Displays the list of commands I am allowed to execute.
 
     This bug was originally filed against Fedora 9 (#466292) but it should be fixed in RHEL also. A patch for this already exists and is pretty simple (it is attached in the bugreport mentioned above). The patch was also accepted by upstream and the next stable release (1.6.9p18) of sudo won't contain this bug anymore.
+    Test case has been migrated to git. Any changes made here might be overwritten.
+    See: https://tmt.readthedocs.io/en/latest/questions.html#nitrate-migration
+    Relevancy:
+    distro > rhel-7: False
 contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- sudo
 test: ./runtest.sh
 recommend:
 - sudo
@@ -31,11 +37,10 @@ duration: 10m
 enabled: true
 tag:
 - CI-Tier-1
-- SP-TBU
 - TIPpass_Security
 - Tier1
 - Tier1security
 tier: '1'
+extra-nitrate: TC#0062384
 extra-summary: /CoreOS/sudo/Regression/bz469653-sudo-l-segfaults-when-executed-in-ElectricFence
 extra-task: /CoreOS/sudo/Regression/bz469653-sudo-l-segfaults-when-executed-in-ElectricFence
-extra-nitrate: TC#0062384
