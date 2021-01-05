@@ -1,0 +1,5 @@
+PURPOSE of /CoreOS/rsyslog/Regression/bz1872546-rsyslog-duplicates-the-same-logs
+Description: Test for BZ#1872546 (rsyslog duplicates the same logs)
+Author: Dalibor Pospisil <dapospis@redhat.com>
+Bug summary: rsyslog duplicates the same logs
+Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1872546

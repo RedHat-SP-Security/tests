@@ -1,0 +1,25 @@
+summary: Test for BZ#1872546 (rsyslog duplicates the same logs)
+description: |
+    Bug summary: rsyslog duplicates the same logs
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1872546
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog
+test: ./runtest.sh
+require:
+- library(distribution/dpcommon)
+- library(rsyslog/basic)
+recommend:
+- rsyslog
+duration: 5m
+enabled: true
+tag:
+- NoRHEL4
+- NoRHEL5
+extra-summary: /CoreOS/rsyslog/Regression/bz1872546-rsyslog-duplicates-the-same-logs
+extra-task: /CoreOS/rsyslog/Regression/bz1872546-rsyslog-duplicates-the-same-logs
+extra-nitrate: TC#0608326
+adjust:
+-   enabled: false
+    when: distro < rhel-8
+    continue: false
