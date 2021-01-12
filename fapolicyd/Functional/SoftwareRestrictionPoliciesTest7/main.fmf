@@ -1,0 +1,22 @@
+summary: The evaluator will configure the OS to allow execution based on the hash
+    of the application executable. The evaluator will then attempt to execute the
+    application with the matching hash. The evaluator will ensure that the code they
+    attempted to execute has been executed.
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component: []
+test: ./runtest.sh
+require:
+- library(fapolicyd/common)
+recommend:
+- fapolicyd
+duration: 15m
+enabled: true
+tag:
+- fedora-wanted
+- rhel-8.1
+relevancy: |
+    distro != rhel-8: False
+extra-summary: /CoreOS/fapolicyd/Functional/SoftwareRestrictionPoliciesTest7
+extra-task: /CoreOS/fapolicyd/Functional/SoftwareRestrictionPoliciesTest7
+extra-nitrate: TC#0602861

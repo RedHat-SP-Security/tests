@@ -1,0 +1,25 @@
+summary: What the test does
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component: []
+test: ./runtest.sh
+require:
+- library(fapolicyd/common)
+recommend:
+- fapolicyd
+- gcc
+- sudo
+- /usr/bin/su
+duration: 25m
+enabled: true
+tag:
+- NoRHEL4
+- NoRHEL5
+- TIPfail
+- fedora-wanted
+- rhel-8.1
+relevancy: |
+    distro = rhel-4, rhel-5: False
+extra-summary: /CoreOS/fapolicyd/Functional/SoftwareRestrictionPoliciesTest12
+extra-task: /CoreOS/fapolicyd/Functional/SoftwareRestrictionPoliciesTest12
+extra-nitrate: TC#0602860
