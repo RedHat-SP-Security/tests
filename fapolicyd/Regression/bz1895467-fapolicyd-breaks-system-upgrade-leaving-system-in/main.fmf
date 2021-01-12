@@ -5,12 +5,10 @@ description: |
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 component: []
 test: ./runtest.sh
-require:
+require+:
 - library(distribution/Cleanup)
 - lsof
 - fapolicyd
-- url: https://github.com/RedHat-SP-Security/tests.git
-  name: /fapolicyd/Library/common
 recommend:
 - /usr/bin/python
 - /usr/libexec/platform-python

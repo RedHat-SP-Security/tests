@@ -3,10 +3,7 @@ description: "Bug summary: fapolicyd fails to identify perl interpreter \nBugzil
     \ link: https://bugzilla.redhat.com/show_bug.cgi?id=1765039\n"
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
-require:
-- url: https://github.com/RedHat-SP-Security/tests.git
-  name: /fapolicyd/Library/common
-recommend:
+require+:
 - fapolicyd
 - sed
 - dnf

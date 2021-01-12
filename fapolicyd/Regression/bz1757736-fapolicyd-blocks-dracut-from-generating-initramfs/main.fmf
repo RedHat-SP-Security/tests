@@ -3,10 +3,7 @@ description: "Bug summary: fapolicyd blocks dracut from generating initramfs \nB
     \ link: https://bugzilla.redhat.com/show_bug.cgi?id=1757736\n"
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
-require:
-- url: https://github.com/RedHat-SP-Security/tests.git
-  name: /fapolicyd/Library/common
-recommend:
+require+:
 - fapolicyd
 - dracut
 - sed

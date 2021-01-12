@@ -6,9 +6,7 @@ description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 component: []
 test: ./runtest.sh
-require:
-- library(fapolicyd/common)
-recommend:
+require+:
 - fapolicyd
 duration: 15m
 enabled: true

@@ -8,11 +8,10 @@ description: |
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 component: []
 test: ./runtest.sh
-require:
+require+:
 - library(distribution/ConditionalPhases)
 - library(distribution/Cleanup)
 - library(distribution/tcf)
-- library(fapolicyd/common)
 recommend:
 - fapolicyd
 - gcc
