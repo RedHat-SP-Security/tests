@@ -1,0 +1,13 @@
+summary: Test for GIT selector
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 5m
+tag:
+- Tier2
+- rhel-8.4.0
+tier: '2'
+adjust:
+-   enabled: false
+    when: distro < rhel-8.4
+    continue: false
+extra-nitrate: TC#0609337
