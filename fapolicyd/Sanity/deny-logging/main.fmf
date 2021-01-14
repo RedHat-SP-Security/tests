@@ -1,0 +1,17 @@
+summary: Test for deny_syslog messages
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 5m
+enabled: true
+tag:
+- Tier2
+- rhel-8.1.0
+tier: '2'
+adjust:
+-   enabled: false
+    when: distro ~< rhel-8
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-8.2
+    continue: false
+extra-nitrate: TC#0609334
