@@ -8,6 +8,8 @@ tag:
 tier: '2'
 require+:
 - audit
+- library(distribution/dpcommon)
+- library(distribution/testUser)
 adjust:
 -   enabled: false
     when: distro < rhel-8.3
