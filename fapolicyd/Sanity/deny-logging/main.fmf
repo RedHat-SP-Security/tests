@@ -4,12 +4,12 @@ test: ./runtest.sh
 duration: 5m
 tag:
 - Tier2
-- rhel-8.1.0
+- rhel-8.3.0
 tier: '2'
 require+:
 - audit
 adjust:
 -   enabled: false
-    when: distro < rhel-8.1
+    when: distro < rhel-8.3
     continue: false
 extra-nitrate: TC#0609334
