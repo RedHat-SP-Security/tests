@@ -1,10 +1,14 @@
 summary: Test for GIT selector
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
+require+:
+- library(distribution/dpcommon)
+- library(distribution/testUser)
 duration: 5m
 tag:
 - Tier2
 - rhel-8.4.0
+- CI-Tier-1
 tier: '2'
 adjust:
 -   enabled: false

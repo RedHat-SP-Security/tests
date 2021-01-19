@@ -40,7 +40,7 @@ rlJournalStart && {
     CleanupRegister 'rlRun "popd"'
     rlRun "pushd $TmpDir"
     CleanupRegister 'rlRun "testUserCleanup"'
-    rlRun "testUserSetup"
+    rlRun "testUserSetup 2"
     test_dir=$(mktemp -d)
     CleanupRegister "rlRun 'rm -rf $test_dir'"
     rlRun "cp $(readlink -m /bin/ls) $test_dir/"
@@ -54,28 +54,50 @@ rlJournalStart && {
   tcfTry "Tests" --no-assert && {
     rlPhaseStartTest "deny GID=0" && {
       rules="$(cat /etc/fapolicyd/fapolicyd.rules)"
+      CleanupRegister --mark "echo '$rules' > /etc/fapolicyd/fapolicyd.rules" 2> /dev/null
       echo "deny_audit perm=any gid=0 : dir=$test_dir" > /etc/fapolicyd/fapolicyd.rules
       echo "allow perm=any all : dir=$test_dir" >> /etc/fapolicyd/fapolicyd.rules
       echo "$rules" >> /etc/fapolicyd/fapolicyd.rules
       rlRun "cat /etc/fapolicyd/fapolicyd.rules"
-      CleanupRegister --mark 'rlRun "fapStop"'
+      CleanupRegister 'rlRun "fapStop"'
       rlRun "fapStart"
       rlRun "$test_dir/ls" 126
+      rlRun "su - $testUser -c 'id'"
       rlRun "su - $testUser -c '$test_dir/ls'"
       CleanupDo --mark
       rlRun "cat $fapolicyd_out"
     rlPhaseEnd; }
 
 
-    rlPhaseStartTest "deny GID=$testUserGID" && {
+    rlPhaseStartTest "deny primary GID=$testUserGID" && {
       rules="$(cat /etc/fapolicyd/fapolicyd.rules)"
+      CleanupRegister --mark "echo '$rules' > /etc/fapolicyd/fapolicyd.rules" 2> /dev/null
       echo "deny_audit perm=any gid=$testUserGID : dir=$test_dir" > /etc/fapolicyd/fapolicyd.rules
       echo "allow perm=any all : dir=$test_dir" >> /etc/fapolicyd/fapolicyd.rules
       echo "$rules" >> /etc/fapolicyd/fapolicyd.rules
       rlRun "cat /etc/fapolicyd/fapolicyd.rules"
-      CleanupRegister --mark 'rlRun "fapStop"'
+      CleanupRegister 'rlRun "fapStop"'
       rlRun "fapStart"
       rlRun "$test_dir/ls" 0
+      rlRun "su - $testUser -c 'id'"
+      rlRun "su - $testUser -c '$test_dir/ls'" 126
+      CleanupDo --mark
+      rlRun "cat $fapolicyd_out"
+    rlPhaseEnd; }
+
+
+    rlPhaseStartTest "deny supplementary GID=${testUserGID[1]}" && {
+      rlRun "usermod -a -G ${testUserGroup[1]} $testUser"
+      rules="$(cat /etc/fapolicyd/fapolicyd.rules)"
+      CleanupRegister --mark "echo '$rules' > /etc/fapolicyd/fapolicyd.rules" 2> /dev/null
+      echo "deny_audit perm=any gid=${testUserGID[1]} : dir=$test_dir" > /etc/fapolicyd/fapolicyd.rules
+      echo "allow perm=any all : dir=$test_dir" >> /etc/fapolicyd/fapolicyd.rules
+      echo "$rules" >> /etc/fapolicyd/fapolicyd.rules
+      rlRun "cat /etc/fapolicyd/fapolicyd.rules"
+      CleanupRegister 'rlRun "fapStop"'
+      rlRun "fapStart"
+      rlRun "$test_dir/ls" 0
+      rlRun "su - $testUser -c 'id'"
       rlRun "su - $testUser -c '$test_dir/ls'" 126
       CleanupDo --mark
       rlRun "cat $fapolicyd_out"
