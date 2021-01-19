@@ -1,4 +1,4 @@
-summary: Test for GIT selector
+summary: Test for GID selector
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
