@@ -38,21 +38,21 @@ rlJournalStart
         rlRun "rlImport --all" || rlDie 'cannot continue'
         rlRun "rlCheckMakefileRequires"
         rlRun "rsyslogSetup"
-        rlRun "mkdir /var/log/rsyslog_test" 0 "Create directory for test messages"
+        rlRun "mkdir -p /var/log/rsyslog_test" 0 "Create directory for test messages"
     rlPhaseEnd
 
     # test of facilities and priorities
 
     rlPhaseStartTest "Facility and level test"
-        rsyslogPrepareConf
+        rlRun "rsyslogPrepareConf"
         rlRun "cat /etc/rsyslog.conf"
-        for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do 
+        for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
             for L in debug info notice warning err crit alert emerg; do
-                echo "$F.$L  /var/log/rsyslog_test/${F}_${L}.log"
+                echo "$F.=$L  /var/log/rsyslog_test/${F}_${L}.log"
             done
         done | rsyslogConfigReplace "RULES" /etc/rsyslog.conf
-        rlRun "cat /etc/rsyslog.conf"
-        rsyslogServiceStart
+        rlRun "rsyslogPrintEffectiveConfig"
+        rlRun "rsyslogServiceStart"
         sleep 5
         for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
             for L in debug info notice warning err crit alert emerg; do
@@ -60,13 +60,21 @@ rlJournalStart
             done
             sleep 1
         done
-        rsyslogServiceStop
+        rlRun "rsyslogServiceStop"
         sleep 5
         # now checking the logs
         for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
             for L in debug info notice warning err crit alert emerg; do
-                FILE="/var/log/rsyslog_test/${F}_${L}.log"
-                rlAssertGrep "Test of message to facility $F with level $L" "$FILE"
+                for F2 in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
+                    for L2 in debug info notice warning err crit alert emerg; do
+                        FILE="/var/log/rsyslog_test/${F2}_${L2}.log"
+                        if [[ "$L" == "$L2" && "$F2" == "$F" ]]; then
+                            rlAssertGrep "Test of message to facility $F with level $L" "$FILE"
+                        else
+                            rlAssertNotGrep "Test of message to facility $F with level $L" "$FILE"
+                        fi
+                    done
+                done
             done
         done
         rlRun "rm -f /var/log/rsyslog_test/*"
@@ -76,11 +84,12 @@ rlJournalStart
     # test of facility star operator
 
     rlPhaseStartTest "Facility star operator test"
-        rsyslogPrepareConf
+        rlRun "rsyslogPrepareConf"
         for L in debug info notice warning err crit alert emerg; do
-            echo "*.$L  /var/log/rsyslog_test/star_${L}.log"
+            echo "*.=$L  /var/log/rsyslog_test/star_${L}.log"
         done | rsyslogConfigReplace "RULES" /etc/rsyslog.conf
-        rsyslogServiceStart
+        rlRun "rsyslogPrintEffectiveConfig"
+        rlRun "rsyslogServiceStart"
         sleep 5
         for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
             for L in debug info notice warning err crit alert emerg; do
@@ -88,13 +97,19 @@ rlJournalStart
             done
             sleep 1
         done
-        rsyslogServiceStop
+        rlRun "rsyslogServiceStop"
         sleep 5
         # now checking the logs
         for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
             for L in debug info notice warning err crit alert emerg; do
-                FILE="/var/log/rsyslog_test/star_${L}.log"
-                rlAssertGrep "Test of message to facility $F with level $L" "$FILE"
+                for L2 in debug info notice warning err crit alert emerg; do
+                    FILE="/var/log/rsyslog_test/star_${L2}.log"
+                    if [[ "$L2" == "$L" ]]; then
+                        rlAssertGrep "Test of message to facility $F with level $L" "$FILE"
+                    else
+                        rlAssertNotGrep "Test of message to facility $F with level $L" "$FILE"
+                    fi
+                done
             done
         done
         rlRun "rm -f /var/log/rsyslog_test/*"
@@ -103,11 +118,12 @@ rlJournalStart
     # test of level star operator
 
     rlPhaseStartTest "Level star operator test"
-        rsyslogPrepareConf
-        for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do        
+        rlRun "rsyslogPrepareConf"
+        for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
             echo "$F.*  /var/log/rsyslog_test/${F}_star.log"
         done | rsyslogConfigReplace "RULES" /etc/rsyslog.conf
-        rsyslogServiceStart
+        rlRun "rsyslogPrintEffectiveConfig"
+        rlRun "rsyslogServiceStart"
         sleep 5
         for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
             for L in debug info notice warning err crit alert emerg; do
@@ -115,13 +131,18 @@ rlJournalStart
             done
             sleep 1
         done
-        rsyslogServiceStop
+        rlRun "rsyslogServiceStop"
         sleep 5
         # now checking the logs
-        for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
-            for L in debug info notice warning err crit alert emerg; do
-                FILE="/var/log/rsyslog_test/${F}_star.log"
-                rlAssertGrep "Test of message to facility $F with level $L" "$FILE"
+        for L in debug info notice warning err crit alert emerg; do
+            for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
+                for F2 in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
+                    FILE="/var/log/rsyslog_test/${F2}_star.log"
+                    if [[ "$F2" == "$F" ]]; then
+                        rlAssertGrep "Test of message to facility $F with level $L" "$FILE"
+                    else
+                        rlAssertNotGrep "Test of message to facility $F with level $L" "$FILE"
+                    fi
             done
         done
         rlRun "rm -f /var/log/rsyslog_test/*"
@@ -130,7 +151,7 @@ rlJournalStart
     rlPhaseStartCleanup
         rlRun "rm -rf /var/log/rsyslog_test" 0 "Deleting directory with test messages"
         rlRun "rsyslogCleanup"
-        rsyslogServiceRestore
+        rlRun "rsyslogServiceRestore"
     rlPhaseEnd
 
 rlJournalPrintText
