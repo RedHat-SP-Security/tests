@@ -40,73 +40,7 @@ rlJournalStart
     CleanupRegister 'rlRun "popd"'
     rlRun "pushd $TmpDir"
     CleanupRegister 'rlRun "rm -rf /root/rpmbuild"'
-    rlRun "rm -rf /root/rpmbuild"
-    cat > myprogram.c << 'EOF'
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-int main()
-{
-  int num;
-
-  for ( int i=0; i<180; i++ ) {
-    FILE *fptr;
-
-    fptr = fopen("/etc/resolv.conf","r");
-
-    if(fptr == NULL)
-    {
-       printf("Error!");
-       exit(1);
-    }
-
-    fclose(fptr);
-    printf("myprogram\n");
-    sleep(10);
-  }
-  return 0;
-}
-EOF
-
-    cat > mypkg.spec << EOS
-Name:       mypkg
-Version:    1
-Release:    1
-Summary:    Most simple RPM package
-License:    FIXME
-
-#Source0: myprogram.c
-
-%description
-This is RPM package, containing just a testing script.
-
-%prep
-# let's skip this for now
-
-%build
-gcc -o myprogram ../SOURCES/myprogram.c
-
-%install
-mkdir -p %{buildroot}/usr/local/bin/
-install -m 755 myprogram %{buildroot}/usr/local/bin/myprogram
-
-%files
-/usr/local/bin/myprogram
-
-%changelog
-# let's skip this for now
-EOS
-
-    rlRun "rpmdev-setuptree"
-    rlRun "cp myprogram.c ~/rpmbuild/SOURCES/"
-    rlRun "rpmbuild -ba mypkg.spec"
-    rlRun "sed -i -r 's/(Version:).*/\1 2/' mypkg.spec"
-    rlRun "sed -i -r 's/myprogram/\02/' myprogram.c"
-    rlRun "rpmbuild -ba mypkg.spec"
-    rlRun -s "find /root/rpmbuild/RPMS"
-    rpm1=$(cat $rlRun_LOG | grep mypkg-1)
-    rpm2=$(cat $rlRun_LOG | grep mypkg-2)
+    fapPrepareTestPackages
     CleanupRegister 'rlRun "fapCleanup"'
     rlRun "fapSetup"
     CleanupRegister 'rlRun "fapStop"'
@@ -117,38 +51,38 @@ EOS
   for comm in dnf yum; do
     which $comm > /dev/null 2>&1 && rlPhaseStartTest "$comm" && {
       rlRun "fapStop"
-      rlRun "fapolicyd-cli -D | grep /usr/local/bin/myprogram" 1-255
+      rlRun "fapolicyd-cli -D | grep $fapTestProgram" 1-255
       rlRun "fapStart"
-      rlRun "$comm install -y $rpm1"
+      rlRun "$comm install -y ${fapTestPackage[0]}"
       rlRun "fapStop"
-      rlRun "fapolicyd-cli -D | grep /usr/local/bin/myprogram"
+      rlRun "fapolicyd-cli -D | grep $fapTestProgram"
       rlRun "fapStart"
-      rlRun "$comm install -y $rpm2"
+      rlRun "$comm install -y ${fapTestPackage[1]}"
       rlRun "fapStop"
-      rlRun "fapolicyd-cli -D | grep /usr/local/bin/myprogram"
+      rlRun "fapolicyd-cli -D | grep $fapTestProgram"
       rlRun "fapStart"
-      rlRun "$comm remove -y mypkg"
+      rlRun "$comm remove -y fapTestPackage"
       rlRun "fapStop"
-      rlRun "fapolicyd-cli -D | grep /usr/local/bin/myprogram" 1-255
+      rlRun "fapolicyd-cli -D | grep $fapTestProgram" 1-255
       rlRun "fapStart"
     rlPhaseEnd; }
   done
 
   rlPhaseStartTest "rpm" && {
     rlRun "fapStop"
-    rlRun "fapolicyd-cli -D | grep /usr/local/bin/myprogram" 1-255
+    rlRun "fapolicyd-cli -D | grep $fapTestProgram" 1-255
     rlRun "fapStart"
-    rlRun "rpm -ivh $rpm1"
+    rlRun "rpm -ivh ${fapTestPackage[0]}"
     rlRun "fapStop"
-    rlRun "fapolicyd-cli -D | grep /usr/local/bin/myprogram"
+    rlRun "fapolicyd-cli -D | grep $fapTestProgram"
     rlRun "fapStart"
-    rlRun "rpm -Uvh $rpm2"
+    rlRun "rpm -Uvh ${fapTestPackage[1]}"
     rlRun "fapStop"
-    rlRun "fapolicyd-cli -D | grep /usr/local/bin/myprogram"
+    rlRun "fapolicyd-cli -D | grep $fapTestProgram"
     rlRun "fapStart"
-    rlRun "rpm -evh mypkg"
+    rlRun "rpm -evh fapTestPackage"
     rlRun "fapStop"
-    rlRun "fapolicyd-cli -D | grep /usr/local/bin/myprogram" 1-255
+    rlRun "fapolicyd-cli -D | grep $fapTestProgram" 1-255
     rlRun "fapStart"
   rlPhaseEnd; }
 
