@@ -246,7 +246,7 @@ EOS
   rlRun "sed -i -r 's/(Version:).*/\1 2/' fapTestPackage.spec"
   rlRun "sed -i -r 's/fapTestProgram/\02/' fapTestProgram.c"
   rlRun "rpmbuild -ba ~/rpmbuild/SPECS/fapTestPackage.spec"
-  rlRun "mv ~/rpmbuild/RPMS/fapTestPackage-* ./"
+  rlRun "mv ~/rpmbuild/RPMS/*/fapTestPackage-* ./"
   rlRun "rm -rf ~/rpmbuild"
   fapTestPackage=( $(find $PWD | grep 'fapTestPackage-') )
   fapTestProgram=/usr/local/bin/fapTestProgram
