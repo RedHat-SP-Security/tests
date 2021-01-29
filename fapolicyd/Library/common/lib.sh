@@ -184,6 +184,74 @@ fapServiceRestore() {
   return $?
 }
 
+fapPrepareTestPackages() {
+  rlRun "rm -rf ~/rpmbuild"
+  rlRun "rpmdev-setuptree"
+  cat > ~/rpmbuild/SOURCES/fapTestProgram.c << 'EOF'
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main()
+{
+  int num;
+
+  for ( int i=0; i<180; i++ ) {
+    FILE *fptr;
+
+    fptr = fopen("/etc/resolv.conf","r");
+
+    if(fptr == NULL)
+    {
+       printf("Error!");
+       exit(1);
+    }
+
+    fclose(fptr);
+    printf("fapTestProgram\n");
+    sleep(10);
+  }
+  return 0;
+}
+EOF
+
+  cat > ~/rpmbuild/SPECS/fapTestPackage.spec << EOS
+Name:       fapTestPackage
+Version:    1
+Release:    1
+Summary:    Most simple RPM package
+License:    FIXME
+
+%description
+This is RPM package, containing just a testing script.
+
+%prep
+# let's skip this for now
+
+%build
+gcc -o fapTestProgram ../SOURCES/fapTestProgram.c
+
+%install
+mkdir -p %{buildroot}/usr/local/bin/
+install -m 755 fapTestProgram %{buildroot}/usr/local/bin/fapTestProgram
+
+%files
+/usr/local/bin/fapTestProgram
+
+%changelog
+# let's skip this for now
+EOS
+
+  rlRun "rpmbuild -ba fapTestPackage.spec"
+  rlRun "sed -i -r 's/(Version:).*/\1 2/' fapTestPackage.spec"
+  rlRun "sed -i -r 's/fapTestProgram/\02/' fapTestProgram.c"
+  rlRun "rpmbuild -ba ~/rpmbuild/SPECS/fapTestPackage.spec"
+  rlRun "mv ~/rpmbuild/RPMS/fapTestPackage-* ./"
+  rlRun "rm -rf ~/rpmbuild"
+  fapTestPackage=( $(find $PWD | grep 'fapTestPackage-') )
+  fapTestProgram=/usr/local/bin/fapTestProgram
+}
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   Verification
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
