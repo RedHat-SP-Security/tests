@@ -1,0 +1,26 @@
+summary: Test for BZ#1887451 (Rebase FAPOLICYD to the latest upstream version)
+description: |
+    Bug summary: Rebase FAPOLICYD to the latest upstream version
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1887451
+contact:
+- Dalibor Pospisil <dapospis@redhat.com>
+component:
+- fapolicyd
+test: ./runtest.sh
+require+:
+- fapolicyd
+- library(ControlFlow/Cleanup)
+- library(distribution/testUser)
+- gcc
+- rpm-build
+tag:
+- Tier2
+- CI-Tier-1
+tier: '2'
+duration: 5m
+extra-summary: /fapolicyd/Sanity/integrity
+extra-task: /fapolicyd/Sanity/integrity
+extra-nitrate: TC#0609439
+adjust:
+  - enabled: false
+    when: distro < rhel-8.4
