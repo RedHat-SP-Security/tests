@@ -1,0 +1,20 @@
+summary: test RELP with TLS confiruged using the logging system role
+duration: 20m
+tag:
+- NoRHEL4
+- NoRHEL5
+- Tier2
+require+:
+- library(distribution/epel)
+recommend:
+- ansible
+- rhel-system-roles
+environment:
+    ANSIBLE: '1'
+extra-summary: ANSIBLE=1 /rsyslog/Multihost/relp
+extra-task: .
+adjust:
+-   enabled: false
+    when: distro < rhel-8.4
+    continue: false
+extra-nitrate: TC#0609487

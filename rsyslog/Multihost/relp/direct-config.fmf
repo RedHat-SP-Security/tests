@@ -1,0 +1,13 @@
+summary: test RELP with TLS
+duration: 20m
+tag:
+- NoRHEL4
+- NoRHEL5
+- Tier2
+extra-summary: /rsyslog/Multihost/relp
+extra-task: .
+adjust:
+-   enabled: false
+    when: distro < rhel-6
+    continue: false
+extra-nitrate: TC#0609486

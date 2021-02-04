@@ -1,0 +1,19 @@
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+- library(distribution/sync)
+- library(ControlFlow/Cleanup)
+- library(rpm/snapshot)
+- rsyslog
+- rsyslog-relp
+- gnutls
+- gnutls-utils
+- rsyslog-gnutls
+- bind-utils
+- nc
+- lsof
+recommend:
+- rng-utils
+- rng-tools
+- wireshark
+- psmisc
