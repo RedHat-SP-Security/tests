@@ -13,7 +13,7 @@ recommend:
 - gnutls
 - gnutls-utils
 - rsyslog-gnutls
-duration: 25m
+duration: 45m
 enabled: true
 tag:
 - CI-Tier-1

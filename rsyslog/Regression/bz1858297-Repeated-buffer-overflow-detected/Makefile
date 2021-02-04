@@ -52,7 +52,7 @@ $(METADATA): Makefile
 	@echo "Path:            $(TEST_DIR)" >> $(METADATA)
 	@echo "Description:     Test for BZ#1858297 (Repeated \"buffer overflow detected\" [rhel-7.9.z])" >> $(METADATA)
 	@echo "Type:            Regression" >> $(METADATA)
-	@echo "TestTime:        25m" >> $(METADATA)
+	@echo "TestTime:        45m" >> $(METADATA)
 	@echo "RunFor:          rsyslog" >> $(METADATA)
 	@echo "Requires:        rsyslog /usr/bin/nc gnutls gnutls-utils rsyslog-gnutls" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/dpcommon)" >> $(METADATA)
