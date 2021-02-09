@@ -121,9 +121,8 @@ rlJournalStart
             expect {
                 {*Do you wish to trust these keys} {send y\\r; exp_continue}
                 {*Do you wish to initialize} {send y\\r; exp_continue}
-                {*Enter existing LUKS password} {send redhat123\\r}
+                {*Enter existing LUKS password} {send redhat123\\r; exp_continue}
             }
-            expect eof
             exit [lindex [wait] 3]
 CLEVIS_END
         rlAssert0 "expect spawning clevis" $?
