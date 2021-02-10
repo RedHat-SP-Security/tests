@@ -157,8 +157,8 @@ rlJournalStart
     '
     rlRun "rlFileBackup --clean /var/spool/rsyslog" 0-255
     rlRun "rm -rf /var/spool/rsyslog"
-    CleanupRegister 'rlRun "rm -r $TmpDir" 0 "Removing tmp directory"'
     rlRun "TmpDir=\`mktemp -d\`" 0 "Creating tmp directory"
+    CleanupRegister "rlRun 'rm -r $TmpDir' 0 'Removing tmp directory'"
     CleanupRegister 'rlRun "popd"'
     rlRun "pushd $TmpDir"
     MODES="${MODES:-"normal debug nonforked_normal nonforked_debug"}"
