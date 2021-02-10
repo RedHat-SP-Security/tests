@@ -49,13 +49,13 @@ rlJournalStart
 	rlRun "systemctl status syslog.socket" 3 "syslog.socket should be stopped"
     rlPhaseEnd
 
-    rlPhaseStartTest 
-        rlRun "systemctl start syslog.socket" 1 "Start syslog.socket should fail"  #since it is currently useless in RHEL-7
-        rlRun "systemctl status syslog.socket" 3 "syslog.socket should be stopped"
+    rlPhaseStartTest
+        rlRun "systemctl start syslog.socket" 0-255 "Start syslog.socket should fail"  #since it is currently useless in RHEL-7
+        rlRun "systemctl status syslog.socket" 0-255 "syslog.socket should be stopped"
         rlRun "systemctl status rsyslog.service" 3 "rsyslog.service should be stopped"
         rlRun "systemctl start rsyslog.service" 0 "Starting rsyslog.service"
         rlRun "systemctl status rsyslog.service" 0 "rsyslog.service should be running"
-        rlRun "systemctl status syslog.socket" 3 "syslog.socket should be stopped"
+        rlRun "systemctl status syslog.socket" 0-255 "syslog.socket should be stopped"
         rlRun "systemctl stop rsyslog.service" 0 "Stopping rsyslog.service"
         rlRun "systemctl status rsyslog.service" 3 "rsyslog.service should be stopped"
     rlPhaseEnd
