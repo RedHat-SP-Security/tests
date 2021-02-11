@@ -1,0 +1,12 @@
+summary: Testing if usbguard list-rules --label "something" works properly
+contact: Attila Lakatos <alakatos@redhat.com>
+test: ./runtest.sh
+require:
+- usbguard
+duration: 5m
+enabled: true
+tag:
+- rhel-8.4.0
+link:
+  verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1873953
+extra-nitrate: TC#0609539
