@@ -68,7 +68,6 @@ rlJournalStart
         rlRun -s -t "dnf reinstall -y sed"
         rlAssertGrep "STDOUT" $rlRun_LOG
         rlAssertNotGrep "STDOUT.*fapolicyd" $rlRun_LOG
-        rlAssertGrep "STDERR.*fapolicyd" $rlRun_LOG
         rm -f $rlRun_LOG
 
         rlRun -s -t "dnf reinstall -y sed --disableplugin=\"fapolicyd-dnf-plugin\""
