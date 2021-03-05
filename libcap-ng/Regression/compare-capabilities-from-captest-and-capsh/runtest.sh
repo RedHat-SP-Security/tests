@@ -40,7 +40,7 @@ rlJournalStart
 	      rlRun -s "captest --text"
         mv $rlRun_LOG captest.out
 	      rlRun -s "captest"
-        cp $rlRun_LOG  hexadec.out
+        mv $rlRun_LOG  hexadec.out
 	      HEXA=`awk '/^Effective:/ { print $2,$3; exit }' hexadec.out | sed 's/, //'`
 	      rlLogInfo "hexadecimal representation of Effective capabilities: $HEXA"
 	      rlRun -s "capsh --decode=$HEXA"
