@@ -43,7 +43,8 @@ rlJournalStart
         cp $rlRun_LOG  hexadec.out
 	      HEXA=`awk '/^Effective:/ { print $2,$3; exit }' hexadec.out | sed 's/, //'`
 	      rlLogInfo "hexadecimal representation of Effective capabilities: $HEXA"
-	      rlRun "capsh --decode=$HEXA | tee capsh.out"
+	      rlRun -s "capsh --decode=$HEXA"
+	      mv $rlRun_LOG capsh.out
 	      # now convert output to a better form
 	      rlRun "cut -d '=' -f 2 capsh.out | sed -e 's/cap_//g' -e 's/,/\\n/g' | sort > capsh_sorted.out"
 	      rlRun "sed -e 's/35/wake_alarm/' -e 's/36/block_suspend/' -e 's/37/audit_read/' -e 's/38/cap_38/' -e 's/39/cap_39/' capsh_sorted.out | sort > capsh_sorted2.out" 0 "substituting unknown/numeric capabilities in the output"
