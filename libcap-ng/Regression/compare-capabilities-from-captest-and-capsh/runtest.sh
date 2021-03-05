@@ -38,7 +38,7 @@ rlJournalStart
         rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
         rlRun "pushd $TmpDir"
 	      rlRun -s "captest --text"
-        cp $rlRun_LOG captest.out
+        mv $rlRun_LOG captest.out
 	      rlRun -s "captest"
         cp $rlRun_LOG  hexadec.out
 	      HEXA=`awk '/^Effective:/ { print $2,$3; exit }' hexadec.out | sed 's/, //'`
