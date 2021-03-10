@@ -35,6 +35,9 @@ recommend:
 - ElectricFence
 duration: 10m
 enabled: true
+adjust:
+- enabled: false
+  when: distro > rhel-7
 tag:
 - CI-Tier-1
 - TIPpass_Security
