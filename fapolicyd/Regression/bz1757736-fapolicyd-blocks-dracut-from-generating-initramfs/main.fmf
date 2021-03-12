@@ -13,10 +13,31 @@ enabled: true
 tag:
 - CI-Tier-1
 - rhel-8.2
-extra-summary: /CoreOS/fapolicyd/Regression/bz1757736-fapolicyd-blocks-dracut-from-generating-initramfs
-extra-task: /CoreOS/fapolicyd/Regression/bz1757736-fapolicyd-blocks-dracut-from-generating-initramfs
-extra-nitrate: TC#0605034
 adjust:
--   enabled: false
-    when: distro ~< rhel-8.2
-    continue: false
+- enabled: false
+  when: distro < rhel-8.2
+
+/base:
+  extra-summary: /CoreOS/fapolicyd/Regression/bz1757736-fapolicyd-blocks-dracut-from-generating-initramfs
+  extra-task: /CoreOS/fapolicyd/Regression/bz1757736-fapolicyd-blocks-dracut-from-generating-initramfs
+  extra-nitrate: TC#0605034
+
+/integrity-size:
+  extra-summary: FAINTEGRITY=size /CoreOS/fapolicyd/Regression/bz1757736-fapolicyd-blocks-dracut-from-generating-initramfs
+  extra-task: /CoreOS/fapolicyd/Regression/bz1757736-fapolicyd-blocks-dracut-from-generating-initramfs
+  extra-nitrate: TC#0609921
+  environment:
+    FAINTEGRITY: size
+  adjust:
+  - enabled: false
+    when: distro < rhel-8.4
+
+/integrity-sha256:
+  extra-summary: FAINTEGRITY=sha256 /CoreOS/fapolicyd/Regression/bz1757736-fapolicyd-blocks-dracut-from-generating-initramfs
+  extra-task: /CoreOS/fapolicyd/Regression/bz1757736-fapolicyd-blocks-dracut-from-generating-initramfs
+  extra-nitrate: TC#0609920
+  environment:
+    FAINTEGRITY: sha256
+  adjust:
+  - enabled: false
+    when: distro < rhel-8.4
