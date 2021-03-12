@@ -35,6 +35,18 @@ SERVICE="$PACKAGE.service"
 _CONFIG_F1="/etc/fapolicyd/fapolicyd.rules"
 _CONFIG_F2="/etc/fapolicyd/fapolicyd.conf"
 
+set_config_option() {
+  local file=/etc/fapolicyd/fapolicyd.conf
+  sed -i -r "/^$1 =/d"   $file
+  [[ -n "$2" ]] && {
+    echo           >> $file
+    echo "$1 = $2" >> $file
+  }
+  echo "# grep$numbers -v -e '^\s*#' -e '^\s*$' \"$file\""
+  grep$numbers -v -e '^\s*#' -e '^\s*$' "$file"
+  echo "---"
+}
+
 DYNAMIC_INTERPRETER=`find /usr/lib64/ -type f -name 'ld-2\.*.so'`
 LS=`which ls`
 
@@ -45,6 +57,11 @@ rlJournalStart
         rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
         rlRun "pushd $TmpDir"
         rlRun "fapSetup"
+        if [[ "$FAINTEGRITY" == "size" ]]; then
+            set_config_option integrity 'size'
+        elif [[ "$FAINTEGRITY" == "sha256" ]]; then
+            set_config_option integrity 'sha256'
+        fi
         rlRun "rm -rf /var/lib/$PACKAGE/*"
         rlRun "rm -rf /var/run/$PACKAGE/*"
         rlRun "rm -rf /var/db/$PACKAGE/*"
