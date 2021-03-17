@@ -1,0 +1,25 @@
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 5m
+enabled: true
+require+:
+- library(ControlFlow/Cleanup)
+tag:
+- CI-Tier-1
+- rhel-8.4.0
+- Tier1
+tier: '1'
+/file:
+  summary: Check auditing to file
+  environment:
+    auditTARGET: file
+  extra-summary: auditTARGET=file /usbguard/Sanity/auditing
+  extra-task: /usbguard/Sanity/auditing
+  extra-nitrate: TC#0610001
+/audit:
+  summary: Check auditing to audit
+  environment:
+    auditTARGET: audit
+  extra-summary: auditTARGET=audit /usbguard/Sanity/auditing
+  extra-task: /usbguard/Sanity/auditing
+  extra-nitrate: TC#0610000
