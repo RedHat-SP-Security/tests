@@ -3,3 +3,5 @@ require:
 - url: https://github.com/RedHat-SP-Security/tests.git
   name: /fapolicyd/Library/common
 - fapolicyd
+recommend:
+- fapolicyd-selinux
