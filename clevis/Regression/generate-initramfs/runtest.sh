@@ -38,9 +38,8 @@ rlJournalStart
     rlPhaseEnd
 
     rlPhaseStartTest "Overwrite existing initramfs file"
-        rlRun -s "dracut -f" 0 "Try to generate initramfs"
-        rlAssertNotGrep "ERROR|FAILED" ${rlRun_LOG} -E
-        rlRun "rm ${rlRun_LOG}"
+        rlRun "dracut -f" 0 "Generate initramfs"
+        rlRun "lsinitrd | grep clevis" 0 "clevis is present in initramfs image"
     rlPhaseEnd
 
 rlJournalPrintText
