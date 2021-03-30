@@ -17,9 +17,9 @@ recommend:
 - rsyslog
 - ansible
 - rhel-system-roles
-relevancy: |
-    distro < rhel-8: False
-    distro = fedora: False
+adjust:
+- enabled: false
+  when: distro ~< rhel-7 || distro = fedora
 duration: 60m
 enabled: true
 extra-task: /CoreOS/rsyslog/Multihost/rsyslog-send-messages-to-remote
