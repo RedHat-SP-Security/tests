@@ -19,5 +19,5 @@ extra-task: /CoreOS/fapolicyd/Sanity/FapolicydRules
 extra-nitrate: TC#0602863
 adjust:
 -   enabled: false
-    when: distro != rhel-8
+    when: distro < rhel-8
     continue: false
