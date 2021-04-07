@@ -14,8 +14,10 @@ tag:
 - Tier1
 - Tier1security
 tier: '1'
-relevancy: |
-    distro = rhel-4, rhel-5: False
 extra-summary: /CoreOS/aide/Sanity/aide-conf-group-definition
 extra-task: /CoreOS/aide/Sanity/aide-conf-group-definition
 extra-nitrate: TC#0554483
+adjust:
+-   enabled: false
+    when: distro == rhel-4, rhel-5
+    continue: false

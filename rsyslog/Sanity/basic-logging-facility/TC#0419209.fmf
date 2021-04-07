@@ -9,8 +9,12 @@ tag:
 - fedora-wanted
 - notip
 - rsyslogSyntaxNEW
-relevancy: |
-    distro < rhel-6: False
-    distro = rhel-6 && component = rsyslog: False
 extra-summary: rsyslogSyntax=new /CoreOS/rsyslog/Sanity/basic-logging-facility
 extra-nitrate: TC#0419209
+adjust:
+-   enabled: false
+    when: distro < rhel-6
+    continue: false
+-   enabled: false
+    when: distro == rhel-6 and component == rsyslog
+    continue: false

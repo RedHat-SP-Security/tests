@@ -18,9 +18,13 @@ tag:
 - Tier3
 - rhel-8.3.0
 tier: '3'
-relevancy: |
-    distro < rhel-8: False
-    distro < rhel-8.3: False
 extra-summary: /CoreOS/fapolicyd/Regression/bz1817413-segfault-on-update
 extra-task: /CoreOS/fapolicyd/Regression/bz1817413-segfault-on-update
 extra-nitrate: TC#0607380
+adjust:
+-   enabled: false
+    when: distro < rhel-8
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-8.3
+    continue: false

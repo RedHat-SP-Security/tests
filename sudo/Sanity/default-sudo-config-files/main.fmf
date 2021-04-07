@@ -26,8 +26,10 @@ tag:
 - rhel-6.8
 - rhel-7.2
 tier: '1'
-relevancy: |
-    distro < rhel-7: False
 extra-summary: /CoreOS/sudo/Sanity/default-sudo-config-files
 extra-task: /CoreOS/sudo/Sanity/default-sudo-config-files
 extra-nitrate: TC#0497419
+adjust:
+-   enabled: false
+    when: distro < rhel-7
+    continue: false

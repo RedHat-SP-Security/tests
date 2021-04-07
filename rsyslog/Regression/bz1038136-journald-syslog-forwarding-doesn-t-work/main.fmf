@@ -26,9 +26,14 @@ tag:
 - Tier1security
 - rsyslogSyntaxOLD
 tier: '1'
-relevancy: |
-    distro = rhel-4, rhel-5, rhel-6: False
-    distro = rhel-8: false # temporarily disabled due to python2
 extra-summary: /CoreOS/rsyslog/Regression/bz1038136-journald-syslog-forwarding-doesn-t-work
 extra-task: /CoreOS/rsyslog/Regression/bz1038136-journald-syslog-forwarding-doesn-t-work
 extra-nitrate: TC#0339049
+adjust:
+-   enabled: false
+    when: distro == rhel-4, rhel-5, rhel-6
+    continue: false
+-   because: temporarily disabled due to python2
+    enabled: false
+    when: distro == rhel-8
+    continue: false

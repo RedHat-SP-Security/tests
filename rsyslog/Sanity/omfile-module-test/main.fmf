@@ -32,8 +32,10 @@ tag:
 - Tier1security
 - rsyslogSyntaxOLD
 tier: '1'
-relevancy: |
-    distro = rhel-4: False
 extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/omfile-module-test
 extra-task: /CoreOS/rsyslog/Sanity/omfile-module-test
 extra-nitrate: TC#0059837
+adjust:
+-   enabled: false
+    when: distro == rhel-4
+    continue: false

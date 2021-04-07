@@ -11,9 +11,13 @@ tag:
 - CI-Tier-1
 - TIPpass_Security
 - rhel-8.2
-relevancy: |
-    distro < rhel-8: False
-    distro < rhel-8.2: False
 extra-summary: /CoreOS/usbguard/Sanity/bz1772149-try-to-parse-match-all-rule
 extra-task: /CoreOS/usbguard/Sanity/bz1772149-try-to-parse-match-all-rule
 extra-nitrate: TC#0605037
+adjust:
+-   enabled: false
+    when: distro < rhel-8
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-8.2
+    continue: false

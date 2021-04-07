@@ -13,8 +13,10 @@ tag:
 - CI-Tier-1
 - TIPfail
 - rhel-8.2
-relevancy: |
-    distro < rhel-8.2: false
 extra-summary: /CoreOS/fapolicyd/Regression/bz1765039-fapolicyd-fails-to-identify-perl-interpreter
 extra-task: /CoreOS/fapolicyd/Regression/bz1765039-fapolicyd-fails-to-identify-perl-interpreter
 extra-nitrate: TC#0605033
+adjust:
+-   enabled: false
+    when: distro ~< rhel-8.2
+    continue: false

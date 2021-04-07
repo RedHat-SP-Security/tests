@@ -11,8 +11,12 @@ tag:
 - Tier2security
 - notip
 - rsyslogSyntaxNEW
-relevancy: |
-    distro < rhel-6: False
-    distro = rhel-6 && component = rsyslog: False
 extra-summary: rsyslogSyntax=new /CoreOS/rsyslog/Sanity/test-various-configuration-directives
 extra-nitrate: TC#0419215
+adjust:
+-   enabled: false
+    when: distro < rhel-6
+    continue: false
+-   enabled: false
+    when: distro == rhel-6 and component == rsyslog
+    continue: false

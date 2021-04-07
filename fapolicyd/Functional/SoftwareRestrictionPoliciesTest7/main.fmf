@@ -13,8 +13,10 @@ enabled: true
 tag:
 - fedora-wanted
 - rhel-8.1
-relevancy: |
-    distro != rhel-8: False
 extra-summary: /CoreOS/fapolicyd/Functional/SoftwareRestrictionPoliciesTest7
 extra-task: /CoreOS/fapolicyd/Functional/SoftwareRestrictionPoliciesTest7
 extra-nitrate: TC#0602861
+adjust:
+-   enabled: false
+    when: distro != rhel-8
+    continue: false

@@ -16,8 +16,10 @@ tag:
 - Tier2
 - Tier2security
 tier: '2'
-relevancy: |
-    distro < rhel-6: False
 extra-summary: '/CoreOS/libcap-ng/Regression/bz593635-Capabilities-can-t-be-set-on-just-a-thread '
 extra-task: /CoreOS/libcap-ng/Regression/bz593635-Capabilities-can-t-be-set-on-just-a-thread
 extra-nitrate: TC#0067929
+adjust:
+-   enabled: false
+    when: distro < rhel-6
+    continue: false

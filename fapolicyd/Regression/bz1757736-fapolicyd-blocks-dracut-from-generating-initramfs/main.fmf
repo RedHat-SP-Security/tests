@@ -13,8 +13,10 @@ enabled: true
 tag:
 - CI-Tier-1
 - rhel-8.2
-relevancy: |
-    distro < rhel-8.2: false
 extra-summary: /CoreOS/fapolicyd/Regression/bz1757736-fapolicyd-blocks-dracut-from-generating-initramfs
 extra-task: /CoreOS/fapolicyd/Regression/bz1757736-fapolicyd-blocks-dracut-from-generating-initramfs
 extra-nitrate: TC#0605034
+adjust:
+-   enabled: false
+    when: distro ~< rhel-8.2
+    continue: false

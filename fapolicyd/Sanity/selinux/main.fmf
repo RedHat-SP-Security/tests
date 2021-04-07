@@ -18,8 +18,10 @@ tag:
 - NoRHEL5
 - TIPfail
 - rhel-8.3.0
-relevancy: |
-    distro = rhel-4, rhel-5: False
 extra-summary: /CoreOS/fapolicyd/Sanity/selinux
 extra-task: /CoreOS/fapolicyd/Sanity/selinux
 extra-nitrate: TC#0607391
+adjust:
+-   enabled: false
+    when: distro == rhel-4, rhel-5
+    continue: false

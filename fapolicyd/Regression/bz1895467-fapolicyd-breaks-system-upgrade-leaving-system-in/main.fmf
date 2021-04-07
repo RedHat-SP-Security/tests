@@ -22,7 +22,9 @@ tag:
 - rhel-8.4.0
 - CI-Tier-1
 - FedoraCI
-relevancy: |
-    distro < rhel-8: False
 extra-nitrate: TC#0608926
 extra-summary: /CoreOS/fapolicyd/Regression/bz1895467-fapolicyd-breaks-system-upgrade-leaving-system-in
+adjust:
+-   enabled: false
+    when: distro < rhel-8
+    continue: false

@@ -22,9 +22,13 @@ tag:
 - Tier2
 - rhel-8.2.0
 tier: '2'
-relevancy: |
-    distro < rhel-8: False
-    distro < rhel-8.2: False
 extra-summary: /CoreOS/fapolicyd/Sanity/users-shell-script
 extra-task: /CoreOS/fapolicyd/Sanity/users-shell-script
 extra-nitrate: TC#0605875
+adjust:
+-   enabled: false
+    when: distro < rhel-8
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-8.2
+    continue: false

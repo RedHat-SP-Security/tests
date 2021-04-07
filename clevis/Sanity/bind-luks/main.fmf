@@ -31,8 +31,10 @@ tag:
 - Tier1
 - Tier1security
 tier: '1'
-relevancy: |
-    distro = rhel-4, rhel-5, rhel-6: False
 extra-summary: /CoreOS/clevis/Sanity/bind-luks
 extra-task: /CoreOS/clevis/Sanity/bind-luks
 extra-nitrate: TC#0554056
+adjust:
+-   enabled: false
+    when: distro == rhel-4, rhel-5, rhel-6
+    continue: false

@@ -8,6 +8,9 @@ tag:
 - Tier1
 - Tier1security
 - TierCandidatesPASS
-relevancy: "distro < rhel-6: False \n"
 extra-summary: SYSLOG_FORMAT=true /CoreOS/aide/Sanity/aide-rules-test
 extra-nitrate: TC#0544948
+adjust:
+-   enabled: false
+    when: distro < rhel-6
+    continue: false

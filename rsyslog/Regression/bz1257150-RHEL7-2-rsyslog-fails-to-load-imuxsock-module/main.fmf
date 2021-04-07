@@ -21,8 +21,10 @@ tag:
 - Tier1
 - Tier1security
 tier: '1'
-relevancy: |
-    distro < rhel-6: False
 extra-summary: /CoreOS/rsyslog/Regression/bz1257150-RHEL7-2-rsyslog-fails-to-load-imuxsock-module
 extra-task: /CoreOS/rsyslog/Regression/bz1257150-RHEL7-2-rsyslog-fails-to-load-imuxsock-module
 extra-nitrate: TC#0501627
+adjust:
+-   enabled: false
+    when: distro < rhel-6
+    continue: false

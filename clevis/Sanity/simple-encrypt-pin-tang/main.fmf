@@ -17,8 +17,10 @@ tag:
 - Tier1
 - Tier1security
 tier: '1'
-relevancy: |
-    distro < rhel-7: False
 extra-summary: /CoreOS/clevis/Sanity/simple-encrypt-pin-tang
 extra-task: /CoreOS/clevis/Sanity/simple-encrypt-pin-tang
 extra-nitrate: TC#0587943
+adjust:
+-   enabled: false
+    when: distro < rhel-7
+    continue: false

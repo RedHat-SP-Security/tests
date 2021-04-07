@@ -20,9 +20,13 @@ tag:
 - TIPpass_Security
 - Tier1
 tier: '1'
-relevancy: |
-    distro < rhel-8: False
-    distro < rhel-8.2: False
 extra-summary: /CoreOS/clevis/Sanity/luks-list
 extra-task: /CoreOS/clevis/Sanity/luks-list
 extra-nitrate: TC#0605260
+adjust:
+-   enabled: false
+    when: distro < rhel-8
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-8.2
+    continue: false

@@ -15,9 +15,13 @@ tag:
 - TIPfail
 - rhel-8.2
 - rhel8-buildroot
-relevancy: |
-    distro < rhel-8.2: false
-    distro < rhel-8: false
 extra-summary: /CoreOS/fapolicyd/Regression/bz1747494-suspicious-logs-on-service-start
 extra-task: /CoreOS/fapolicyd/Regression/bz1747494-suspicious-logs-on-service-start
 extra-nitrate: TC#0605063
+adjust:
+-   enabled: false
+    when: distro ~< rhel-8.2
+    continue: false
+-   enabled: false
+    when: distro < rhel-8
+    continue: false

@@ -29,8 +29,10 @@ tag:
 - rhel-7.4
 - rhel-8.2
 tier: '1'
-relevancy: |
-    distro <= rhel-5: False
 extra-summary: /CoreOS/sudo/Sanity/sudoers-options-sanity-test
 extra-task: /CoreOS/sudo/Sanity/sudoers-options-sanity-test
 extra-nitrate: TC#0240685
+adjust:
+-   enabled: false
+    when: distro <= rhel-5
+    continue: false

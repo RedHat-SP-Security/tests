@@ -16,10 +16,13 @@ tag:
 - CI-Tier-1
 - TIPpass
 - rhel-8.2
-relevancy: |+
-    distro < rhel-8: false
-    distro < rhel-8.2: false
-
 extra-summary: /CoreOS/fapolicyd/Regression/bz1746464-default-fapolicyd-policy-prevents-ansible-from-running
 extra-task: /CoreOS/fapolicyd/Regression/bz1746464-default-fapolicyd-policy-prevents-ansible-from-running
 extra-nitrate: TC#0605038
+adjust:
+-   enabled: false
+    when: distro < rhel-8
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-8.2
+    continue: false

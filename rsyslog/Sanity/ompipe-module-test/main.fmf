@@ -27,8 +27,10 @@ tag:
 - rhel-7.6
 - rsyslogSyntaxOLD
 tier: '2'
-relevancy: |
-    distro = rhel-4: False
 extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/ompipe-module-test
 extra-task: /CoreOS/rsyslog/Sanity/ompipe-module-test
 extra-nitrate: TC#0059838
+adjust:
+-   enabled: false
+    when: distro == rhel-4
+    continue: false

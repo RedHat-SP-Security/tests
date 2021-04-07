@@ -14,7 +14,9 @@ tag:
 - TipWaived5
 - rhel-6.3
 - rsyslogSyntaxOLD
-relevancy: |
-    distro = rhel-4: False
 extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/test-various-configuration-directives
 extra-nitrate: TC#0059839
+adjust:
+-   enabled: false
+    when: distro == rhel-4
+    continue: false

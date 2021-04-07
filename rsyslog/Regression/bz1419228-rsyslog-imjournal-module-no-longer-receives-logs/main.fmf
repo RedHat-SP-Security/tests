@@ -22,8 +22,10 @@ tag:
 - rhel-7.5.z
 - rhel-7.6
 - rhel-8.0
-relevancy: |
-    distro = rhel-4, rhel-5, rhel-6: False
 extra-summary: /CoreOS/rsyslog/Regression/bz1419228-rsyslog-imjournal-module-no-longer-receives-logs
 extra-task: /CoreOS/rsyslog/Regression/bz1419228-rsyslog-imjournal-module-no-longer-receives-logs
 extra-nitrate: TC#0553944
+adjust:
+-   enabled: false
+    when: distro == rhel-4, rhel-5, rhel-6
+    continue: false

@@ -20,10 +20,16 @@ tag:
 - Tier2
 - rhel-8.3.0
 tier: '2'
-relevancy: |
-    distro < rhel-8: False
-    distro < rhel-8.3: False
-    arch = s390x: false
 extra-summary: /CoreOS/usbguard/Sanity/selinux
 extra-task: /CoreOS/usbguard/Sanity/selinux
 extra-nitrate: TC#0607358
+adjust:
+-   enabled: false
+    when: distro < rhel-8
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-8.3
+    continue: false
+-   enabled: false
+    when: arch == s390x
+    continue: false

@@ -18,9 +18,13 @@ enabled: true
 tag:
 - NoRHEL6
 - NoRHEL7
-relevancy: |
-    distro = rhel-6, rhel-7: False
-    distro = rhel-alt-7: False
 extra-nitrate: TC#0608974
 extra-summary: /CoreOS/rsyslog/Sanity/omudpspoof-module-test
 extra-task: /CoreOS/rsyslog/Sanity/omudpspoof-module-test
+adjust:
+-   enabled: false
+    when: distro == rhel-6, rhel-7
+    continue: false
+-   enabled: false
+    when: distro == rhel-alt-7
+    continue: false

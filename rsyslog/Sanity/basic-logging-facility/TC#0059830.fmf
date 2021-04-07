@@ -14,7 +14,9 @@ tag:
 - Tier1security
 - rsyslogSyntaxOLD
 tier: '1'
-relevancy: |
-    distro = rhel-4: False
 extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/basic-logging-facility
 extra-nitrate: TC#0059830
+adjust:
+-   enabled: false
+    when: distro == rhel-4
+    continue: false

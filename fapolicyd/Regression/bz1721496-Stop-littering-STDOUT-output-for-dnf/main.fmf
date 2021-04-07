@@ -14,8 +14,10 @@ tag:
 - CI-Tier-1
 - Tier2
 tier: '2'
-relevancy: |
-    distro < rhel-8: False
 extra-summary: /CoreOS/fapolicyd/Regression/bz1721496-Stop-littering-STDOUT-output-for-dnf
 extra-task: /CoreOS/fapolicyd/Regression/bz1721496-Stop-littering-STDOUT-output-for-dnf
 extra-nitrate: TC#0602522
+adjust:
+-   enabled: false
+    when: distro < rhel-8
+    continue: false

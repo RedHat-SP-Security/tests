@@ -19,9 +19,13 @@ tag:
 - Tier3
 - rhel-7.9.0
 tier: '3'
-relevancy: |
-    distro = rhel-4, rhel-5: False
-    distro < rhel-7.9: false
 extra-summary: /CoreOS/rsyslog/Regression/bz1843992-rsyslog-dies-at-startup-when-imfile-top
 extra-task: /CoreOS/rsyslog/Regression/bz1843992-rsyslog-dies-at-startup-when-imfile-top
 extra-nitrate: TC#0607500
+adjust:
+-   enabled: false
+    when: distro == rhel-4, rhel-5
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-7.9
+    continue: false

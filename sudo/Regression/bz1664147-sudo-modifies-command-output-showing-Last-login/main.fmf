@@ -22,9 +22,13 @@ tag:
 - Tier2
 - rhel-7.6
 tier: '2'
-relevancy: |
-    distro < rhel-8: False
-    distro < rhel-8.2: False
 extra-summary: /CoreOS/sudo/Regression/bz1664147-sudo-modifies-command-output-showing-Last-login
 extra-task: /CoreOS/sudo/Regression/bz1664147-sudo-modifies-command-output-showing-Last-login
 extra-nitrate: TC#0590346
+adjust:
+-   enabled: false
+    when: distro < rhel-8
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-8.2
+    continue: false

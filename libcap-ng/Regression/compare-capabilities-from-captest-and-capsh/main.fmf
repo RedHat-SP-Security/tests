@@ -23,8 +23,10 @@ tag:
 - Tier2security
 - TierCandidatesFAIL
 tier: '2'
-relevancy: |
-    distro = rhel-4, rhel-5: False
 extra-nitrate: TC#0499506
 extra-summary: /CoreOS/libcap-ng/Regression/compare-capabilities-from-captest-and-capsh
 extra-task: /CoreOS/libcap-ng/Regression/compare-capabilities-from-captest-and-capsh
+adjust:
+-   enabled: false
+    when: distro == rhel-4, rhel-5
+    continue: false

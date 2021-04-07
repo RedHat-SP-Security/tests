@@ -19,8 +19,10 @@ tag:
 - Tier2
 - Tier2security
 tier: '2'
-relevancy: |
-    distro = rhel-5: False
 extra-summary: /CoreOS/aide/Regression/bz842689-TestOnly-test-logrotate-script-functionality
 extra-task: /CoreOS/aide/Regression/bz842689-TestOnly-test-logrotate-script-functionality
 extra-nitrate: TC#0338143
+adjust:
+-   enabled: false
+    when: distro == rhel-5
+    continue: false

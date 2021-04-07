@@ -19,8 +19,10 @@ tag:
 - Tier1security
 - rhel-8.0
 tier: '1'
-relevancy: |
-    distro = rhel-4, rhel-5: False
 extra-summary: /CoreOS/rsyslog/Sanity/mmkubernetes-module-test
 extra-task: /CoreOS/rsyslog/Sanity/mmkubernetes-module-test
 extra-nitrate: TC#0597854
+adjust:
+-   enabled: false
+    when: distro == rhel-4, rhel-5
+    continue: false

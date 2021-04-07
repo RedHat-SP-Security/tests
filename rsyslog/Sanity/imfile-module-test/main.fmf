@@ -41,8 +41,10 @@ tag:
 - rhel-8.1
 - rsyslogSyntaxOLD
 tier: '2'
-relevancy: |
-    distro = rhel-4: False
 extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/imfile-module-test
 extra-task: /CoreOS/rsyslog/Sanity/imfile-module-test
 extra-nitrate: TC#0059835
+adjust:
+-   enabled: false
+    when: distro == rhel-4
+    continue: false

@@ -25,9 +25,13 @@ tag:
 - TIPpass_Security
 - fedora-wanted
 - rhel8-buildroot
-relevancy: |
-    arch != x86_64: False
-    distro < rhel-7.6: False
 extra-summary: /CoreOS/usbguard/Sanity/rules-fuzz
 extra-task: /CoreOS/usbguard/Sanity/rules-fuzz
 extra-nitrate: TC#0560406
+adjust:
+-   enabled: false
+    when: arch != x86_64
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-7.6
+    continue: false

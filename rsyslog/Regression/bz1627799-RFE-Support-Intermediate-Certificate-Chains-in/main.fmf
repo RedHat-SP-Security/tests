@@ -21,9 +21,13 @@ tag:
 - Tier1
 - rhel-7.8
 tier: '1'
-relevancy: |
-    distro < rhel-7: False
-    distro < rhel-7.8: False
 extra-summary: /CoreOS/rsyslog/Regression/bz1627799-RFE-Support-Intermediate-Certificate-Chains-in
 extra-task: /CoreOS/rsyslog/Regression/bz1627799-RFE-Support-Intermediate-Certificate-Chains-in
 extra-nitrate: TC#0604085
+adjust:
+-   enabled: false
+    when: distro < rhel-7
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-7.8
+    continue: false

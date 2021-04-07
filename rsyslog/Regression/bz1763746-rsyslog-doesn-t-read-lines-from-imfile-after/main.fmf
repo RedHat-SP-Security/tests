@@ -20,9 +20,13 @@ tag:
 - Tier2
 - rhel-7.8
 tier: '2'
-relevancy: |
-    distro < rhel-7: False
-    distro < rhel-7.7: False
 extra-summary: /CoreOS/rsyslog/Regression/bz1763746-rsyslog-doesn-t-read-lines-from-imfile-after
 extra-task: /CoreOS/rsyslog/Regression/bz1763746-rsyslog-doesn-t-read-lines-from-imfile-after
 extra-nitrate: TC#0604434
+adjust:
+-   enabled: false
+    when: distro < rhel-7
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-7.7
+    continue: false

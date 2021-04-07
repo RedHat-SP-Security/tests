@@ -12,9 +12,13 @@ tag:
 - TIPfail_Security
 - Tier1
 - Tier1security
-relevancy: |
-    arch = s390x: False
-    distro < rhel-7.6: False
 extra-summary: CONDITIONAL_PHASES_BL='only|both' /CoreOS/usbguard/Sanity/config-sanity
 extra-task: /CoreOS/usbguard/Sanity/config-sanity
 extra-nitrate: TC#0560519
+adjust:
+-   enabled: false
+    when: arch == s390x
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-7.6
+    continue: false

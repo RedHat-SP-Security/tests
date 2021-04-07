@@ -25,8 +25,10 @@ tag:
 - rhel8-buildroot
 - rhel9-buildroot
 tier: '1'
-relevancy: |
-    distro = rhel-4, rhel-5: False
 extra-summary: '/CoreOS/libcap-ng/Sanity/smoke-test '
 extra-task: /CoreOS/libcap-ng/Sanity/smoke-test
 extra-nitrate: TC#0067930
+adjust:
+-   enabled: false
+    when: distro == rhel-4, rhel-5
+    continue: false

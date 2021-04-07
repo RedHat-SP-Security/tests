@@ -16,8 +16,10 @@ tag:
 - Tier1
 - Tier1security
 tier: '1'
-relevancy: |
-    distro = rhel-4, rhel-5, rhel-6: False
 extra-summary: /CoreOS/clevis/Regression/generate-initramfs
 extra-task: /CoreOS/clevis/Regression/generate-initramfs
 extra-nitrate: TC#0589758
+adjust:
+-   enabled: false
+    when: distro == rhel-4, rhel-5, rhel-6
+    continue: false

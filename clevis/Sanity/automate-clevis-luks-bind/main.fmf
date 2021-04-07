@@ -20,9 +20,13 @@ tag:
 - TIPpass
 - Tier1
 tier: '1'
-relevancy: |
-    distro < rhel-8: False
-    distro = rhel-alt-7: False
 extra-summary: /CoreOS/clevis/Sanity/automate-clevis-luks-bind
 extra-task: /CoreOS/clevis/Sanity/automate-clevis-luks-bind
 extra-nitrate: TC#0607316
+adjust:
+-   enabled: false
+    when: distro < rhel-8
+    continue: false
+-   enabled: false
+    when: distro == rhel-alt-7
+    continue: false

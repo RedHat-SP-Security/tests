@@ -23,9 +23,13 @@ tag:
 - Tier2
 - rhel-8.0.0
 tier: '2'
-relevancy: |
-    distro < rhel-8.2: False
-    distro < rhel-8: False
 extra-summary: /CoreOS/rsyslog/Sanity/config-enabled
 extra-task: /CoreOS/rsyslog/Sanity/config-enabled
 extra-nitrate: TC#0605354
+adjust:
+-   enabled: false
+    when: distro ~< rhel-8.2
+    continue: false
+-   enabled: false
+    when: distro < rhel-8
+    continue: false

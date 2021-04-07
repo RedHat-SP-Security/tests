@@ -14,8 +14,10 @@ tag:
 - NoRHEL5
 - TIPpass_Security
 - TierCandidatesFAIL
-relevancy: |
-    distro = rhel-4, rhel-5: False
 extra-summary: /CoreOS/rsyslog/Sanity/various-simple-checks
 extra-task: /CoreOS/rsyslog/Sanity/various-simple-checks
 extra-nitrate: TC#0551877
+adjust:
+-   enabled: false
+    when: distro == rhel-4, rhel-5
+    continue: false

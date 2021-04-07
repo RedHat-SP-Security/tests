@@ -24,8 +24,10 @@ tag:
 - rhel-7.7.z
 - rhel-7.9
 tier: '2'
-relevancy: |
-    distro = rhel-4, rhel-5: False
 extra-summary: /CoreOS/rsyslog/Regression/bz1858297-Repeated-buffer-overflow-detected
 extra-task: /CoreOS/rsyslog/Regression/bz1858297-Repeated-buffer-overflow-detected
 extra-nitrate: TC#0608025
+adjust:
+-   enabled: false
+    when: distro == rhel-4, rhel-5
+    continue: false

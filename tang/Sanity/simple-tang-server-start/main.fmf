@@ -15,8 +15,10 @@ tag:
 - NoRHEL5
 - Tier1
 tier: '1'
-relevancy: |
-    distro < rhel-7: False
 extra-summary: /CoreOS/tang/Sanity/simple-tang-server-start
 extra-task: /CoreOS/tang/Sanity/simple-tang-server-start
 extra-nitrate: TC#0605937
+adjust:
+-   enabled: false
+    when: distro < rhel-7
+    continue: false

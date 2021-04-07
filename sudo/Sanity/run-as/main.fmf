@@ -21,8 +21,10 @@ tag:
 - TierCandidatesPASS
 - rhel-7.4
 tier: '1'
-relevancy: |
-    distro = rhel-4, rhel-5: False
 extra-summary: /CoreOS/sudo/Sanity/run-as
 extra-task: /CoreOS/sudo/Sanity/run-as
 extra-nitrate: TC#0547089
+adjust:
+-   enabled: false
+    when: distro == rhel-4, rhel-5
+    continue: false

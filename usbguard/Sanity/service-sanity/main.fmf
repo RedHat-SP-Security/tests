@@ -18,8 +18,10 @@ tag:
 - Tier1
 - Tier1security
 tier: '1'
-relevancy: |
-    arch = s390x: False
 extra-summary: /CoreOS/usbguard/Sanity/service-sanity
 extra-task: /CoreOS/usbguard/Sanity/service-sanity
 extra-nitrate: TC#0559491
+adjust:
+-   enabled: false
+    when: arch == s390x
+    continue: false
