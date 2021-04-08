@@ -21,7 +21,7 @@ See:
 
 ## Commit / merge policy
 
-Every important change to tests should undergo a review withing a pull request.
+Every important change to tests should undergo a review within a pull request.
 
 ### changes without a need of review
 Small, trivialy changes may be committed directly the master branch.
