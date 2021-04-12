@@ -24,7 +24,7 @@ See:
 Every important change to tests should undergo a review within a pull request.
 
 ### changes without a need of review
-Small, trivial changes may be committed directly the master branch.
+Small, trivial changes may be committed directly to the master branch.
 As a typical trivial change one may consider a metadata update (updated tags, adjust, ..)
 or typo fixes, updated to comments and formating changes.
 
