@@ -28,7 +28,7 @@
 
 # Include Beaker environment
 . /usr/bin/rhts-environment.sh || :
-. /usr/lib/beakerlib/beakerlib.sh
+. /usr/share/beakerlib/beakerlib.sh || exit 1
 
 # set client & server manually if debugging
 #SERVERS="nec-em12.rhts.eng.bos.redhat.com"

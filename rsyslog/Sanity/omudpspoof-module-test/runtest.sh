@@ -27,7 +27,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Include rhts environment
-. /usr/lib/beakerlib/beakerlib.sh
+. /usr/share/beakerlib/beakerlib.sh || exit 1
 
 PACKAGE="rsyslog"
 PACKAGE="${COMPONENT:-$PACKAGE}"
