@@ -5,7 +5,7 @@ tag:
 - NoRHEL5
 - Tier2
 extra-summary: /rsyslog/Multihost/relp
-extra-task: .
+extra-task: /rsyslog/Multihost/relp
 adjust:
 -   enabled: false
     when: distro < rhel-6

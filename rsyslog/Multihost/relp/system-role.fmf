@@ -12,7 +12,7 @@ recommend:
 environment:
     ANSIBLE: '1'
 extra-summary: ANSIBLE=1 /rsyslog/Multihost/relp
-extra-task: .
+extra-task: /rsyslog/Multihost/relp
 adjust:
 -   enabled: false
     when: distro < rhel-8.4
