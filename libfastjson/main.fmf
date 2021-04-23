@@ -1,6 +1,3 @@
 component: libfastjson
 require:
 - libfastjson
-- libfastjson-devel
-- gcc
-- make

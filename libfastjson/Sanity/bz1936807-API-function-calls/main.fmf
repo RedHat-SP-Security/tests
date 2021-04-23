@@ -2,6 +2,10 @@ summary: added new API call fjson_object_array_del_idx()
 contact:
 - Atilla Lakatos <alakatos@redhat.com>
 test: ./runtest.sh
+require+:
+- libfastjson-devel
+- gcc
+- make
 duration: 5m
 tag:
 - CI-Tier-1
