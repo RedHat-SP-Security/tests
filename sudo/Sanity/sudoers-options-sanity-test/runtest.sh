@@ -71,12 +71,33 @@ rlJournalStart && {
       done
     rlPhaseEnd; }
 
-    rlPhaseStartTest "Active options test - Evironment" && {
+    rlPhaseStartTest "Active options test - Environment" && {
         for _OPTION in DISPLAY HOSTNAME USERNAME LC_COLLATE LC_MESSAGES LC_TIME LC_ALL XAUTHORITY; do
                 rlRun "cat /etc/sudoers | grep '^Defaults\s\+env_keep' | grep '${_OPTION}'" 0 "Test: '${_OPTION}' check"
         done
-        rlRun "grep '^Defaults\s\+secure_path' /etc/sudoers"
-        rlRun "grep '^Defaults\s\+secure_path\s\+=\s\+/sbin:/bin:/usr/sbin:/usr/bin' /etc/sudoers" 0 "Test: 'secure_path' check"
+        rlRun -s "grep '^Defaults\s\+secure_path' /etc/sudoers"
+        paths=($(cat "$rlRun_LOG" | grep -Eo '\S*\s*$' | tr ':' ' ' ))
+        tcfChk "check presence of paths" && {
+          CheckAndRemove() { # var val
+            local idx var="$1" val="$2"
+            eval "idx=( \"\${!$var[@]}\" )"
+            for i in "${idx[@]}"; do
+              eval [[ "\${$var[\$i]}" = "\${val}" ]] && {
+                eval "unset $var[\$i]"
+                return 0
+              }
+            done
+            return 1
+          }
+          declare -p paths
+          for p in /usr/sbin /usr/bin /sbin /bin; do
+            CheckAndRemove paths "$p"
+            rlAssert0 "check presence of $p" $?
+          done
+          [[ "${#paths[@]}" -eq 0 ]]
+          rlAssert0 "check there's nothing else in paths" $?
+        tcfFin; }
+        rm -f $rlRun_LOG
     rlPhaseEnd; }
 
     rlPhaseStartTest "Commented options test - examples" && {
