@@ -1,3 +1,5 @@
+specfile_path: just-a-package.spec
+
 jobs:
 - job: tests
   trigger: pull_request
