@@ -327,7 +327,6 @@ rlJournalStart
         rlAssertNotGrep '3333:\*' $rlRun_LOG
         rm -f $rlRun_LOG
       rlPhaseEnd; }
-
     }
 
     rlPhaseStartCleanup
