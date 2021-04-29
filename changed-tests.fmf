@@ -1,5 +1,5 @@
 summary: check the changed tests functionality
-discovery:
+discover:
     how: fmf
     modified-only: True
     modified-ref: master
