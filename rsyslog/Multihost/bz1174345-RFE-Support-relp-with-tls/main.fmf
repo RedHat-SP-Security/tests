@@ -23,7 +23,7 @@ recommend:
 - psmisc
 duration: 20m
 enabled: true
-tag:
+tag+:
 - NoRHEL4
 - NoRHEL5
 - fedora-wanted

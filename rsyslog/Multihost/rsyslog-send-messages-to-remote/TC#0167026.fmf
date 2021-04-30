@@ -1,6 +1,6 @@
 environment:
     MODES: normal
-tag:
+tag+:
 - CI-Tier-1
 - Tier1
 tier: '1'

@@ -1,7 +1,7 @@
 environment:
     ANSIBLE: '1'
     MODES: normal
-tag:
+tag+:
 - Tier2
 tier: '2'
 extra-summary: ANSIBLE=1 MODES=normal /CoreOS/rsyslog/Multihost/rsyslog-send-messages-to-remote
