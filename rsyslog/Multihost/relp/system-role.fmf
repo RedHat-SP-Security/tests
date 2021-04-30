@@ -1,6 +1,6 @@
 summary: test RELP with TLS confiruged using the logging system role
 duration: 20m
-tag:
+tag+:
 - NoRHEL4
 - NoRHEL5
 - Tier2
