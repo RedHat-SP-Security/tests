@@ -36,7 +36,7 @@ rlJournalStart && {
   rlPhaseStartSetup && {
     rlRun "rlImport fapolicyd/common" 0 "Import libraries" || rlDie "cannot continue"
     rlRun "rlImport --all" 0 "Import libraries" || rlDie "cannot continue"
-    if ! rlIsRHEL '<8'; then
+    if rlIsRHEL '8'; then
       CleanupRegister 'rlRun "RpmSnapshotRevert"; rlRun "RpmSnapshotDiscard"'
       CleanupRegister 'rlRun "dnf -y module reset idm"'
       rlRun "dnf -y module reset idm"
