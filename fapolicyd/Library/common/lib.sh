@@ -113,7 +113,7 @@ fapStart() {
     [[ "$fapolicyd_path" =~ /$ ]] || fapolicyd_path+="/"
     rlLogInfo "running fapolicyd from alternative path $fapolicyd_path"
   fi
-  runcon -u system_u -r system_r -t init_t bash -c "${fapolicyd_path}fapolicyd $FADEBUG; echo -e \"\nRETURN CODE: \$?\"" 2>&1 | cat > $fapolicyd_out &
+  runcon -u system_u -r system_r -t init_t sh -c "${fapolicyd_path}fapolicyd $FADEBUG; echo -e \"\nRETURN CODE: \$?\"" 2>&1 | cat > $fapolicyd_out &
   tail -f $fapolicyd_out >&2 &
   tail_pid=$!
   local i=50
