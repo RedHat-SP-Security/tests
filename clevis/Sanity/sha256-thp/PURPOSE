@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/clevis/Sanity/sha256-thp
+Description: Test clevis SHA-256 thumbprints
+Author: Sergio Correia <scorreia@redhat.com>
