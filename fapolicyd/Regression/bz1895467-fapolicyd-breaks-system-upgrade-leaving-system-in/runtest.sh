@@ -42,7 +42,8 @@ rlJournalStart && {
   rlPhaseStartSetup && {
     rlRun "rlImport --all" 0 "Import libraries" || rlDie "cannot continue"
     rlRun "rlImport fapolicyd/common" 0 "Import libraries" || rlDie "cannot continue"
-    rlRun "rlCheckRequirements $(rlGetMakefileRequires | sed -r 's|\S+/python|$PYTHON|g;s|(systemd-python)\S*|\1${PYTHON_SUFFIX}|g')" || rlDie 'cannot continue'
+    rlRun "rlCheckRequirements $(rlGetYAMLdeps)" || rlDie 'cannot continue'
+    rlRun "rlCheckRequirements $(rlGetYAMLdeps recommend)" 0-255
     rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
     CleanupRegister "rlRun 'rm -r $TmpDir' 0 'Removing tmp directory'"
     CleanupRegister 'rlRun "popd"'

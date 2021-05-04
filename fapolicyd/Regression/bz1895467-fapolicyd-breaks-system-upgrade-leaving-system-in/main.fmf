@@ -13,6 +13,7 @@ recommend:
 - /usr/bin/python
 - /usr/libexec/platform-python
 - systemd-python3
+- python3-systemd
 - systemd-python
 duration: 15m
 enabled: true
