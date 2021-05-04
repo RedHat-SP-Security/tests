@@ -113,7 +113,7 @@ rlJournalStart && {
       CleanupDo --mark
     rlPhaseEnd; }
 
-    rlPhaseStartTest "config option trust=file,rpmdb AC23" && {
+    rlPhaseStartTest "config option trust deleted AC23" && {
       rlRun "sed -r -i '/^trust/d' /etc/fapolicyd/fapolicyd.conf"
       rlRun "fapolicyd-cli --delete-db"
       rlRun "cat /etc/fapolicyd/fapolicyd.conf"
@@ -126,32 +126,28 @@ rlJournalStart && {
     rlPhaseEnd; }
 
     rlPhaseStartTest "config option trust=file rpmdb AC21" && {
-      Trust 'file,rpmdb'
+      Trust 'file rpmdb'
       CleanupRegister --mark 'rlRun "Stop"'
       rlRun "Start"
       rlRun "fapolicyd-cli -D > db_dump"
-      rlAssertGrep '^rpmdb' db_dump
+      rlAssertNotGrep '^rpmdb' db_dump
       rlAssertGrep '^filedb' db_dump
       CleanupDo --mark
     rlPhaseEnd; }
 
     rlPhaseStartTest "config option trust=file;rpmdb AC21" && {
-      Trust 'file,rpmdb'
+      Trust 'file;rpmdb'
       CleanupRegister --mark 'rlRun "Stop"'
-      rlRun "Start"
-      rlRun "fapolicyd-cli -D > db_dump"
-      rlAssertGrep '^rpmdb' db_dump
-      rlAssertGrep '^filedb' db_dump
+      rlRun "Start" 0-255
+      rlAssertGrep 'file;rpmdb backend not supported, aborting' $fapolicyd_out
       CleanupDo --mark
     rlPhaseEnd; }
 
     rlPhaseStartTest "config option trust=blabla AC22" && {
-      Trust 'file,rpmdb'
+      Trust 'blabla'
       CleanupRegister --mark 'rlRun "Stop"'
-      rlRun "Start"
-      rlRun "fapolicyd-cli -D > db_dump"
-      rlAssertGrep '^rpmdb' db_dump
-      rlAssertGrep '^filedb' db_dump
+      rlRun "Start" 0-255
+      rlAssertGrep 'blabla backend not supported, aborting' $fapolicyd_out
       CleanupDo --mark
     rlPhaseEnd; }
 
