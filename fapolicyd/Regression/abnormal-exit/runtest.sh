@@ -33,6 +33,7 @@ PACKAGE="fapolicyd"
 
 rlJournalStart
   rlPhaseStartSetup
+    testfile="$HOME/testfile"
     rlRun "rlImport --all" || rlDie 'cannot continue'
     rlRun "rlCheckMakefileRequires" || rlDie "cannot continue"
     rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
@@ -42,16 +43,18 @@ rlJournalStart
     rlSESetTimestamp
     CleanupRegister 'rlRun "fapCleanup"'
     rlRun "fapSetup"
+    CleanupRegister 'rlRun "rlFileRestore"'
+    rlRun "rlFileBackup --clean $testfile"
   rlPhaseEnd
 
   rlPhaseStartTest "bz1940289"
-    rlRun "touch testfile"
-    rlRun "chmod 200 testfile"
-    rlRun "chcon -t sysctl_vm_t testfile"
+    rlRun "touch $testfile"
+    rlRun "chmod 200 $testfile"
+    rlRun "chcon -t sysctl_vm_t $testfile"
     rlRun "fapStart"
-    rlRun "cat testfile"
+    rlRun "cat $testfile"
     rlRun "fapStop"
-    rlRun "rm -f testfile"
+    rlRun "rm -f $testfile"
     rlRun "cat $fapolicyd_out"
     rlAssertGrep 'RETURN CODE: 0' $fapolicyd_out
     rlAssertGrep 'Starting to listen for events' $fapolicyd_out
@@ -60,12 +63,12 @@ rlJournalStart
   rlPhaseEnd
 
   rlPhaseStartTest "blocked by permissions"
-    rlRun "touch testfile"
-    rlRun "chmod 200 testfile"
+    rlRun "touch $testfile"
+    rlRun "chmod 200 $testfile"
     rlRun "fapStart"
-    rlRun "cat testfile"
+    rlRun "cat $testfile"
     rlRun "fapStop"
-    rlRun "rm -f testfile"
+    rlRun "rm -f $testfile"
     rlRun "cat $fapolicyd_out"
     rlAssertGrep 'RETURN CODE: 0' $fapolicyd_out
     rlAssertGrep 'Starting to listen for events' $fapolicyd_out
@@ -79,13 +82,13 @@ rlJournalStart
     rlRun "semodule -c -E fapolicyd"
     rlRun "sed -i '/sysctl_type/d' fapolicyd.cil"
     rlRun "semodule -X 500 -i fapolicyd.cil"
-    rlRun "touch testfile"
-    rlRun "chmod 200 testfile"
-    rlRun "chcon -t sysctl_vm_t testfile"
+    rlRun "touch $testfile"
+    rlRun "chmod 200 $testfile"
+    rlRun "chcon -t sysctl_vm_t $testfile"
     rlRun "fapStart"
-    rlRun "cat testfile" 1-255
+    rlRun "cat $testfile" 1-255
     rlRun "fapStop"
-    rlRun "rm -f testfile"
+    rlRun "rm -f $testfile"
     rlRun "cat $fapolicyd_out"
     rlAssertGrep 'RETURN CODE: 0' $fapolicyd_out
     rlAssertGrep 'Starting to listen for events' $fapolicyd_out
@@ -116,13 +119,13 @@ allow mujtyp_file_t fs_t : filesystem { associate };
 EOF
     rlRun "make -f /usr/share/selinux/devel/Makefile"
     rlRun "semodule -i newtype.pp"
-    rlRun "touch testfile"
-    rlRun "chmod 200 testfile"
-    rlRun "chcon -t mujtyp_file_t testfile"
+    rlRun "touch $testfile"
+    rlRun "chmod 200 $testfile"
+    rlRun "chcon -t mujtyp_file_t $testfile"
     rlRun "fapStart"
-    rlRun "cat testfile" 1-255
+    rlRun "cat $testfile" 1-255
     rlRun "fapStop"
-    rlRun "rm -f testfile"
+    rlRun "rm -f $testfile"
     rlRun "cat $fapolicyd_out"
     rlAssertGrep 'RETURN CODE: 0' $fapolicyd_out
     rlAssertGrep 'Starting to listen for events' $fapolicyd_out
