@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/sudo/Regression/symbolic-link-attack-in-SELinux-enabled-sudoedit
+Description: Race condition vulnerability in file handling of sudoedit SELinux RBAC support
+Author: Martin Zeleny <mzeleny@redhat.com>

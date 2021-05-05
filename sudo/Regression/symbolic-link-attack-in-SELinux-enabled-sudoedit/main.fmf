@@ -1,0 +1,23 @@
+summary: Race condition vulnerability in file handling of sudoedit SELinux RBAC support
+description: ''
+contact: Martin Zelený <mzeleny@redhat.com>
+component:
+- sudo
+test: ./runtest.sh
+recommend:
+- sudo
+duration: 10m
+enabled: true
+tag:
+- Tier1
+- CI-Tier-1
+adjust:
+-   enabled: false
+    when: distro < rhel-8
+    continue: false
+-   enabled: false
+    when: distro == rhel-alt-7
+    continue: false
+extra-nitrate: TC#0609476
+extra-summary: /CoreOS/sudo/Regression/symbolic-link-attack-in-SELinux-enabled-sudoedit
+extra-task: /CoreOS/sudo/Regression/symbolic-link-attack-in-SELinux-enabled-sudoedit
