@@ -90,7 +90,7 @@ EOF
     rlPhaseStartTest "\$ActionSendTCPRebindInterval test, bz1645245" && {
         rsyslogConfigIsNewSyntax || rsyslogConfigReplace "TEST1" /etc/rsyslog.conf <<EOF
 \$ModLoad imtcp.so
-\$ActionSendTCPRebindInterval 4
+\$ActionSendTCPRebindInterval 3
 local0.info @@127.0.0.1:514
 \$RuleSet TestRuleSet
 
@@ -100,7 +100,7 @@ local0.info     /var/log/rsyslog-TCPServerRebind-test.log
 EOF
         rsyslogConfigIsNewSyntax && rsyslogConfigReplace "TEST1" /etc/rsyslog.conf <<EOF
 module(load="imtcp")
-local0.info    action(type="omfwd" Protocol="tcp" port="514" RebindInterval="4" Target="127.0.0.1")
+local0.info    action(type="omfwd" Protocol="tcp" port="514" RebindInterval="3" Target="127.0.0.1")
 ruleset(name="TestRuleSet"){
 local0.info    action(type="omfile" file="/var/log/rsyslog-TCPServerRebind-test.log")
 }
