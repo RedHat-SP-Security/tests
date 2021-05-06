@@ -7,8 +7,6 @@ require+:
 - library(distribution/tcf)
 - library(distribution/testUser)
 - fapolicyd
-- rpmdevtools
-- rpm-build
 - rpm-plugin-fapolicyd
 duration: 25m
 enabled: true
