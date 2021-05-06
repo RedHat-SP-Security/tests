@@ -4,3 +4,4 @@ require:
 - library(selinux-policy/common)
 - rpmdevtools
 - rpm-build
+- gcc
