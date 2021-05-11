@@ -1,0 +1,22 @@
+summary: Test for BZ#1940289 abnormal exit on permission denied to a file
+contact: Dalibor Pospisil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+- library(ControlFlow/Cleanup)
+- library(selinux-policy/common)
+duration: 5m
+enabled: true
+environment:
+  AVC_ERROR: +no_avc_check
+tag:
+- CI-Tier-1
+- Tier1
+tier: '1'
+adjust:
+  - enabled: false
+    when: distro < rhel-8.4
+link:
+  verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1940289
+extra-summary: /fapolicyd/Regression/abnormal-exit
+extra-task: /fapolicyd/Regression/abnormal-exit
+extra-nitrate: TC#0610023
