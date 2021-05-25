@@ -1,0 +1,7 @@
+jobs:
+- job: tests
+  trigger: pull_request
+  metadata:
+    targets:
+    - fedora-rawhide
+    - epel-all
