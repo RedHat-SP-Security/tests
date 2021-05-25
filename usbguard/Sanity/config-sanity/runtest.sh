@@ -149,11 +149,13 @@ rlJournalStart
       find_path() {
         local distro ver p
         distro="$(. /etc/os-release; echo "$ID")"
+        [[ "$distro" == "centos" ]] && distro="rhel"
         ver=($(. /etc/os-release; echo "$VERSION_ID" | grep -o '[0-9]\+'))
-        rlLogDebug "$FUNCNAME(): distro=$distro, ver=( ${ver[*]} )"
+        rlLogInfo "$FUNCNAME(): distro=$distro, ver=( ${ver[*]} )"
+        [[ -z "${ver[1]}" ]] && ver[1]=12
         while :; do
           p="configs/$distro${ver[0]}${ver[1]:+.${ver[1]}}"
-          rlLogDebug "$FUNCNAME(): trying path $p"
+          rlLogInfo "$FUNCNAME(): trying path $p"
           [[ -d "$p" ]] && {
             echo "$p"
             return 0
