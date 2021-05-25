@@ -1,0 +1,7 @@
+summary: check the changed tests functionality
+discover:
+    how: fmf
+    modified-only: True
+
+execute:
+    how: tmt
