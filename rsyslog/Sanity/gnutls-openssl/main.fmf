@@ -1,0 +1,47 @@
+summary: a sanity test for TLS communication
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require:
+- library(rsyslog/basic)
+- library(distribution/dpcommon)
+- library(ControlFlow/ConditionalPhases)
+recommend:
+- rsyslog
+- gnutls
+- gnutls-utils
+- rsyslog-gnutls
+duration: 15m
+enabled: true
+tag:
+- Tier1
+tier: '1'
+adjust:
+-   enabled: false
+    when: distro < rhel-7
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-7.8
+    continue: false
+/gtls:
+    environment:
+        CONDITIONAL_PHASES_BL: ossl
+    extra-nitrate: TC#0610733
+    extra-summary: CONDITIONAL_PHASES_BL=ossl /rsyslog/Sanity/gnutls-openssl
+/ossl:
+    environment:
+        CONDITIONAL_PHASES_BL: gtls
+    adjust:
+    -   enabled: false
+        when: distro < rhel-8.5
+        continue: false
+    extra-nitrate: TC#0610735
+    extra-summary: CONDITIONAL_PHASES_BL=gtls /rsyslog/Sanity/gnutls-openssl
+/interoperability:
+    environment:
+        CONDITIONAL_PHASES_WL: '-'
+    adjust:
+    -   enabled: false
+        when: distro < rhel-8.5
+        continue: false
+    extra-nitrate: TC#0610734
+    extra-summary: CONDITIONAL_PHASES_WL=- /rsyslog/Sanity/gnutls-openssl
