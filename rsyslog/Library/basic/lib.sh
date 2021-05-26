@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 49
+#   library-version = 50
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=49
+__INTERNAL_rsyslog_LIB_VERSION=50
 
 : <<'=cut'
 =pod
@@ -302,10 +302,12 @@ __INTERNAL_rsyslogConfigPatchSelection() {
   distro="$(. /etc/os-release; echo "$ID")"
   [[ "$distro" == "centos" ]] && distro="rhel"
   ver=($(. /etc/os-release; echo "$VERSION_ID" | grep -o '[0-9]\+'))
+  rlLogInfo "$FUNCNAME(): distro=$distro, ver=( ${ver[*]} )"
   [[ -z "${ver[1]}" ]] && ver[1]=12
   while :; do
     for ext in conf patch; do
       p="$1/$distro${ver[0]}${ver[1]:+.${ver[1]}}.$ext"
+      rlLogInfo "$FUNCNAME(): trying path $p"
       [[ -f "$p" ]] && {
         echo "$p"
         return 0
