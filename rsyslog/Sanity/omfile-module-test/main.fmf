@@ -14,9 +14,7 @@ component:
 - rsyslog
 - rsyslog5
 test: ./runtest.sh
-require:
-- library(rsyslog/basic)
-recommend:
+require+:
 - rsyslog
 - /usr/bin/file
 - /usr/bin/gunzip

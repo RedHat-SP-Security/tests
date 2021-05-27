@@ -7,11 +7,10 @@ component:
 - rsyslog5
 test: ./runtest.sh
 path: /rsyslog/Multihost/rsyslog-send-messages-to-remote
-require:
+require+:
 - library(distribution/dpcommon)
 - library(distribution/RpmSnapshot)
 - library(distribution/epel)
-- library(rsyslog/basic)
 - library(distribution/sync)
 recommend:
 - rsyslog

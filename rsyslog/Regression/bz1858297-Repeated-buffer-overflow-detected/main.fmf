@@ -4,9 +4,8 @@ description: |
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1858297
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
-require:
+require+:
 - library(distribution/dpcommon)
-- library(rsyslog/basic)
 recommend:
 - rsyslog
 - /usr/bin/nc

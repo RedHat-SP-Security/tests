@@ -5,8 +5,7 @@ description: |
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 path: /rsyslog/Sanity/bz672182-RFE-Provide-rate-limiting-support
-require:
-- library(rsyslog/basic)
+require+:
 - library(distribution/dpcommon)
 recommend:
 - rsyslog

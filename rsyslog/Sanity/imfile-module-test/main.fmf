@@ -20,8 +20,7 @@ component:
 - rsyslog
 - rsyslog5
 test: ./runtest.sh
-require:
-- library(rsyslog/basic)
+require+:
 - library(distribution/ConditionalPhases)
 - library(distribution/Cleanup)
 recommend:

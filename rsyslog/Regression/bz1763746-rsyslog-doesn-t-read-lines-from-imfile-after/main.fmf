@@ -4,9 +4,8 @@ description: |
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1763746
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
-require:
+require+:
 - library(distribution/dpcommon)
-- library(rsyslog/basic)
 recommend:
 - rsyslog
 duration: 15m

@@ -4,8 +4,7 @@ description: |
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1419228
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
-require:
-- library(rsyslog/basic)
+require+:
 - library(distribution/ConditionalPhases)
 recommend:
 - rsyslog

@@ -6,9 +6,8 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - rsyslog
 test: ./runtest.sh
-require:
+require+:
 - library(distribution/dpcommon)
-- library(rsyslog/basic)
 recommend:
 - rsyslog
 duration: 5m

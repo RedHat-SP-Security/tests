@@ -2,7 +2,7 @@ summary: various-simple-checks
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
-require:
+require+:
 - library(distribution/RpmSnapshot)
 recommend:
 - rsyslog

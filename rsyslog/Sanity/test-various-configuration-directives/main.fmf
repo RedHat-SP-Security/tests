@@ -5,9 +5,7 @@ description: "The test tests various configuration directives \n(see http://www.
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 path: /rsyslog/Sanity/test-various-configuration-directives
-require:
-- url: https://github.com/RedHat-SP-Security/tests.git
-  name: /rsyslog/Library/basic
+require+:
 - library(distribution/ConditionalPhases)
 - library(distribution/Cleanup)
 recommend:

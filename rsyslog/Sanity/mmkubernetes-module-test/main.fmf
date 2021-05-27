@@ -2,9 +2,8 @@ summary: basic sanity check for mmkubernetes module
 description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
-require:
+require+:
 - library(distribution/dpcommon)
-- library(rsyslog/basic)
 recommend:
 - rsyslog
 - rsyslog-mmjsonparse

@@ -17,8 +17,7 @@ description: |+
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 path: /rsyslog/Sanity/imtcp-module-test
-require:
-- library(rsyslog/basic)
+require+:
 - library(distribution/tcf)
 - library(distribution/Cleanup)
 - library(selinux-policy/common)

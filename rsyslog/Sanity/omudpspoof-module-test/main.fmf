@@ -6,9 +6,7 @@ contact: Attila Lakatos <alakatos@redhat.com>
 component:
 - rsyslog
 test: ./runtest.sh
-require:
-- url: https://github.com/RedHat-SP-Security/tests.git
-  name: /rsyslog/Library/basic
+require+:
 - library(distribution/ConditionalPhases)
 - library(distribution/Cleanup)
 - rsyslog

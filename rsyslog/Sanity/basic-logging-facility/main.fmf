@@ -3,9 +3,7 @@ description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 path: /rsyslog/Sanity/basic-logging-facility
-require:
-- library(rsyslog/basic)
-recommend:
+require+:
 - rsyslog
 duration: 10m
 enabled: true
