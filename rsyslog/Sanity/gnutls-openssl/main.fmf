@@ -1,8 +1,7 @@
 summary: a sanity test for TLS communication
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
-require:
-- library(rsyslog/basic)
+require+:
 - library(distribution/dpcommon)
 - library(ControlFlow/ConditionalPhases)
 recommend:
