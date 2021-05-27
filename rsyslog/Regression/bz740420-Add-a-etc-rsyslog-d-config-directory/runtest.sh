@@ -35,15 +35,15 @@ rpm -q rsyslog5 && PACKAGE="rsyslog5"
 
 rlJournalStart
     rlPhaseStartSetup
-      rlImport --all
-      rlTry "Setup phase" && {
-        rlAssertRpm $PACKAGE; rlE2R
-        rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"; rlE2R
-        rlRun "pushd $TmpDir"; rlE2R
+      rlRun "rlImport --all" || rlDie 'cannot continue'
+      tcfTry "Setup phase" && {
+        rlAssertRpm $PACKAGE
+        rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
+        rlRun "pushd $TmpDir"
 	rlRun "echo 'local1.* /var/log/bz740420.log1' > /etc/rsyslog.d/bz740420-1.conf"
 	rlRun "echo 'local2.* /var/log/bz740420.log2' > /etc/rsyslog.d/bz740420-2.conf"
 	rlServiceStart rsyslog
-      rlFin; }
+      tcfFin; }
     rlPhaseEnd
 
   # run the test only in case rsyslog5 is installed on RHEL-5 or RHEL >=6
@@ -53,28 +53,26 @@ rlJournalStart
     rlPhaseEnd
   else
     rlPhaseStartTest
-      rlTry "Test phase" && {
-        rlChk "Check that /etc/rsyslog.d exists" && {
-          test -d /etc/rsyslog.d
-        rlFin; }
+      tcfTry "Test phase" && {
+        rlAssertExists /etc/rsyslog.d
         rlRun "logger -p local1.info 'test message 1'"
         rlRun "logger -p local2.info 'test message 2'"
 	sleep 1
 	rlAssertGrep "test message 1" /var/log/bz740420.log1
 	rlAssertGrep "test message 2" /var/log/bz740420.log2
-      rlFin; }
+      tcfFin; }
     rlPhaseEnd
 
   fi
 
     rlPhaseStartCleanup
       rlChk "Cleanup phase" && {
-        rlRun "popd"; rlE2R
-        rlRun "rm -r $TmpDir" 0 "Removing tmp directory"; rlE2R
+        rlRun "popd"
+        rlRun "rm -r $TmpDir" 0 "Removing tmp directory"
 	rlRun "rm /etc/rsyslog.d/bz740420-1.conf /etc/rsyslog.d/bz740420-2.conf /var/log/bz740420.log1 /var/log/bz740420.log2"
 	rlServiceRestore rsyslog
-      rlFin; }
-      rlTCFcheckFinal
+      tcfFin; }
+      tcfCheckFinal
     rlPhaseEnd
 rlJournalPrintText
 rlJournalEnd

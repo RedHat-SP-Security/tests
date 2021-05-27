@@ -9,9 +9,8 @@ component:
 - rsyslog
 - rsyslog5
 test: ./runtest.sh
-require:
-- library(rsyslog/basic)
-- test(/CoreOS/beaker/plugin-tcf)
+require+:
+- library(distribution/tcf)
 recommend:
 - rsyslog
 duration: 5m

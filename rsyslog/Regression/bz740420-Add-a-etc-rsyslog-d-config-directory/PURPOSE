@@ -1,5 +1,0 @@
-PURPOSE of /CoreOS/rsyslog/Regression/bz740420-Add-a-etc-rsyslog-d-config-directory
-Description: Test for bz740420 (Add a /etc/rsyslog.d config directory)
-Author: Dalibor Pospisil <dapospis@dapospis.redhat>
-Bug summary: Add a /etc/rsyslog.d config directory
-Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=740420
