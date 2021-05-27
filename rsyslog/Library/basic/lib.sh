@@ -302,13 +302,14 @@ __INTERNAL_rsyslogConfigPatchSelection() {
   distro="$(. /etc/os-release; echo "$ID")"
   [[ "$distro" == "centos" ]] && distro="rhel"
   ver=($(. /etc/os-release; echo "$VERSION_ID" | grep -o '[0-9]\+'))
-  rlLogInfo "$FUNCNAME(): distro=$distro, ver=( ${ver[*]} )"
+  rlLogInfo "distro=$distro, ver=( ${ver[*]} )"
   [[ -z "${ver[1]}" ]] && ver[1]=12
   while :; do
     for ext in conf patch; do
       p="$1/$distro${ver[0]}${ver[1]:+.${ver[1]}}.$ext"
-      rlLogInfo "$FUNCNAME(): trying path $p"
+      rlLogDebug "$FUNCNAME(): trying path $p"
       [[ -f "$p" ]] && {
+        rlLogInfo "found path $p"
         echo "$p"
         return 0
       }
