@@ -74,7 +74,7 @@ rlJournalStart && {
       start_time=$(date +"%F %T")
       rlRun "su - $testUser -c '$PWD/ls'" 126
       rlRun -s "journalctl --no-pager --since=\"$start_time\""
-      rlAssertGrep 'rule=[0-9]+ dec=deny_syslog perm=execute auid=[0-9]+ pid=[0-9]+ exe=/usr/bin/bash : path=/tmp/[^/]+/ls ftype=application/x-executable' $rlRun_LOG -Eq
+      rlAssertGrep 'rule=[0-9]+ dec=deny_syslog perm=execute auid=[-0-9]+ pid=[0-9]+ exe=/usr/bin/bash : path=/tmp/[^/]+/ls ftype=application/x-executable' $rlRun_LOG -Eq
       rm -f $rlRun_LOG
       CleanupDo --mark
     rlPhaseEnd; }
