@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 50
+#   library-version = 51
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=50
+__INTERNAL_rsyslog_LIB_VERSION=51
 
 : <<'=cut'
 =pod
@@ -1174,9 +1174,9 @@ rsyslogServiceRestore() {
 
 rsyslogServiceStatus() {
   if rlIsRHEL '<7'; then
-    PAGER= rlRun "service rsyslog status"
+    PAGER= service rsyslog status
   else
-    PAGER= rlRun "systemctl status -l rsyslog"
+    PAGER= systemctl status -l rsyslog
   fi
 }
 
