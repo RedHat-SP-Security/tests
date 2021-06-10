@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 51
+#   library-version = 52
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=51
+__INTERNAL_rsyslog_LIB_VERSION=52
 
 : <<'=cut'
 =pod
@@ -50,7 +50,7 @@ This library covers rsyslog checks for dual components like rsyslog and rsyslog7
 echo -n "loading library $__INTERNAL_rsyslog_LIB_NAME v$__INTERNAL_rsyslog_LIB_VERSION... "
 
 
-__INTERNAL_rsyslog_LIB_PATH="$( dirname "${BASH_SOURCE[0]}" )"
+__INTERNAL_rsyslog_LIB_PATH="$( dirname "$( readlink -e "${BASH_SOURCE[0]}" )" )"
 __INTERNAL_rsyslog_STORE=/var/tmp/rsyslog-lib
 
 
