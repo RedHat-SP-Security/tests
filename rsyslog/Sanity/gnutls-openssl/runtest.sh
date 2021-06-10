@@ -175,10 +175,17 @@ EOF
         rlRun "rsyslogServiceStart"
         rlRun "rsyslogServiceStatus"
       tcfFin; }
-      tcfTry "setup gtls" && {
+      tcfTry "test gtls" && {
+        rlRun "tshark -i any -f 'tcp port 6514' -a 'filesize:100' -w wireshark.dump 2>tshark.stderr &" 0 "Running wireshark"
+        TSHARK_PID=$!
+        sleep 1
         rlRun "logger 'test message'"
         rlRun "sleep 3s"
         rlAssertGrep 'test message' $rsyslogServerLogDir/messages
+        ps -p $TSHARK_PID &> /dev/null && kill $TSHARK_PID; sleep 3
+        rlRun "cat tshark.stderr"
+        rlRun "rm -f tshark.stderr"
+        rlRun "tshark -V -r wireshark.dump | grep 'test message'" 1 "wireshark log should not contain unencrypted message"; :
       tcfFin; }
     rlPhaseEnd; tcfFin; }
 
@@ -193,9 +200,16 @@ EOF
         rlRun "rsyslogServiceStatus"
       tcfFin; }
       tcfTry "setup ossl" && {
+        rlRun "tshark -i any -f 'tcp port 6514' -a 'filesize:100' -w wireshark.dump 2>tshark.stderr &" 0 "Running wireshark"
+        TSHARK_PID=$!
+        sleep 1
         rlRun "logger 'test message'"
         rlRun "sleep 3s"
         rlAssertGrep 'test message' $rsyslogServerLogDir/messages
+        ps -p $TSHARK_PID &> /dev/null && kill $TSHARK_PID; sleep 3
+        rlRun "cat tshark.stderr"
+        rlRun "rm -f tshark.stderr"
+        rlRun "tshark -V -r wireshark.dump | grep 'test message'" 1 "wireshark log should not contain unencrypted message"; :
       tcfFin; }
     rlPhaseEnd; tcfFin; }
 
@@ -210,9 +224,16 @@ EOF
         rlRun "rsyslogServiceStatus"
       tcfFin; }
       tcfTry "setup gtls->ossl" && {
+        rlRun "tshark -i any -f 'tcp port 6514' -a 'filesize:100' -w wireshark.dump 2>tshark.stderr &" 0 "Running wireshark"
+        TSHARK_PID=$!
+        sleep 1
         rlRun "logger 'test message'"
         rlRun "sleep 3s"
         rlAssertGrep 'test message' $rsyslogServerLogDir/messages
+        ps -p $TSHARK_PID &> /dev/null && kill $TSHARK_PID; sleep 3
+        rlRun "cat tshark.stderr"
+        rlRun "rm -f tshark.stderr"
+        rlRun "tshark -V -r wireshark.dump | grep 'test message'" 1 "wireshark log should not contain unencrypted message"; :
       tcfFin; }
     rlPhaseEnd; tcfFin; }
 
@@ -227,9 +248,16 @@ EOF
         rlRun "rsyslogServiceStatus"
       tcfFin; }
       tcfTry "test ossl->gtls" && {
+        rlRun "tshark -i any -f 'tcp port 6514' -a 'filesize:100' -w wireshark.dump 2>tshark.stderr &" 0 "Running wireshark"
+        TSHARK_PID=$!
+        sleep 1
         rlRun "logger 'test message'"
         rlRun "sleep 3s"
         rlAssertGrep 'test message' $rsyslogServerLogDir/messages
+        ps -p $TSHARK_PID &> /dev/null && kill $TSHARK_PID; sleep 3
+        rlRun "cat tshark.stderr"
+        rlRun "rm -f tshark.stderr"
+        rlRun "tshark -V -r wireshark.dump | grep 'test message'" 1 "wireshark log should not contain unencrypted message"; :
       tcfFin; }
     rlPhaseEnd; tcfFin; }; :
   tcfFin; }

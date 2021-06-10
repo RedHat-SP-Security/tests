@@ -9,6 +9,7 @@ recommend:
 - gnutls
 - gnutls-utils
 - rsyslog-gnutls
+- /usr/bin/tshark
 duration: 15m
 enabled: true
 tag:
