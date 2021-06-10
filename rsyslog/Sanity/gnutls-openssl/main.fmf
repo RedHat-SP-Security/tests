@@ -33,6 +33,8 @@ adjust:
     -   enabled: false
         when: distro < rhel-8.5
         continue: false
+    link:
+      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1891458
     extra-nitrate: TC#0610735
     extra-summary: CONDITIONAL_PHASES_BL=gtls /rsyslog/Sanity/gnutls-openssl
 /interoperability:
