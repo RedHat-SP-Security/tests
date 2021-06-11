@@ -1,0 +1,15 @@
+summary: Test for BZ#1960536 rsyslog fd leak when Fsync="on" is set
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 10m
+tag:
+- Tier3
+- CI-Tier-1
+tier: '3'
+adjust:
+-   enabled: false
+    when: distro < rhel-8.5
+link:
+-   verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1960536
+extra-summary: /rsyslog/Regression/bz1960536-imjournal-fsync-fd-leak
+extra-nitrate: TC#0610838
