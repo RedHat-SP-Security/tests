@@ -25,7 +25,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-. /usr/lib/beakerlib/beakerlib.sh || exit 1
+. /usr/share/beakerlib/beakerlib.sh || exit 1
 PACKAGE="rsyslog"
 
 rlJournalStart
