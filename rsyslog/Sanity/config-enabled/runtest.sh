@@ -208,17 +208,17 @@ EOF
 
     rlPhaseStartTest 'config.enabled - parser, bz1659383' && {
       rsyslogConfigReplace "TEST1" /etc/rsyslog.conf <<'EOF'
-parser(name="parser.rfc3164" type="rsyslog.rfc3164")
+parser(name="parser.rfc3164" type="pmrfc3164")
 ruleset(name="myRuleset" parser="parser.rfc3164") {}
 EOF
       check_config_startservice_and_check_log "" "parser 'parser.rfc3164' unknown"
       rsyslogConfigReplace "TEST1" /etc/rsyslog.conf <<'EOF'
-parser(name="parser.rfc3164" type="rsyslog.rfc3164" config.enabled="off")
+parser(name="parser.rfc3164" type="pmrfc3164" config.enabled="off")
 ruleset(name="myRuleset" parser="parser.rfc3164" config.enabled="off") {}
 EOF
       check_config_startservice_and_check_log "" "parser 'parser.rfc3164' unknown"
       rsyslogConfigReplace "TEST1" /etc/rsyslog.conf <<'EOF'
-parser(name="parser.rfc3164" type="rsyslog.rfc3164" config.enabled="on")
+parser(name="parser.rfc3164" type="pmrfc3164" config.enabled="on")
 ruleset(name="myRuleset" parser="parser.rfc3164") {}
 EOF
       check_config_startservice_and_check_log "" "parser 'parser.rfc3164' unknown"
