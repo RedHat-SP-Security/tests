@@ -5,6 +5,6 @@ test: ./runtest.sh
 path: /rsyslog/Sanity/basic-logging-facility
 require+:
 - rsyslog
-duration: 10m
+duration: 30m
 enabled: true
 extra-task: /CoreOS/rsyslog/Sanity/basic-logging-facility
