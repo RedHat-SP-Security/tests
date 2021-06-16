@@ -26,4 +26,5 @@ adjust:
     continue: false
 extra-summary: /rsyslog/Sanity/imrelp-omrelp-module-test
 link:
-  verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1932783
+    verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1932783
+extra-nitrate: TC#0610860
