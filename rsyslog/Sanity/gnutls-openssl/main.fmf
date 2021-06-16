@@ -4,12 +4,8 @@ test: ./runtest.sh
 require+:
 - library(distribution/dpcommon)
 - library(ControlFlow/ConditionalPhases)
-recommend:
-- rsyslog
-- gnutls
-- gnutls-utils
-- rsyslog-gnutls
 - /usr/bin/tshark
+- /usr/bin/certtool
 duration: 15m
 enabled: true
 tag:
@@ -23,11 +19,15 @@ adjust:
     when: distro ~< rhel-7.8
     continue: false
 /gtls:
+    require+:
+      - rsyslog-gnutls
     environment:
         CONDITIONAL_PHASES_BL: ossl
     extra-nitrate: TC#0610733
     extra-summary: CONDITIONAL_PHASES_BL=ossl /rsyslog/Sanity/gnutls-openssl
 /ossl:
+    require+:
+      - rsyslog-openssl
     environment:
         CONDITIONAL_PHASES_BL: gtls
     adjust:
@@ -39,6 +39,9 @@ adjust:
     extra-nitrate: TC#0610735
     extra-summary: CONDITIONAL_PHASES_BL=gtls /rsyslog/Sanity/gnutls-openssl
 /interoperability:
+    require+:
+      - rsyslog-gnutls
+      - rsyslog-openssl
     environment:
         CONDITIONAL_PHASES_WL: '-'
     adjust:
