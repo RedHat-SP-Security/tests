@@ -16,6 +16,7 @@ duration: 15m
 enabled: true
 tag:
 - Tier1
+- CI-Tier-1
 tier: '1'
 adjust:
 -   enabled: false
