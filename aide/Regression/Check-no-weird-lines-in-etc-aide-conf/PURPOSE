@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/aide/Regression/Check-no-weird-lines-in-etc-aide-conf
+Description: Check no weird lines in /etc/aide.conf
+Author: Martin Zeleny <mzeleny@redhat.com>
