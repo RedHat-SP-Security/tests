@@ -1,0 +1,26 @@
+summary: Check no weird lines in /etc/aide.conf
+description: ''
+contact: Martin Zelený <mzeleny@redhat.com>
+component:
+- aide
+test: ./runtest.sh
+recommend:
+- aide
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- NoRHEL6
+- NoRHEL7
+- Tier2
+tier: '2'
+link:
+-   relates: https://bugzilla.redhat.com/show_bug.cgi?id=1957654
+-   relates: https://bugzilla.redhat.com/show_bug.cgi?id=1957656
+adjust:
+-   enabled: false
+    when: distro < rhel-9
+    continue: false
+extra-nitrate: TC#0610996
+extra-summary: /CoreOS/aide/Regression/Check-no-weird-lines-in-etc-aide-conf
+extra-task: /CoreOS/aide/Regression/Check-no-weird-lines-in-etc-aide-conf
