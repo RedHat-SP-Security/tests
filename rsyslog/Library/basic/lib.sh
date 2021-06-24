@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 52
+#   library-version = 53
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=52
+__INTERNAL_rsyslog_LIB_VERSION=53
 
 : <<'=cut'
 =pod
@@ -1002,6 +1002,14 @@ rsyslogServerStop() {
     done
     return 1
   fi
+  return $res
+}
+
+
+rsyslogServerStatus() {
+  local res=0
+  rlRun "journalctl -n 10 --no-pager _PID=$(cat $rsyslogServerPidFile)"
+  kill -0 $(cat $rsyslogServerPidFile)
   return $res
 }
 

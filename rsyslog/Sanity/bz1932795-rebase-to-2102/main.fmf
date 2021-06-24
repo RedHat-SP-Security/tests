@@ -1,0 +1,17 @@
+summary: Test for BZ#1932795 rsyslog rebase to 2102
+contact: Attila Lakatos <alakatos@redhat.com>
+test: ./runtest.sh
+duration: 10m
+require+:
+- rsyslog
+tag:
+- Tier2
+- CI-Tier-1
+tier: '2'
+adjust:
+-   enabled: false
+    when: distro < rhel-8.5
+link:
+-   verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1932795
+extra-summary: /rsyslog/Sanity/bz1932795-rebase-to-2102
+extra-nitrate: TC#0611069
