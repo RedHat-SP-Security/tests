@@ -1,0 +1,21 @@
+summary: Test for BZ#1866877 pasring msg's PRIORITY
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 10m
+require+:
+- library(epel/epel)
+- library(rpm/snapshot)
+recommned:
+- Lmod
+- ansible
+tag:
+- Tier2
+- CI-Tier-1
+tier: '2'
+adjust:
+-   enabled: false
+    when: distro < rhel-8.5
+link:
+-   verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1866877
+extra-summary: /rsyslog/Regression/bz1866877-parsing-msg
+extra-nitrate: TC#0611000
