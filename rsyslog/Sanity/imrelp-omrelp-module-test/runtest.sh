@@ -177,8 +177,15 @@ EOF
                         server_config $server_driver
                         > $rsyslogServerLogDir/messages
                         rlRun "rsyslogServerStart"
+                        rlRun -s "rsyslogServerStatus"
+                        rlAssertGrep "rsyslogd" $rlRun_LOG
+                        rlAssertNotGrep "ignored" $rlRun_LOG
+                        rm -f $rlRun_LOG
                         rlRun "rsyslogServiceStart"
-                        rlRun "rsyslogServiceStatus"
+                        rlRun -s "rsyslogServiceStatus"
+                        rlAssertGrep "rsyslogd" $rlRun_LOG
+                        rlAssertNotGrep "ignored" $rlRun_LOG
+                        rm -f $rlRun_LOG
                     tcfFin; }
                     tcfTry "Send messages" && {
                         rlAssertNotGrep 'test message' $rsyslogServerLogDir/messages
