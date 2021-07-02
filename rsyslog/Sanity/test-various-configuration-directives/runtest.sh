@@ -281,6 +281,7 @@ EOF
       rlRun "rsyslogPrintEffectiveConfig -n"
       rlRun "rsyslogServiceStatus"
       rlRun "logger -p local0.info test"
+      rlRun "sleep 3s"
       rsyslogServiceStop
       rlRun -s "rsyslogCatLogFileFromPointer /var/log/messages | grep -v restraintd"
       rlAssertNotGrep 'error during parsing' $rlRun_LOG -Eqi
