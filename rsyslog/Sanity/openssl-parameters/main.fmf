@@ -1,0 +1,21 @@
+summary: openssl connection parameters
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+- library(distribution/dpcommon)
+- library(ControlFlow/ConditionalPhases)
+- /usr/bin/certtool
+- /usr/bin/tshark
+- rsyslog-openssl
+- rsyslog-relp
+- librelp
+duration: 15m
+enabled: true
+tag:
+- Tier2
+tier: '2'
+adjust:
+-   enabled: false
+    when: distro < rhel-8.5
+    continue: false
+extra-summary: /rsyslog/Sanity/openssl-parameters
