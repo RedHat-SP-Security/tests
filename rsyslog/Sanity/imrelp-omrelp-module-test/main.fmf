@@ -12,6 +12,7 @@ recommend:
 - rsyslog-gnutls
 - openssl
 - librelp
+- rpmlint
 duration: 15m
 enabled: true
 tag:
