@@ -2,6 +2,8 @@ summary: Test for BZ#1960536 rsyslog fd leak when Fsync="on" is set
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 duration: 10m
+require+:
+- /usr/bin/lsof
 tag:
 - Tier3
 - CI-Tier-1
