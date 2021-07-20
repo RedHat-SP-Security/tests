@@ -75,13 +75,15 @@ rlJournalStart && {
       rlSESearchRule "allow fapolicyd_t fapolicyd_var_run_t : file { create open read write } [ ]"
     rlPhaseEnd; }
 
-    rlPhaseStartTest "runnign daemon" && {
+    rlPhaseStartTest "running daemon" && {
+      rlSESetTimestamp
       CleanupRegister --mark 'rlRun "fapServiceStop"'
       rlRun "fapServiceStart"
       rlRun "sleep 3s"
       rlRun -s "ps uaxZ | grep -v grep | grep fapolicyd"
       rlAssertGrep ':fapolicyd_t:' $rlRun_LOG -E
       rm -f $rlRun_LOG
+      rlRun "rlSEAVCCheck"
       CleanupDo --mark
     rlPhaseEnd; }
   tcfFin; }
