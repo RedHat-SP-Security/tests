@@ -9,6 +9,8 @@ require+:
 - library(selinux-policy/common)
 - fapolicyd
 - fapolicyd-selinux
+- /usr/sbin/mkfs.ext4
+- /usr/bin/dd
 environment:
   AVC_ERROR: +no_avc_check
 duration: 15m
