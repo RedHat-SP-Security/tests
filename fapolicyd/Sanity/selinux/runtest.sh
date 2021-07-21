@@ -40,6 +40,14 @@ rlJournalStart && {
     CleanupRegister "rlRun 'rm -r $TmpDir' 0 'Removing tmp directory'"
     CleanupRegister 'rlRun "popd"'
     rlRun "pushd $TmpDir"
+
+    CleanupRegister 'rlRun "rm -f ./disk.img"'
+    rlRun "dd if=/dev/zero of=./disk.img bs=1M count=1 skip=1024"
+    rlRun "mkfs.ext4 ./disk.img"
+    rlRun "mkdir ./mount_point"
+    CleanupRegister 'rlRun "umount -fl ./mount_point"'
+    rlRun "mount -o loop ./disk.img ./mount_point"
+    rlRun "mount"
     CleanupRegister 'rlRun "rlFileRestore"'
     rlRun "rlFileBackup --clean /etc/usbguard"
     CleanupRegister 'rlRun "fapCleanup"'
