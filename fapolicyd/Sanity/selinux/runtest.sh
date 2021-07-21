@@ -48,6 +48,7 @@ rlJournalStart && {
     CleanupRegister 'rlRun "umount -fl ./mount_point"'
     rlRun "mount -o loop ./disk.img ./mount_point"
     rlRun "mount"
+    rlRun "ls -ldZ ./mount_point"
     CleanupRegister 'rlRun "rlFileRestore"'
     rlRun "rlFileBackup --clean /etc/usbguard"
     CleanupRegister 'rlRun "fapCleanup"'
