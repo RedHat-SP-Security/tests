@@ -13,7 +13,6 @@ recommend:
 duration: 60m
 enabled: true
 tag:
-- CI-Tier-1
 - Tier2
 tier: '2'
 adjust:
