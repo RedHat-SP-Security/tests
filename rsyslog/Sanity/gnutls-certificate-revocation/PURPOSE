@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/rsyslog/Sanity/gnutls-certificate-revocation
+Description: Test for GnuTLS certificate revocation checking (stapled OCSP)
+Author: Anderson Toshiyuki Sasaki <ansasaki@redhat.com>
