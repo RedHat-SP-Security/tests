@@ -1,0 +1,32 @@
+summary: Test for GnuTLS certificate revocation checking (stapled OCSP)
+description: ''
+contact: Anderson Toshiyuki Sasaki <ansasaki@redhat.com>
+component:
+- rsyslog
+test: ./runtest.sh
+require:
+- library(openssl/certgen)
+recommend:
+- rsyslog
+- openssl
+- rsyslog-gnutls
+- policycoreutils-python-utils
+duration: 5m
+enabled: true
+tag:
+- NoRHEL4
+- NoRHEL5
+- NoRHEL6
+- NoRHEL7
+- TIPfail
+- TIPfail_Security
+- rhel-8.0.0
+extra-summary: /CoreOS/rsyslog/Sanity/gnutls-certificate-revocation
+extra-task: /CoreOS/rsyslog/Sanity/gnutls-certificate-revocation
+adjust:
+-   enabled: false
+    when: distro ~< rhel-8.2
+    continue: false
+-   enabled: false
+    when: distro < rhel-8
+    continue: false
