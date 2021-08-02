@@ -159,7 +159,8 @@ rlJournalStart && {
 
     rlPhaseStartTest "ftype - file AC8" && {
       rlRun "cp $(rpm -qal | grep '\.pyc$' | head -n 1) files/application_x-bytecode.python_.pyc"
-      rlRun "cp $(rpm -qal | grep '\.so$' | head -n 1) files/application_x-sharedlib_.so"
+      rlRun "cp $(rpm -qal | grep '\.so$' | grep -v libc | head -n 1) files/application_x-sharedlib_non-libc.so"
+      rlRun "cp $(rpm -ql glibc | grep 'libc.*\.so$' | head -n1) files/application_x-sharedlib_libc.so"
       rlRun "cp /bin/bash files/application_x-executable_bash"
       while IFS=_ read -r ftype1 ftype2 rest; do
         tcfChk "checking files/${ftype1}_${ftype2}_$rest for ${ftype1}/${ftype2}" && {
@@ -193,6 +194,7 @@ rlJournalStart && {
       rlRun "diff -u $a $b"
       rm -f $a $b
     rlPhaseEnd; }
+    :
   tcfFin; }
 
   rlPhaseStartCleanup && {
