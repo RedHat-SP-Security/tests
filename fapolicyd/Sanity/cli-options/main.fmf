@@ -30,3 +30,5 @@ adjust:
 -   enabled: false
     when: distro ~< rhel-8.3
     continue: false
+link:
+    verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1989272
