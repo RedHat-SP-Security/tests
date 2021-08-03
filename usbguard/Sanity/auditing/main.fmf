@@ -14,12 +14,10 @@ tier: '1'
   environment:
     auditTARGET: file
   extra-summary: auditTARGET=file /usbguard/Sanity/auditing
-  extra-task: /usbguard/Sanity/auditing
   extra-nitrate: TC#0610001
 /audit:
   summary: Check auditing to audit
   environment:
     auditTARGET: audit
   extra-summary: auditTARGET=audit /usbguard/Sanity/auditing
-  extra-task: /usbguard/Sanity/auditing
   extra-nitrate: TC#0610000
