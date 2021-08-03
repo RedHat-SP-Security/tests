@@ -72,7 +72,7 @@ EOF'
 
     rlPhaseStartCleanup
         rlRun "popd"
-        rlRun "userdel -r ${TESTUSER}"
+        rlRun "userdel -fr ${TESTUSER}"
         rlRun "rlFileRestore"
         rlRun "echo ${PROTECTED_SYMLINKS_BACKUP_VAL} > ${PROTECTED_SYMLINKS}" 0 "Disable symlink protection"
     rlPhaseEnd

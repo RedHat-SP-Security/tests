@@ -47,7 +47,7 @@ rlJournalStart
 	_LOG_FILE="${TmpDir}/${_LOG_FILE}"
 	rlRun "pushd $TmpDir"
 	rlFileBackup "${_SUDOERS_F}"
-	id ${_USER_TEST} && rlRun "userdel -r ${_USER_TEST}" 0 "Cleaning testuser"
+	id ${_USER_TEST} && rlRun "userdel -fr ${_USER_TEST}" 0 "Cleaning testuser"
 	rlRun "useradd ${_USER_TEST} && echo \"${_USER_TEST_PASSWORD}\" | passwd --stdin ${_USER_TEST}"
 	rlRun "useradd ${_USER_TEST2} && echo \"${_USER_TEST_PASSWORD}\" | passwd --stdin ${_USER_TEST2}"
         rlRun "sed -i '/requiretty/d' ${_SUDOERS_F}" 0 "Removing 'requiretty' settings from config file"
