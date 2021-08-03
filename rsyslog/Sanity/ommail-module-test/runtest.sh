@@ -94,8 +94,8 @@ rlJournalStart
 
     rlPhaseStartCleanup
       if rlIsRHEL '>5' || rlIsFedora || ! rpm -q rsyslog; then
-	rlRun "userdel -r operator1"
-	rlRun "userdel -r operator2"
+	rlRun "userdel -fr operator1"
+	rlRun "userdel -fr operator2"
         rlRun "popd"
         rlRun "rm -r $TmpDir /var/log/ommail-test.log" 0 "Removing tmp directory and logfile"
 	rlRun "setsebool logging_syslogd_can_sendmail 0" 0 "Disabling logging_syslogd_can_sendmail selinux boolean"

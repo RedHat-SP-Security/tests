@@ -75,10 +75,11 @@ rlJournalStart
     rlPhaseEnd
 
     rlPhaseStartCleanup
-        rlRun "userdel --remove ${TESTUSER}" 0
+        rlRun "userdel -fr ${TESTUSER}" 0
         rlRun "popd"
         rlRun "rm -r ${TmpDir}" 0 "Removing tmp directory"
     rlPhaseEnd
 
 rlJournalPrintText
 rlJournalEnd
+

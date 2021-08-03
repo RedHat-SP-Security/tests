@@ -76,7 +76,7 @@ rlJournalStart
     rlPhaseStartCleanup
         rlRun "fapCleanup"
         rlRun "popd"
-	rlRun "userdel $USER"
+	rlRun "userdel -fr $USER"
 	rlRun "rm -rf /home/$USER"
 	rlRun "rm -rf $FAPOLICYD_LOG"
         rlRun "rm -rf $TmpDir" 0 "Removing tmp directory"

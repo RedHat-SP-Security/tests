@@ -70,7 +70,7 @@ EOF
     rlPhaseStartCleanup
         rlRun "fapCleanup"
         rlRun "popd"
-        rlRun "userdel xxx"
+        rlRun "userdel -fr xxx"
         rlRun "rm -r $TmpDir" 0 "Removing tmp directory"
     rlPhaseEnd
 rlJournalPrintText
