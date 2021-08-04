@@ -156,7 +156,7 @@ EOF
       rlRun "iptables -vnL INPUT"
       t=$(date +%s)
       rlRun "rsyslogServiceStop"
-      rlAssertLesserOrEqual "service stop should not timeout" $(($(date +%s)-$t)) 10
+      rlAssertLesserOrEqual "service stop should not timeout" $(($(date +%s)-$t)) 20
       rlRun -s "rsyslogServiceStatus" 3
       rlAssertGrep "loaded" $rlRun_LOG
       rlAssertNotGrep "killed" $rlRun_LOG
