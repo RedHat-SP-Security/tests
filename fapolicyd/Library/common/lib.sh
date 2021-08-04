@@ -25,7 +25,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = fap
-#   library-version = 19
+#   library-version = 20
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 true <<'=cut'
@@ -248,7 +248,7 @@ EOS
   rlRun "rpmbuild -ba ~/rpmbuild/SPECS/fapTestPackage.spec"
   rlRun "mv ~/rpmbuild/RPMS/*/fapTestPackage-* ./"
   rlRun "rm -rf ~/rpmbuild"
-  fapTestPackage=( $(find $PWD | grep 'fapTestPackage-') )
+  fapTestPackage=( $(find $PWD | grep 'fapTestPackage-' | sort) )
   fapTestProgram=/usr/local/bin/fapTestProgram
 }
 
