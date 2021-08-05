@@ -1,0 +1,18 @@
+summary: Legacy file path in unit file
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+- library(distribution/dpcommon)
+- usbguard
+duration: 5m
+enabled: true
+tag:
+- Tier3
+tier: '3'
+extra-summary: /CoreOS/usbguard/Sanity/legacy-file-path-in-unit-file
+extra-nitrate: TC#0611293
+adjust:
+- enabled: false
+  when: distro < rhel-7.9
+link:
+- verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1985627
