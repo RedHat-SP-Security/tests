@@ -1,0 +1,23 @@
+summary: Packages dependency relationship
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+- library(distribution/dpcommon)
+- usbguard
+- usbguard-selinux
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- Tier2
+- RHEL-8.5.0
+tier: '2'
+extra-summary: /CoreOS/usbguard/Sanity/inter-package-dependency
+extra-nitrate: TC#0611292
+adjust:
+- enabled: false
+  when: distro < rhel-8.5
+  continue: false
+link:
+- verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1986785
+- verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1963271
