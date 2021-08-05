@@ -2,13 +2,12 @@
 # vim: dict+=/usr/share/beakerlib/dictionary.vim cpt=.,w,b,u,t,i,k
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#   runtest.sh of /CoreOS/usbguard/Sanity/selinux
-#   Description: Test for BZ#1683567 ([RFE] SELinux policy (daemons) changes required)
+#   runtest.sh of /CoreOS/usbguard/Sanity/inter-package-dependency
 #   Author: Dalibor Pospisil <dapospis@redhat.com>
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#   Copyright (c) 2020 Red Hat, Inc.
+#   Copyright (c) 2021 Red Hat, Inc.
 #
 #   This copyrighted material is made available to anyone wishing
 #   to use, modify, copy, or redistribute it subject to the terms
