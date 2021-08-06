@@ -107,7 +107,7 @@ EOF
         rlAssertGrep "file could not be accessed for" $rlRun_LOG
     rlPhaseEnd; }
 
-    rlPhaseStartTest "Rsyslog WILL abort if security.abortOnIDResolutionFail=on(default) and user does not exist" && {
+    rsyslogVersion '>=8.2102.0' && rsyslogVersion '<8.2102.0-5' && rlPhaseStartTest "Rsyslog WILL abort if security.abortOnIDResolutionFail=on(default) and user does not exist" && {
         rsyslogConfigReplace "CUSTOM" <<EOF
 \$PrivDropToUser some-non-existing-username
 global(security.abortOnIDResolutionFail="on")
