@@ -13,11 +13,7 @@ tag:
 tier: '1'
 adjust:
 -   enabled: false
-    when: distro < rhel-7
-    continue: false
--   enabled: false
-    when: distro ~< rhel-7.8
-    continue: false
+    when: distro < rhel-8.5
 /gtls:
     require+:
       - rsyslog-gnutls
@@ -26,6 +22,8 @@ adjust:
     extra-nitrate: TC#0610733
     extra-summary: CONDITIONAL_PHASES_BL=ossl /rsyslog/Sanity/gnutls-openssl
 /ossl:
+    tag+:
+      - CI-Tier-1
     require+:
       - rsyslog-openssl
     environment:
@@ -36,9 +34,12 @@ adjust:
         continue: false
     link:
       - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1891458
+      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1972058
     extra-nitrate: TC#0610735
     extra-summary: CONDITIONAL_PHASES_BL=gtls /rsyslog/Sanity/gnutls-openssl
 /interoperability:
+    tag+:
+      - CI-Tier-1
     require+:
       - rsyslog-gnutls
       - rsyslog-openssl
@@ -50,3 +51,6 @@ adjust:
         continue: false
     extra-nitrate: TC#0610734
     extra-summary: CONDITIONAL_PHASES_WL=- /rsyslog/Sanity/gnutls-openssl
+    link:
+      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1891458
+      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1972058
