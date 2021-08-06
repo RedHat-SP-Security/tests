@@ -961,19 +961,19 @@ rsyslogServerStart() {
     rsyslogServerOut=( $(mktemp) "${rsyslogServerOut[@]}" )
     __INTERNAL_PrintText "starting rsyslog server via valgrind" "LOG"
     valgrind --leak-check=full rsyslogd -n -d -i $rsyslogServerPidFile -f $rsyslogServerConf > $rsyslogServerOut 2>&1 &
-    [[ -n ""$DEBUG ]] && tail -f $rsyslogServerOut &
+    [[ -n "$DEBUG" ]] && tail -f $rsyslogServerOut &
     local i
     for ((i=180; i>0; i--)); do
       grep -Eq 'RSYSLOGD INITIALIZED|rsyslogd: initialization completed' $rsyslogServerOut && {
         echo
-        [[ -n ""$DEBUG ]] && kill $!
+        [[ -n "$DEBUG" ]] && kill $!
         kill -USR1 $(cat $rsyslogServerPidFile)
         return 0
       }
       echo -n .
       sleep 1
     done
-    [[ -n ""$DEBUG ]] && kill $!
+    [[ -n "$DEBUG" ]] && kill $!
     return 1
   else
     __INTERNAL_PrintText "starting rsyslog server" "LOG"
