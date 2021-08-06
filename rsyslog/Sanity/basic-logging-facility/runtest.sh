@@ -143,6 +143,7 @@ rlJournalStart
                     else
                         rlAssertNotGrep "Test of message to facility $F with level $L" "$FILE"
                     fi
+                done
             done
         done
         rlRun "rm -f /var/log/rsyslog_test/*"
