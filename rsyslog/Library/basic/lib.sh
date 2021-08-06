@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 53
+#   library-version = 54
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=53
+__INTERNAL_rsyslog_LIB_VERSION=54
 
 : <<'=cut'
 =pod
@@ -989,6 +989,14 @@ rsyslogServerStop() {
   if [[ -s $rsyslogServerPidFile ]]; then
     __INTERNAL_PrintText "stopping rsyslog server" "LOG"
     kill $(cat $rsyslogServerPidFile) || let res++
+    local i
+    for ((i=60; i>0; i--)); do
+      kill -0 $(cat $rsyslogServerPidFile) >/dev/null 2>&1 || break
+      echo -n .
+      sleep 1
+    done
+    echo
+    kill -0 $(cat $rsyslogServerPidFile) >/dev/null 2>&1 && kill -9 $(cat $rsyslogServerPidFile)
   fi
   if [[ "$1" == "--valgrind" ]]; then
     local i
