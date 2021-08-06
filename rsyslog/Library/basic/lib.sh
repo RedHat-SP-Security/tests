@@ -991,12 +991,12 @@ rsyslogServerStop() {
     kill $(cat $rsyslogServerPidFile) || let res++
     local i
     for ((i=60; i>0; i--)); do
-      kill -0 $(cat $rsyslogServerPidFile) >/dev/null 2>&1 || break
+      kill -0 $(cat $rsyslogServerPidFile >/dev/null 2>&1) >/dev/null 2>&1 || break
       echo -n .
       sleep 1
     done
     echo
-    kill -0 $(cat $rsyslogServerPidFile) >/dev/null 2>&1 && kill -9 $(cat $rsyslogServerPidFile)
+    kill -0 $(cat $rsyslogServerPidFile >/dev/null 2>&1) >/dev/null 2>&1 && kill -9 $(cat $rsyslogServerPidFile)
   fi
   if [[ "$1" == "--valgrind" ]]; then
     local i
