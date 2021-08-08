@@ -30,3 +30,4 @@ adjust:
 -   enabled: false
     when: distro < rhel-8
     continue: false
+extra-nitrate: TC#0611304
