@@ -21,4 +21,3 @@ adjust:
   when: distro ~< rhel-7 || distro = fedora
 duration: 60m
 enabled: true
-extra-task: /CoreOS/rsyslog/Multihost/rsyslog-send-messages-to-remote
