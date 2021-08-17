@@ -4,6 +4,11 @@ test: ./runtest.sh
 duration: 10m
 require+:
 - rsyslog
+- gnutls-utils
+- rsyslog-gnutls
+- rsyslog-openssl
+- gnutls
+- openssl
 tag:
 - Tier2
 - CI-Tier-1
