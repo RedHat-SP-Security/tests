@@ -169,6 +169,12 @@ EOF
 
     tcfTry "Tests" --no-assert && {
 
+        rlPhaseStartTest "Ensure system crypto policies are used by default"
+            rlRun -s "rpmlint --info librelp" 0-64 "Check for common rpm problems"
+            rlAssertNotGrep "crypto-policy-non-compliance-gnutls" $rlRun_LOG
+            rlAssertNotGrep "crypto-policy-non-compliance-openssl" $rlRun_LOG
+        rlPhaseEnd;
+
         for client_driver in "gnutls" "openssl"; do
             for server_driver in "gnutls" "openssl"; do
                 rlPhaseStartTest "$client_driver -> $server_driver" && tcfChk && {
