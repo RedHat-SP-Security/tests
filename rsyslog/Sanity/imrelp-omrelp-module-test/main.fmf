@@ -4,6 +4,8 @@ test: ./runtest.sh
 require+:
 - library(distribution/dpcommon)
 - library(ControlFlow/ConditionalPhases)
+- /usr/bin/tshark
+- /usr/bin/certtool
 recommend:
 - rsyslog
 - rsyslog-relp
