@@ -374,6 +374,7 @@ input(type="imfile"
         Tag="tag2"
         ruleset="myruleset"
         MaxLinesPerMinute="10"
+        deleteStateOnFileDelete="on"
 )
 EOF
         rlRun "rsyslogPrintEffectiveConfig -n"
@@ -385,6 +386,7 @@ EOF
         for i in {1..10}; do rlAssertGrep "Test $i" /var/log/rsyslog-stats.log; done # First 10 messages delivered
         for i in {11..20}; do rlAssertNotGrep "Test $i" /var/log/rsyslog-stats.log; done # Other messages are being dropped
         rm -f /var/log/rsyslog-stats.log /var/log/rsyslog-imfile.log
+        rlRun "rsyslogServiceStop"
     rlPhaseEnd; }
 
     rlPhaseStartTest "imfile: per minute rate limiting(MaxBytesPerMinute)" && {
@@ -398,6 +400,7 @@ input(type="imfile"
     Tag="tag2"
     ruleset="myruleset"
     MaxBytesPerMinute="61"
+    deleteStateOnFileDelete="on"
 )
 EOF
         rlRun "rsyslogPrintEffectiveConfig -n"
