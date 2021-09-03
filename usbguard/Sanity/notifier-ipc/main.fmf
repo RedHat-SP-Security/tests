@@ -1,0 +1,22 @@
+summary: Check notifier IPC communication is not blocked by default
+extra-summary: /usbguard/Sanity/notifier-ipc
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 15m
+enabled: true
+require+:
+- library(ControlFlow/Cleanup)
+- library(rpm/snapshot)
+- library(distribution/testUser)
+- usbguard-notifier
+- /usr/bin/expect
+tag:
+- CI-Tier-1
+- Tier1
+tier: '1'
+link:
+    verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2000000
+adjust:
+-   enable: false
+    when: distro < rhel-8.4
+extra-nitrate: TC#0611602
