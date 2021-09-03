@@ -48,11 +48,14 @@ rlJournalStart && {
   rlPhaseEnd; }
 
   rlPhaseStartTest "$auditTARGET" && {
+    rlRun -s "
     expect << EOE
-      spawn ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $testUser@127.0.0.1 sleep 10
-      expect assword { send "$testUserPasswd\r" }
+      spawn ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $testUser@127.0.0.1 \"sleep 3; ps x; sleep 5\"
+      expect assword { send \"$testUserPasswd\\\\r\" }
       expect eof
-EOE
+EOE"
+    rlAssertGrep 'usbguard-notifier' $rlRun_LOG
+    rm -f $rlRun_LOG
     rlRun "ps aux | grep usbguard[-]notifier"
     rlRun -s "rlServiceStatus usbguard"
     rlAssertNotGrep "IPC connection denied" $rlRun_LOG
