@@ -1,0 +1,31 @@
+summary: Load the sudo python plugin examples provided in /usr/share/doc/sudo/examples
+description: ''
+contact: Martin Zelený <mzeleny@redhat.com>
+component:
+  - sudo
+test: ./runtest.sh
+require:
+  - library(distribution/testUser)
+  - library(sudo/common)
+  - sudo
+  - sudo-python-plugin
+  - expect
+duration: 10m
+enabled: true
+tag:
+  - NoRHEL6
+  - NoRHEL7
+  - Tier2
+tier: '2'
+link:
+  - relates: https://bugzilla.redhat.com/show_bug.cgi?id=1981278
+adjust:
+  - enabled: false
+    when: distro < rhel-9
+    continue: false
+  - enabled: false
+    when: distro == rhel-alt-7
+    continue: false
+extra-nitrate: TC#0611615
+extra-summary: /CoreOS/sudo/Sanity/sudo-python-plugin-examples
+extra-task: /CoreOS/sudo/Sanity/sudo-python-plugin-examples
