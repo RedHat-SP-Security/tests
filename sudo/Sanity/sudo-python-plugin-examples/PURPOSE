@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/sudo/Sanity/sudo-python-plugin-examples
+Description: Load the sudo python plugin examples provided in /usr/share/doc/sudo/examples
+Author: Martin Zeleny <mzeleny@redhat.com>
