@@ -1,0 +1,25 @@
+summary: Deployment and basic functionality of the tang operator
+description: ''
+contact: Martin Zelený <mzeleny@redhat.com>
+component:
+  - tang
+test: ./runtest.sh
+recommend:
+  - tang
+duration: 30m
+enabled: true
+tag:
+  - NoRHEL6
+  - NoRHEL7
+  - Tier3
+tier: '3'
+adjust:
+  - enabled: false
+    when: distro < rhel-9
+    continue: false
+  - enabled: false
+    when: distro == rhel-alt-7
+    continue: false
+extra-nitrate: TC#0611619
+extra-summary: /CoreOS/tang/Sanity/tang-operator
+extra-task: /CoreOS/tang/Sanity/tang-operator
