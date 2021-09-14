@@ -32,7 +32,9 @@ PACKAGE="tang"
 
 rlJournalStart
     rlPhaseStartSetup
-        rlAssertRpm $PACKAGE
+        rlRun "crc status > /dev/null" 0 "Checking Code Ready Containers installation"
+        rlRun "oc status > /dev/null"  0 "Checking OpenshiftClient installation"
+        rlRun "operator-sdk version > /dev/null" 0 "Checking operator-sdk version"
         rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
         rlRun "pushd $TmpDir"
     rlPhaseEnd
