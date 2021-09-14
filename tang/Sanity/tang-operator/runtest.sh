@@ -29,25 +29,24 @@
 . /usr/share/beakerlib/beakerlib.sh || exit 1
 
 PACKAGE="tang"
+VERSION="v0.0.16" # TODO: check how to get latest version appropriately
+TIMEOUT="5m"
 
 rlJournalStart
     rlPhaseStartSetup
         rlRun "crc status > /dev/null" 0 "Checking Code Ready Containers installation"
         rlRun "oc status > /dev/null"  0 "Checking OpenshiftClient installation"
         rlRun "operator-sdk version > /dev/null" 0 "Checking operator-sdk version"
-        rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
-        rlRun "pushd $TmpDir"
+        rlRun "operator-sdk run bundle --timeout ${TIMEOUT} quay.io/sarroutb/tang-operator-bundle:${VERSION}" 0 "Installing tang-operator-bundler version:${VERSION}"
     rlPhaseEnd
 
     rlPhaseStartTest
-        rlRun "touch foo" 0 "Creating the foo test file"
-        rlAssertExists "foo"
-        rlRun "ls -l foo" 0 "Listing the foo test file"
+        rlRun "oc apply -f reg_test/conf_test/minimal/" 0 "Creating minimal configuration"
+        rlRun "oc delete -f reg_test/conf_test/minimal/" 0 "Deleting minimal configuration"
     rlPhaseEnd
 
     rlPhaseStartCleanup
-        rlRun "popd"
-        rlRun "rm -r $TmpDir" 0 "Removing tmp directory"
+        rlRun "operator-sdk cleanup tang-operator" 0 "Removing tang-operator"
     rlPhaseEnd
 rlJournalPrintText
 rlJournalEnd
