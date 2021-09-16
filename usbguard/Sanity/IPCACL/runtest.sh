@@ -91,6 +91,36 @@ rlJournalStart && {
     CleanupDo --mark
   rlPhaseEnd; }
 
+  rlPhaseStartTest "inclusive permissions propagation (UID/GID)" && {
+    clearACLfolder
+    CleanupRegister --mark "rlRun 'usermod -G \"\" ${testUser[0]}'"
+    rlRun "usermod -aG ${testUserGroup[1]} ${testUser[0]}"
+    rlRunAs ${testUser[0]} "id"
+    rlRun "rlServiceStart 'usbguard'"
+    rlRunAs ${testUser[0]} 'usbguard list-devices' 1-255
+    rlRunAs ${testUser[0]} 'usbguard list-rules' 1-255
+    rlRunAs ${testUser[0]} 'usbguard get-parameter InsertedDevicePolicy' 1-255
+    rlRun "usbguard add-user ${testUserUID[0]} --device list"
+    rlRun "showACLfolder"
+    rlRun "rlServiceStart 'usbguard'"
+    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
+    rlRunAs ${testUser[0]} 'usbguard list-rules' 1-255
+    rlRunAs ${testUser[0]} 'usbguard get-parameter InsertedDevicePolicy' 1-255
+    rlRun "usbguard add-user ${testUserGID[0]} -g --policy list"
+    rlRun "showACLfolder"
+    rlRun "rlServiceStart 'usbguard'"
+    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
+    rlRunAs ${testUser[0]} 'usbguard list-rules' 0
+    rlRunAs ${testUser[0]} 'usbguard get-parameter InsertedDevicePolicy' 1-255
+    rlRun "usbguard add-user ${testUserGID[1]} -g --parameters list"
+    rlRun "showACLfolder"
+    rlRun "rlServiceStart 'usbguard'"
+    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
+    rlRunAs ${testUser[0]} 'usbguard list-rules' 0
+    rlRunAs ${testUser[0]} 'usbguard get-parameter InsertedDevicePolicy' 0
+    CleanupDo --mark
+  rlPhaseEnd; }
+
   rlPhaseStartTest "separate users" && {
     clearACLfolder
     rlRun "usbguard add-user ${testUser[0]} --device list"
