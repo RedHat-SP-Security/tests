@@ -1,4 +1,11 @@
 #!/bin/bash
+# vim: dict+=/usr/share/beakerlib/dictionary.vim cpt=.,w,b,u,t,i,k
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#   runtest.sh of /CoreOS/tang/Sanity/tang-operator
+#   Description: Deployment and basic functionality of the tang operator
+#   Author: Martin Zeleny <mzeleny@redhat.com>
+#
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #   Copyright (c) 2021 Red Hat, Inc.
@@ -17,16 +24,14 @@
 #   along with this program. If not, see http://www.gnu.org/licenses/.
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-kr_namespace=$1
-os_client=$2
 
-test -z "${kr_namespace}" && kr_namespace="nbde"
-test -z "${os_client}" && os_client="oc"
+# Include Beaker environment
+. /usr/share/beakerlib/beakerlib.sh || exit 1
 
-function get_pod() {
-  "${os_client}" -n "${kr_namespace}" get pods | tail -1 | awk '{print $1}'
-}
+UNSUPPORTED_RELEASE=$(cat /etc/redhat-release  | awk -F "release" {'print $2'} | sed -e 's/^[ /t]*//g' | awk {'print $1'} | awk -F '.' {'print $1'})
 
-kr_pod=$(get_pod)
-
-"${os_client}" -n ${kr_namespace} exec -i "${kr_pod}" -- /bin/bash -xc 'cd /var/db/tang; for key in *jwk; do mv -- $key .$key; done'
+rlJournalStart
+    rlPhaseStartTest "Check tang-operator controller is running"
+        rlRun "true" 0 "No test is executed (unsupported release:${UNSUPPORTED_RELEASE})"
+    rlPhaseEnd
+rlJournalEnd

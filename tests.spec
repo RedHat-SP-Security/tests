@@ -2,6 +2,7 @@ Name:       tests
 Version:    1
 Release:    1
 Summary:    Dummy just to trigger tests
+Source0:    README.md
 License:    MIT
 BuildArch:  noarch
 
