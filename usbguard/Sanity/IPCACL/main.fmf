@@ -1,0 +1,16 @@
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 5m
+enabled: true
+require+:
+- library(ControlFlow/Cleanup)
+- library(distribution/testUser)
+tag:
+- CI-Tier-1
+- rhel-8.5.0
+- Tier1
+tier: '1'
+summary: A fine grade IPC ACL test
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2004511
+extra-task: TC#0611711
