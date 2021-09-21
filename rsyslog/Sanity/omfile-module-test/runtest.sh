@@ -45,7 +45,7 @@ rlJournalStart
 
 if ! $VER3; then
     rlPhaseStartTest "\$OMFileZipLevel test"   # logfile compression test"
-	rsyslogConfigIsNewSyntax && rsyslogConfigAddTo --begin "RULES" /etc/rsyslog.conf < <(rsyslogConfigCreateSection ZIPTEST <<EOF
+        rsyslogConfigIsNewSyntax && rsyslogConfigAddTo --begin "RULES" /etc/rsyslog.conf < <(rsyslogConfigCreateSection ZIPTEST <<EOF
 # log file compression test
 local0.info    action(type="omfile" file="/var/log/rsyslog.test.gz" zipLevel="5")     # set logfile compression on
 action(type="omfile" zipLevel="0")     # restore default
@@ -59,20 +59,20 @@ local0.info    /var/log/rsyslog.test.gz
 \$OMFileZipLevel 0     # restore default
 EOF
 )
-	rsyslogServiceStart
-	rlRun "logger -p local0.info 'logfile compression test'" 0 "Logging the test message"
-	sleep 2
-	rlRun "file /var/log/rsyslog.test.gz | grep 'gzip compressed data'" 0 "Checking that logfile is a gzip archive"
-	rlRun -s "gunzip -c --stdout /var/log/rsyslog.test.gz"
-	rlAssertGrep "logfile compression test" $rlRun_LOG
-	rlAssertNotGrep "unexpected end of file" $rlRun_LOG
-	rm -f $rlRun_LOG
+        rsyslogServiceStart
+        rlRun "logger -p local0.info 'logfile compression test'" 0 "Logging the test message"
+        sleep 2
+        rlRun "file /var/log/rsyslog.test.gz | grep 'gzip compressed data'" 0 "Checking that logfile is a gzip archive"
+        rlRun -s "gunzip -c --stdout /var/log/rsyslog.test.gz"
+        rlAssertGrep "logfile compression test" $rlRun_LOG
+        rlAssertNotGrep "unexpected end of file" $rlRun_LOG
+        rm -f $rlRun_LOG
     rlPhaseEnd
 
     rlPhaseStartTest "Test logfile with relative path"
         # since rsyslogd changes it's working dir to / after the fork then the relpath is "the same" as absolute path
     rsyslogConfigReplace "ZIPTEST" /etc/rsyslog.conf
-	rsyslogConfigIsNewSyntax || rsyslogConfigAddTo --begin "RULES" /etc/rsyslog.conf < <(rsyslogConfigCreateSection RELPATH <<EOF
+        rsyslogConfigIsNewSyntax || rsyslogConfigAddTo --begin "RULES" /etc/rsyslog.conf < <(rsyslogConfigCreateSection RELPATH <<EOF
 *.*   ./tmp/rsyslog.rel-path-test.log
 EOF
 )
@@ -82,14 +82,14 @@ EOF
 )
 
     rsyslogServiceStart
-	rlRun "logger -p local0.info 'relpath test message'" 0 "Logging the test message"
-	sleep 2
-	rlRun "grep 'relpath test message' /tmp/rsyslog.rel-path-test.log" 0 "Check the message in the log"
+        rlRun "logger -p local0.info 'relpath test message'" 0 "Logging the test message"
+        sleep 2
+        rlRun "grep 'relpath test message' /tmp/rsyslog.rel-path-test.log" 0 "Check the message in the log"
     rlPhaseEnd
 
     rlPhaseStartTest "\$OMFileFlushOnTXEnd and \$OMFileIOBufferSize test"  # check that messages are flushed in batch
-	rsyslogConfigReplace "RELPATH" /etc/rsyslog.conf
-	rsyslogConfigIsNewSyntax && rsyslogConfigAppend --begin "RULES" /etc/rsyslog.conf < <(rsyslogConfigCreateSection FLUSHTEST <<EOF
+        rsyslogConfigReplace "RELPATH" /etc/rsyslog.conf
+        rsyslogConfigIsNewSyntax && rsyslogConfigAppend --begin "RULES" /etc/rsyslog.conf < <(rsyslogConfigCreateSection FLUSHTEST <<EOF
 local0.info    action(type="omfile" file="/var/log/rsyslog.test.log" IOBufferSize="1k" FlushOnTXEnd="off")    # default is 4k
 EOF
 )
@@ -100,20 +100,20 @@ local0.info    /var/log/rsyslog.test.log
 EOF
 )
         rsyslogServiceStart
-	rlRun "logger -p local0.info 'flush test message1'" 0 "Logging the test message1"
-	rlRun "logger -p local0.info 'flush test message2'" 0 "Logging the test message2"
-	rlRun "logger -p local0.info 'flush test message3'" 0 "Logging the test message3"
-	sleep 2
-	# now check the log - there should be no messages since they are still in the buffer
-	rlRun "grep 'flush test message1' /var/log/rsyslog.test.log" 1 "The message1 should not be in the log"
-	rlRun "grep 'flush test message2' /var/log/rsyslog.test.log" 1 "The message2 should not be in the log"
-	rlRun "grep 'flush test message3' /var/log/rsyslog.test.log" 1 "The message3 should not be in the log"
-	rlRun "for i in \`seq 150\`; do logger -p local0.info 'dummy message to fill the buffer'; done" 0 "Sending 150 messages just to fill the buffer"  # this is not enough to fill default 4k buffer but enough for 1k buffer
-	# not flush the buffer
-	#rlRun "kill -s SIGHUP \`pidof rsyslogd\`" 0 "Send SIGHUP to rsyslogd to flush the buffer"
-	rlRun "grep 'flush test message1' /var/log/rsyslog.test.log" 0 "The message1 should be in the log now"
-	rlRun "grep 'flush test message2' /var/log/rsyslog.test.log" 0 "The message2 should be in the log now"
-	rlRun "grep 'flush test message3' /var/log/rsyslog.test.log" 0 "The message3 should be in the log now"
+        rlRun "logger -p local0.info 'flush test message1'" 0 "Logging the test message1"
+        rlRun "logger -p local0.info 'flush test message2'" 0 "Logging the test message2"
+        rlRun "logger -p local0.info 'flush test message3'" 0 "Logging the test message3"
+        sleep 2
+        # now check the log - there should be no messages since they are still in the buffer
+        rlRun "grep 'flush test message1' /var/log/rsyslog.test.log" 1 "The message1 should not be in the log"
+        rlRun "grep 'flush test message2' /var/log/rsyslog.test.log" 1 "The message2 should not be in the log"
+        rlRun "grep 'flush test message3' /var/log/rsyslog.test.log" 1 "The message3 should not be in the log"
+        rlRun "for i in \`seq 150\`; do logger -p local0.info 'dummy message to fill the buffer'; done" 0 "Sending 150 messages just to fill the buffer"  # this is not enough to fill default 4k buffer but enough for 1k buffer
+        # not flush the buffer
+        #rlRun "kill -s SIGHUP \`pidof rsyslogd\`" 0 "Send SIGHUP to rsyslogd to flush the buffer"
+        rlRun "grep 'flush test message1' /var/log/rsyslog.test.log" 0 "The message1 should be in the log now"
+        rlRun "grep 'flush test message2' /var/log/rsyslog.test.log" 0 "The message2 should be in the log now"
+        rlRun "grep 'flush test message3' /var/log/rsyslog.test.log" 0 "The message3 should be in the log now"
     rlPhaseEnd
 fi
 
