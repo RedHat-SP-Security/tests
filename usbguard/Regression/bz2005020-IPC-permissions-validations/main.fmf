@@ -1,0 +1,18 @@
+summary: test usbguard IPC handling via cli
+extra-summary: /usbguard/Regression/bz2005020-IPC-permissions-validations
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 15m
+enabled: true
+require+:
+- library(ControlFlow/Cleanup)
+- usbguard
+tag:
+- Tier3
+tier: '3'
+link:
+    verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2005020
+adjust:
+-   enable: false
+    when: distro < rhel-8.6
+extra-nitrate: TC#0611724
