@@ -63,7 +63,10 @@ EOF
 	rlRun "logger -p local0.info 'logfile compression test'" 0 "Logging the test message"
 	sleep 2
 	rlRun "file /var/log/rsyslog.test.gz | grep 'gzip compressed data'" 0 "Checking that logfile is a gzip archive"
-	rlRun "gunzip -c --stdout /var/log/rsyslog.test.gz | grep 'logfile compression test'" 0 "Searching for the test message"
+	rlRun -s "gunzip -c --stdout /var/log/rsyslog.test.gz"
+	rlAssertGrep "logfile compression test" $rlRun_LOG
+	rlAssertNotGrep "unexpected end of file" $rlRun_LOG
+	rm -f $rlRun_LOG
     rlPhaseEnd
 
     rlPhaseStartTest "Test logfile with relative path"
