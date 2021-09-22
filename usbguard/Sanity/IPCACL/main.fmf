@@ -12,5 +12,5 @@ tag:
 tier: '1'
 summary: A fine grade IPC ACL test
 link:
-  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2004511
-extra-task: TC#0611711
+-   verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2004511
+extra-nitrate: TC#0611711
