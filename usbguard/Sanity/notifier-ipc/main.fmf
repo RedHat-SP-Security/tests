@@ -1,4 +1,8 @@
 summary: Check notifier IPC communication is not blocked by default
+description: |
+    ACs:
+    * usbguard does not report IPC error coming from usbguard-notifier for each logged user (user session) which is not granted IPC access explicitly
+    * usbguard-notifier is disabled by default for all the users
 extra-summary: /usbguard/Sanity/notifier-ipc
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
@@ -6,8 +10,8 @@ duration: 15m
 enabled: true
 require+:
 - library(ControlFlow/Cleanup)
-- library(rpm/snapshot)
 - library(distribution/testUser)
+- /usr/sbin/sshd
 - usbguard-notifier
 - /usr/bin/expect
 tag:
@@ -18,5 +22,5 @@ link:
     verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2000000
 adjust:
 -   enable: false
-    when: distro < rhel-8.4
+    when: distro < rhel-8.6
 extra-nitrate: TC#0611602

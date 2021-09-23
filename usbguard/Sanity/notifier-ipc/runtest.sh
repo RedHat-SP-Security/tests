@@ -29,8 +29,6 @@
 . /usr/bin/rhts-environment.sh || :
 . /usr/share/beakerlib/beakerlib.sh || exit 1
 
-PACKAGE="usbguard"
-
 rlJournalStart && {
   rlPhaseStartSetup && {
     rlRun "rlImport --all" 0 "Import libraries" || rlDie "cannot continue"
@@ -47,16 +45,51 @@ rlJournalStart && {
     rlRun "testUserSetup"
   rlPhaseEnd; }
 
-  rlPhaseStartTest "$auditTARGET" && {
-    rlRun -s "
-    expect << EOE
-      spawn ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $testUser@127.0.0.1 \"sleep 3; ps x; sleep 5\"
+  rlPhaseStartTest "global service setting" && {
+    rlRun -s "systemctl status --global usbguard-notifier" 1-255
+    rlAssertGrep "dead" $rlRun_LOG -iq
+    rlAssertGrep "usbguard-notifier.service; disabled;" $rlRun_LOG -iq
+    rm -f $rlRun_LOG
+  rlPhaseEnd; }
+
+userServiceCheck() {
+  rlRun -s "expect << EOE
+    spawn ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $testUser@127.0.0.1 \"sleep 5; systemctl status --user usbguard-notifier; sleep 1\"
+    expect assword { send \"$testUserPasswd\\\\r\" }
+    expect eof
+EOE"
+}
+
+  rlPhaseStartTest "user service setting" && {
+    rlLog "service disabled"
+    userServiceCheck
+    rlAssertGrep 'dead' $rlRun_LOG
+    rlAssertGrep "usbguard-notifier.service; disabled;" $rlRun_LOG -iq
+    rm -f $rlRun_LOG
+    rlRun -s "rlServiceStatus usbguard"
+    rlAssertNotGrep "IPC connection denied" $rlRun_LOG
+    rlAssertGrep "running" $rlRun_LOG -iq
+    rm -f $rlRun_LOG
+
+    rlLog "service enabled but IPC not allowed"
+    rlRun -s "expect << EOE
+      spawn ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $testUser@127.0.0.1 \"sleep 1; systemctl enable --now --user usbguard-notifier; sleep 1\"
       expect assword { send \"$testUserPasswd\\\\r\" }
       expect eof
 EOE"
-    rlAssertGrep 'usbguard-notifier' $rlRun_LOG
+    userServiceCheck
+    rlAssertGrep 'dead' $rlRun_LOG
     rm -f $rlRun_LOG
-    rlRun "ps aux | grep usbguard[-]notifier"
+    rlRun -s "rlServiceStatus usbguard"
+    rlAssertGrep "IPC connection denied" $rlRun_LOG
+    rm -f $rlRun_LOG
+
+    rlLog "service enabled and IPC granted"
+    rlRun "usbguard add-user $testUser -d listen"
+    rlRun "rlServiceStart usbguard"
+    userServiceCheck
+    rlAssertGrep 'running' $rlRun_LOG
+    rm -f $rlRun_LOG
     rlRun -s "rlServiceStatus usbguard"
     rlAssertNotGrep "IPC connection denied" $rlRun_LOG
     rlAssertGrep "running" $rlRun_LOG -iq
