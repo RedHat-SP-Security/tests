@@ -73,7 +73,7 @@ EOE"
 
     rlLog "service enabled but IPC not allowed"
     rlRun -s "expect << EOE
-      spawn ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $testUser@127.0.0.1 \"sleep 1; systemctl enable --now --user usbguard-notifier; sleep 1\"
+      spawn ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $testUser@127.0.0.1 \"sleep 1; systemctl enable --user usbguard-notifier; sleep 1\"
       expect assword { send \"$testUserPasswd\\\\r\" }
       expect eof
 EOE"
