@@ -52,12 +52,17 @@ rlJournalStart && {
     rm -f $rlRun_LOG
   rlPhaseEnd; }
 
-userServiceCheck() {
-  rlRun -s "expect << EOE
-    spawn ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $testUser@127.0.0.1 \"sleep 5; systemctl status --user usbguard-notifier; sleep 1\"
-    expect assword { send \"$testUserPasswd\\\\r\" }
+sshRun() {
+  rlRun "loginctl terminate-user $testUser" 0-255
+  rlRun -s "expect" 0 "ssh $testUser@127.0.0.1 \"$1\"" << EOE
+    spawn ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $testUser@127.0.0.1 "$1"
+    expect assword { send "$testUserPasswd\r" }
     expect eof
-EOE"
+EOE
+}
+
+userServiceCheck() {
+  sshRun "sleep 5; systemctl status --user usbguard-notifier; sleep 1"
 }
 
   rlPhaseStartTest "user service setting" && {
@@ -72,11 +77,7 @@ EOE"
     rm -f $rlRun_LOG
 
     rlLog "service enabled but IPC not allowed"
-    rlRun -s "expect << EOE
-      spawn ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $testUser@127.0.0.1 \"sleep 1; systemctl enable --user usbguard-notifier; sleep 1\"
-      expect assword { send \"$testUserPasswd\\\\r\" }
-      expect eof
-EOE"
+    sshRun "sleep 1; systemctl enable --user usbguard-notifier; sleep 1"
     userServiceCheck
     rlAssertGrep 'dead' $rlRun_LOG
     rm -f $rlRun_LOG
@@ -87,6 +88,7 @@ EOE"
     rlLog "service enabled and IPC granted"
     rlRun "usbguard add-user $testUser -d listen"
     rlRun "rlServiceStart usbguard"
+    sshRun "sleep 1; systemctl status --user usbguard-notifier; sleep 1"
     userServiceCheck
     rlAssertGrep 'running' $rlRun_LOG
     rm -f $rlRun_LOG
