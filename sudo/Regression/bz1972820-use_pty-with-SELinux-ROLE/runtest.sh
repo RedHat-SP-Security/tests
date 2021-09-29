@@ -64,7 +64,7 @@ rlJournalStart && {
 EOE
     rlAssertGrep "uid=[0-9]+\($testUser\)" $rlRun_LOG -Eq
     rlAssertNotGrep "cannot set terminal process group" $rlRun_LOG -iEq
-    rlAssertNotGrep "-1" $rlRun_LOG -iEq
+    rlAssertNotGrep "\(-1\)" $rlRun_LOG -iEq
     rlAssertNotGrep "Inappropriate ioctl for device" $rlRun_LOG -iEq
     rlAssertNotGrep "no job control in this shell" $rlRun_LOG -iEq
     rm -rf $rlRun_LOG
