@@ -11,5 +11,7 @@ enabled: true
 tag:
 - Tier3
 tier: '3'
+link:
+- verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1972820
 extra-summary: /sudo/Regression/bz1972820-use_pty-with-SELinux-ROLE
 extra-nitrate: TC#0611729
