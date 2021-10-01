@@ -35,10 +35,16 @@ TEST_NAMESPACE_PATH="reg_test/all_test_namespace"
 TEST_NAMESPACE_FILE_NAME="daemons_v1alpha1_namespace.yaml"
 TEST_NAMESPACE_FILE="${TEST_NAMESPACE_PATH}/${TEST_NAMESPACE_FILE_NAME}"
 TEST_NAMESPACE=$(grep -i 'name:' "${TEST_NAMESPACE_FILE}" | awk -F ':' {'print $2'} | tr -d ' ')
+TEST_PVSC_PATH="reg_test/all_test_namespace"
+TEST_PV_FILE_NAME="daemons_v1alpha1_pv.yaml"
+TEST_PV_FILE="${TEST_PVSC_PATH}/${TEST_PV_FILE_NAME}"
+TEST_SC_FILE_NAME="daemons_v1alpha1_storageclass.yaml"
+TEST_SC_FILE="${TEST_PVSC_PATH}/${TEST_SC_FILE_NAME}"
+TEST_=$(grep -i 'name:' "${TEST_NAMESPACE_FILE}" | awk -F ':' {'print $2'} | tr -d ' ')
 EXECUTION_MODE=
-TO_POD_START=40 #seconds
+TO_POD_START=60 #seconds
 TO_POD_SCALEIN_WAIT=60 #seconds
-TO_LEGACY_POD_RUNNING=40 #seconds
+TO_LEGACY_POD_RUNNING=60 #seconds
 TO_POD_STOP=5 #seconds
 TO_POD_TERMINATE=60 #seconds
 TO_POD_CONTROLLER_TERMINATE=180 #seconds (for controller to end must wait longer)
@@ -66,10 +72,11 @@ dumpVerbose() {
 parseAndDumpClient() {
     if [ -z "${TEST_OC_CLIENT}" ];
     then
-	OC_CLIENT="${OC_DEFAULT_CLIENT}"
+        OC_CLIENT="${OC_DEFAULT_CLIENT}"
     else
         OC_CLIENT="${TEST_OC_CLIENT}"
     fi
+    rlLog "USING CLIENT:${OC_CLIENT}"
 }
 
 parseAndDumpMode() {
@@ -471,10 +478,27 @@ installSecret() {
     fi
 }
 
+installScPv() {
+    if [ ${EXECUTION_MODE} == "CLUSTER" ];
+    then
+	for sc in $("${OC_CLIENT}" get storageclasses.storage.k8s.io  | grep '\(default\)' | awk {'print $1'} );
+        do
+            "${OC_CLIENT}" patch storageclass "${sc}" -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "false"}}}'
+	done
+	rlLog "After Storage Class deletion:"
+        "${OC_CLIENT}" get storageclasses.storage.k8s.io
+        "${OC_CLIENT}" apply -f "${TEST_SC_FILE}"
+        "${OC_CLIENT}" apply -f "${TEST_PV_FILE}"
+	rlLog "After Storage Class application:"
+        "${OC_CLIENT}" get storageclasses.storage.k8s.io
+    fi
+    return 0
+}
+
 addContainerRootPermission() {
     if [ "${OC_CLIENT}" == "oc" ];
     then
-        rlRun "${OC_CLIENT} adm policy add-scc-to-group anyuid system:authenticated" 0 "Configuring cluster to allow deployment of containers"
+        rlRun "${OC_CLIENT} adm policy add-scc-to-group anyuid system:authenticated" 0 "Configuring cluster to allow deployment of containers (anyuid)"
     fi
 }
 
@@ -492,6 +516,7 @@ rlJournalStart
         rlRun "${OC_CLIENT} apply -f ${TEST_NAMESPACE_FILE}" 0 "Creating test namespace:${TEST_NAMESPACE}"
         rlRun "${OC_CLIENT} get namespace ${TEST_NAMESPACE}" 0 "Checking test namespace:${TEST_NAMESPACE}"
         rlRun "installSecret" 0 "Installing secret if necessary"
+        rlRun "installScPv" 0 "Install Storage Class and Persistent Volume if necessary"
     rlPhaseEnd
 
     ########## CHECK CONTROLLER RUNNING #########

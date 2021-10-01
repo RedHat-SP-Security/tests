@@ -17,6 +17,11 @@
 #   along with this program. If not, see http://www.gnu.org/licenses/.
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "================ INFO ================"
+echo "DATE:$(date)"
+echo "HOSTNAME:$(hostname)"
+echo "================ /INFO ==============="
+
 result=1
 ./tools/dependency_install.sh
 let dep_res=$?
