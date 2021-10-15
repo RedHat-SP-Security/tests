@@ -79,14 +79,19 @@ rlJournalStart
     rlPhaseEnd
 
     rlPhaseStartTest "IPAddressDeny, bz1929364" && {
-      rlRun -s "cat `rpm -ql usbguard | grep service`"
-      rlAssertGrep "ExecStart" $rlRun_LOG
+      start_time=$(date +"%F %T")
+      rlRun "systemctl daemon-reload"
+      rlRun "systemctl daemon-reexec"
+      rlRun "rlServiceStart usbguard"
+      rlRun -s "journalctl --no-pager --since=\"$start_time\""
+      rlAssertGrep "Started USBGuard daemon" $rlRun_LOG
       rlAssertNotGrep "IPAddressDeny" $rlRun_LOG
       rm -rf $rlRun_LOG
+      rlRun "rlServiceStatus usbguard"
     rlPhaseEnd; }
 
     rlPhaseStartCleanup
-        rlServiceRestore
+        rlServiceRestore usbguard
         rlRun "popd"
         rlRun "rm -r $TmpDir" 0 "Removing tmp directory"
     rlPhaseEnd
