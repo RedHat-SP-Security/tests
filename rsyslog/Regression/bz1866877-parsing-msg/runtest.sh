@@ -58,6 +58,7 @@ EOF
 
   rlPhaseStartTest && {
     rlRun "logger 'test message'"
+    rlRun "ansible-galaxy collection install community.general" 0 "Install alternatives module from community.general collection"
     rlRun "ansible-playbook ./playbook.yaml"
     rlRun -s "rsyslogCatLogFileFromPointer /var/log/messages"
     rlAssertGrep "test message" $rlRun_LOG
