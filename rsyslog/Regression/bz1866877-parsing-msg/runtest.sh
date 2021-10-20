@@ -34,6 +34,8 @@ rlJournalStart
     CleanupRegister 'rlRun "RpmSnapshotRevert"; rlRun "RpmSnapshotDiscard"'
     rlRun "RpmSnapshotCreate"
     rlRun "epel yum install -y $(rlGetYAMLdeps recommend)"
+    CleanupRegister 'rlRun "rm -rf ~/.ansible/collections/ansible_collections/community/general"'
+    rlRun "ansible-galaxy collection install community.general" 0 "Install alternatives module from community.general collection"
     rlRun "rlCheckMakefileRequires" || rlDie 'cannot continue'
     CleanupRegister 'rlRun "rsyslogCleanup"'
     rlRun "rsyslogSetup"
@@ -58,7 +60,6 @@ EOF
 
   rlPhaseStartTest && {
     rlRun "logger 'test message'"
-    rlRun "ansible-galaxy collection install community.general" 0 "Install alternatives module from community.general collection"
     rlRun "ansible-playbook ./playbook.yaml"
     rlRun -s "rsyslogCatLogFileFromPointer /var/log/messages"
     rlAssertGrep "test message" $rlRun_LOG
