@@ -33,7 +33,7 @@ rlJournalStart
     rlRun "rlImport --all" || rlDie 'cannot continue'
     CleanupRegister 'rlRun "RpmSnapshotRevert"; rlRun "RpmSnapshotDiscard"'
     rlRun "RpmSnapshotCreate"
-    rlRun "epel yum install -y Lmod ansible"
+    rlRun "epel yum install -y $(rlGetYAMLdeps recommend)"
     rlRun "rlCheckMakefileRequires" || rlDie 'cannot continue'
     CleanupRegister 'rlRun "rsyslogCleanup"'
     rlRun "rsyslogSetup"
