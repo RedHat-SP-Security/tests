@@ -5,7 +5,7 @@ duration: 10m
 require+:
 - library(epel/epel)
 - library(rpm/snapshot)
-recommned:
+recommend:
 - Lmod
 - ansible
 tag:
