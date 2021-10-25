@@ -62,6 +62,8 @@ EOF
         rsyslogServiceStart
         rlRun "logger -p local0.info 'logfile compression test'" 0 "Logging the test message"
         sleep 2
+        rsyslogServiceStop
+        sleep 2
         rlRun "file /var/log/rsyslog.test.gz | grep 'gzip compressed data'" 0 "Checking that logfile is a gzip archive"
         rlRun -s "gunzip -c --stdout /var/log/rsyslog.test.gz"
         rlAssertGrep "logfile compression test" $rlRun_LOG
@@ -71,17 +73,17 @@ EOF
 
     rlPhaseStartTest "Test logfile with relative path"
         # since rsyslogd changes it's working dir to / after the fork then the relpath is "the same" as absolute path
-    rsyslogConfigReplace "ZIPTEST" /etc/rsyslog.conf
+        rsyslogConfigReplace "ZIPTEST" /etc/rsyslog.conf
         rsyslogConfigIsNewSyntax || rsyslogConfigAddTo --begin "RULES" /etc/rsyslog.conf < <(rsyslogConfigCreateSection RELPATH <<EOF
 *.*   ./tmp/rsyslog.rel-path-test.log
 EOF
 )
-    rsyslogConfigIsNewSyntax && rsyslogConfigAddTo --begin "RULES" /etc/rsyslog.conf < <(rsyslogConfigCreateSection RELPATH <<EOF
+        rsyslogConfigIsNewSyntax && rsyslogConfigAddTo --begin "RULES" /etc/rsyslog.conf < <(rsyslogConfigCreateSection RELPATH <<EOF
 *.*   action(type="omfile" file="./tmp/rsyslog.rel-path-test.log")
 EOF
 )
 
-    rsyslogServiceStart
+        rsyslogServiceStart
         rlRun "logger -p local0.info 'relpath test message'" 0 "Logging the test message"
         sleep 2
         rlRun "grep 'relpath test message' /tmp/rsyslog.rel-path-test.log" 0 "Check the message in the log"
@@ -93,7 +95,7 @@ EOF
 local0.info    action(type="omfile" file="/var/log/rsyslog.test.log" IOBufferSize="1k" FlushOnTXEnd="off")    # default is 4k
 EOF
 )
-    rsyslogConfigIsNewSyntax || rsyslogConfigAppend --begin "RULES" /etc/rsyslog.conf < <(rsyslogConfigCreateSection FLUSHTEST <<EOF
+        rsyslogConfigIsNewSyntax || rsyslogConfigAppend --begin "RULES" /etc/rsyslog.conf < <(rsyslogConfigCreateSection FLUSHTEST <<EOF
 \$OMFileIOBufferSize 1k    # default is 4k
 \$OMFileFlushOnTXEnd off
 local0.info    /var/log/rsyslog.test.log
