@@ -53,10 +53,16 @@ rlJournalStart
                 -e 's/35/wake_alarm/' \
                 -e 's/36/block_suspend/' \
                 -e 's/37/audit_read/' \
+                -e 's/40/checkpoint_restore/' \
             | sed -e '/^[0-9]\+$/d' \
-            | sort > capsh_sorted.out" 0 "substituting unknown/numeric capabilities in the output"
+            | sort > capsh_sorted.out" 0 "substituting unknown/numeric capabilities in the capsh output"
 
-        rlRun "grep '^Effective' captest.out | sed -e 's/Effective: //' -e 's/, /\\n/g' | sort > captest_sorted.out"
+        rlRun "grep '^Effective' captest.out \
+            | sed -e 's/Effective: //' \
+                -e 's/, /\\n/g' \
+                -e 's/40/checkpoint_restore/' \
+            | sort > captest_sorted.out" 0 "substituting unknown/numeric capabilities in the captest output"
+
     rlPhaseEnd
 
     rlPhaseStartTest "Effective permissions listed by 'capsh --decode=$HEXA' are available in 'captest --text'"
