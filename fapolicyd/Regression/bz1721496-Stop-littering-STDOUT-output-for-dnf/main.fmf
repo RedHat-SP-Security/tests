@@ -19,5 +19,8 @@ extra-task: /CoreOS/fapolicyd/Regression/bz1721496-Stop-littering-STDOUT-output-
 extra-nitrate: TC#0602522
 adjust:
 -   enabled: false
-    when: distro < rhel-8
+    when: distro < rhel-8.1 or distro >= rhel-8.6
+    because: |
+        dnf plugin is not used since rhel-8.6 and rhel-9
+        there's no fapolicyd on rhel<8.1
     continue: false
