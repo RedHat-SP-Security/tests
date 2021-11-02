@@ -1,0 +1,3 @@
+component: librdkafka
+require+:
+- librdkafka
