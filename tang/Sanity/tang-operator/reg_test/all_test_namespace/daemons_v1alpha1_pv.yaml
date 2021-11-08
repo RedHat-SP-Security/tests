@@ -8,7 +8,6 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: nbde-standard
   nfs:
     path: /tmp
     server: 172.17.0.2

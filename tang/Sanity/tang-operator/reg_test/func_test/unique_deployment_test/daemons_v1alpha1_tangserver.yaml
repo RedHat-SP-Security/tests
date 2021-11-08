@@ -10,5 +10,5 @@ spec:
   replicas: 1
   image: "registry.redhat.io/rhel8/tang"
   version: "latest"
-  persistentvolumeclaim: "tangserver-pvc-main"
-  servicelistenport: 2222
+  persistentVolumeClaim: "tangserver-pvc-main"
+  serviceListenPort: 2222

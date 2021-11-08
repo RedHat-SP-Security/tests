@@ -29,7 +29,6 @@
 . /usr/share/beakerlib/beakerlib.sh || exit 1
 
 PACKAGE="tang"
-VERSION="latest"
 TO_BUNDLE="5m"
 TEST_NAMESPACE_PATH="reg_test/all_test_namespace"
 TEST_NAMESPACE_FILE_NAME="daemons_v1alpha1_namespace.yaml"
@@ -55,12 +54,16 @@ TO_EXTERNAL_IP=120 #seconds
 TO_WGET_CONNECTION=5 #seconds
 TO_ALL_POD_CONTROLLER_TERMINATE=120 #seconds
 TO_KEY_ROTATION=1 #seconds
+TO_ACTIVE_KEYS=60 #seconds
+TO_HIDDEN_KEYS=20 #seconds
 ADV_PATH="adv"
 QUAY_PATH="quay_secret"
 QUAY_FILE_NAME_TO_FILL="daemons_v1alpha1_tangserver_secret_registry_redhat_io.yaml"
 QUAY_FILE_NAME_PATH="${QUAY_PATH}/${QUAY_FILE_NAME_TO_FILL}"
 QUAY_FILE_NAME_TO_FILL_UNFILLED_MD5="db099cc0b92220feb7a38783b02df897"
 OC_DEFAULT_CLIENT="kubectl"
+
+test -z "${VERSION}" && VERSION="latest"
 
 dumpVerbose() {
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
@@ -184,6 +187,48 @@ checkServiceAmount() {
         let counter=$counter+1
         sleep 1
     done
+    return 1
+}
+
+checkActiveKeysAmount() {
+    local expected=$1
+    local iterations=$2
+    local namespace=$3
+    local counter=0
+    while [ ${counter} -lt ${iterations} ];
+    do
+        ACTIVE_KEYS_AMOUNT=$("${OC_CLIENT}" -n ${namespace} get tangserver -o json | jq '.items[0].status.activeKeys | length')
+        dumpVerbose "ACTIVE KEYS AMOUNT:${ACTIVE_KEYS_AMOUNT} EXPECTED:${expected} COUNTER:${counter}"
+        ### TODO: Until generation of just one key is checked, using "-ge" rather than "-eq"
+        if [ ${ACTIVE_KEYS_AMOUNT} -ge ${expected} ];
+        then
+            return 0
+        fi
+        let counter=$counter+1
+        sleep 1
+    done
+    rlLog "Active Keys Amount not as expected: Active Keys:${ACTIVE_KEYS_AMOUNT}, Expected:[${expected}]"
+    return 1
+}
+
+checkHiddenKeysAmount() {
+    local expected=$1
+    local iterations=$2
+    local namespace=$3
+    local counter=0
+    while [ ${counter} -lt ${iterations} ];
+    do
+        HIDDEN_KEYS_AMOUNT=$("${OC_CLIENT}" -n ${namespace} get tangserver -o json | jq '.items[0].status.hiddenKeys | length')
+        dumpVerbose "HIDDEN KEYS AMOUNT:${HIDDEN_KEYS_AMOUNT} EXPECTED:${expected} COUNTER:${counter}"
+        ### TODO: Until generation of just one key is checked, using "-ge" rather than "-eq"
+        if [ ${HIDDEN_KEYS_AMOUNT} -ge ${expected} ];
+        then
+            return 0
+        fi
+        let counter=$counter+1
+        sleep 1
+    done
+    rlLog "Hidden Keys Amount not as expected: Hidden Keys:${HIDDEN_KEYS_AMOUNT}, Expected:[${expected}]"
     return 1
 }
 
@@ -377,6 +422,45 @@ serviceAdvCompare() {
     return $((${wget_res1}+${wget_res2}+${jq_res1}+${jq_res2}+${jq_equal}))
 }
 
+checkStatusRunningReplicas() {
+    let counter=0
+    let expected=$1
+    local namespace=$2
+    let iterations=$3
+    while [ ${counter} -lt ${iterations} ];
+    do
+      local running=$("${OC_CLIENT}" -n ${namespace} get tangserver -o json | jq '.items[0].status.running | length')
+      dumpVerbose "Status Running Replicas: Expected:[${expected}], Running:[${running}]"
+      if [ ${expected} -eq ${running} ];
+      then
+          return 0
+      fi
+      let counter=$counter+1
+      sleep 1
+    done
+    return 1
+}
+
+checkStatusReadyReplicas() {
+    let counter=0
+    let expected=$1
+    local namespace=$2
+    let iterations=$3
+    while [ ${counter} -lt ${iterations} ];
+    do
+      local ready=$("${OC_CLIENT}" -n ${namespace} get tangserver -o json | jq '.items[0].status.ready | length')
+      dumpVerbose "Status Ready Replicas: Expected:[${expected}], Ready:[${ready}]"
+      if [ ${expected} -eq ${ready} ];
+      then
+          return 0
+      fi
+      let counter=$counter+1
+      sleep 1
+    done
+    return 1
+}
+
+
 bundleStart() {
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
     then
@@ -516,7 +600,7 @@ rlJournalStart
         rlRun "${OC_CLIENT} apply -f ${TEST_NAMESPACE_FILE}" 0 "Creating test namespace:${TEST_NAMESPACE}"
         rlRun "${OC_CLIENT} get namespace ${TEST_NAMESPACE}" 0 "Checking test namespace:${TEST_NAMESPACE}"
         rlRun "installSecret" 0 "Installing secret if necessary"
-        rlRun "installScPv" 0 "Install Storage Class and Persistent Volume if necessary"
+###         rlRun "installScPv" 0 "Install Storage Class and Persistent Volume if necessary"
     rlPhaseEnd
 
     ########## CHECK CONTROLLER RUNNING #########
@@ -705,9 +789,9 @@ rlJournalStart
         rlRun "${OC_CLIENT} delete -f reg_test/scale_test/scale_up/scale_up0/" 0 "Deleting scale up test"
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
         rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
-        rlPhaseEnd
+    rlPhaseEnd
 
-        rlPhaseStartTest "Scale-down scalability test"
+    rlPhaseStartTest "Scale-down scalability test"
         rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_down/scale_down0/" 0 "Creating scale down test [0]"
         rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
         rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is running [Timeout=${TO_SERVICE_START} secs.]"
@@ -748,6 +832,46 @@ rlJournalStart
         rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
     rlPhaseEnd
     ############# /LEGACY TESTS ###########
+
+    ############# KEY MANAGEMENT TESTS ############
+    rlPhaseStartTest "Key Management Test"
+        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve" 0 "Creating key management test"
+        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
+        pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
+        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is running [Timeout=${TO_SERVICE_START} secs.]"
+        rlRun "checkActiveKeysAmount 1 ${TO_ACTIVE_KEYS} ${TEST_NAMESPACE}" 0 "Checking Active Keys Amount is 1"
+        rlRun "checkHiddenKeysAmount 0 ${TO_HIDDEN_KEYS} ${TEST_NAMESPACE}" 0 "Checking Hidden Keys Amount is 0"
+        ### Rotate VIA API
+        rlRun "reg_test/key_management_test/api_key_rotate.sh -n ${TEST_NAMESPACE} -c ${OC_CLIENT}" 0 "Rotating keys"
+        rlRun "checkActiveKeysAmount 1 ${TO_ACTIVE_KEYS} ${TEST_NAMESPACE}" 0 "Checking Active Keys Amount is 1"
+        rlRun "checkHiddenKeysAmount 1 ${TO_HIDDEN_KEYS} ${TEST_NAMESPACE}" 0 "Checking Hidden Keys Amount is 1"
+        ### Delete VIA API
+        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve-deletehiddenkeys" 0 "Deleting hidden keys test"
+        rlRun "checkActiveKeysAmount 1 ${TO_ACTIVE_KEYS} ${TEST_NAMESPACE}" 0 "Checking Active Keys Amount is 1"
+        rlRun "checkHiddenKeysAmount 0 ${TO_HIDDEN_KEYS} ${TEST_NAMESPACE}" 0 "Checking Hidden Keys Amount is 0"
+        rlRun "${OC_CLIENT} delete -f reg_test/key_management_test/minimal-keyretrieve" 0 "Deleting key management test"
+        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
+        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+    rlPhaseEnd
+
+    rlPhaseStartTest "Key Management Ready Replicas Test"
+        ### Check Running / Ready Replicas
+        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/multiple-keyretrieve" 0 "Creating key management ready replicas test"
+        rlRun "checkPodAmount 3 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 3 PODs are started [Timeout=${TO_POD_START} secs.]"
+        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 2)
+        pod3_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 3)
+        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
+        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
+        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod3_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
+        rlRun "checkStatusRunningReplicas 3 ${TEST_NAMESPACE} ${TO_POD_START}" 0 "Checking Running Replicas in tangserver status"
+        rlRun "checkStatusReadyReplicas 3 ${TEST_NAMESPACE} ${TO_POD_START}" 0 "Checking Ready Replicas in tangserver status"
+        rlRun "${OC_CLIENT} delete -f reg_test/key_management_test/multiple-keyretrieve" 0 "Deleting ready replicas test"
+        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
+        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+    rlPhaseEnd
+    ############# /KEY MANAGEMENT TESTS ###########
 
     rlPhaseStartCleanup
         rlRun "checkClusterStatus" 0 "Checking cluster status"

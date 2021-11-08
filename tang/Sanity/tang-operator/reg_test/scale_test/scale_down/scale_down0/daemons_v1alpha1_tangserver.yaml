@@ -10,9 +10,9 @@ spec:
   replicas: 1
   image: "registry.redhat.io/rhel8/tang"
   version: "latest"
-  resourcesrequest:
+  resourcesRequest:
     cpu: "40m"
     memory: "40M"
-  resourceslimit:
+  resourcesLimit:
     cpu: "50m"
     memory: "50M"

@@ -10,8 +10,8 @@ spec:
   replicas: 2
   image: "registry.redhat.io/rhel8/tang"
   version: "latest"
-  persistentvolumeclaim: "tangserver-pvc-multi1"
-  servicelistenport: 9998
+  persistentVolumeClaim: "tangserver-pvc-multi1"
+  serviceListenPort: 9998
 ---
 apiVersion: daemons.redhat.com/v1alpha1
 kind: TangServer
@@ -25,5 +25,5 @@ spec:
   replicas: 3
   image: "registry.redhat.io/rhel8/tang"
   version: "latest"
-  persistentvolumeclaim: "tangserver-pvc-multi2"
-  servicelistenport: 9999
+  persistentVolumeClaim: "tangserver-pvc-multi2"
+  serviceListenPort: 9999
