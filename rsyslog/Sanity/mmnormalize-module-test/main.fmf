@@ -1,0 +1,16 @@
+summary: tests basic mmfields module functionality
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+- rsyslog-mmnormalize
+- library(ControlFlow/Cleanup)
+duration: 5m
+enabled: true
+adjust:
+-   enabled: false
+    when: distro < rhel-8.6
+tag:
+- rhel-8.6
+link:
+-   verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1866900
+extra-nitrate: TC#0612555
