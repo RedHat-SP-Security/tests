@@ -18,8 +18,6 @@ require+:
 - rsyslog
 - /usr/bin/file
 - /usr/bin/gunzip
-environment:
-    rsyslogSyntax: old
 duration: 5m
 enabled: true
 tag:
@@ -28,12 +26,25 @@ tag:
 - TIPpass_Security
 - Tier1
 - Tier1security
-- rsyslogSyntaxOLD
 tier: '1'
-extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/omfile-module-test
-extra-task: /CoreOS/rsyslog/Sanity/omfile-module-test
-extra-nitrate: TC#0059837
 adjust:
 -   enabled: false
     when: distro == rhel-4
     continue: false
+link:
+- verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2013816
+- verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2013818
+/oldSyntax:
+  environment:
+    rsyslogSyntax: old
+  extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/omfile-module-test
+  extra-nitrate: TC#0059837
+  tag+:
+  - rsyslogSyntaxOLD
+/newSyntax:
+  environment:
+    rsyslogSyntax: new
+  extra-summary: rsyslogSyntax=new /CoreOS/rsyslog/Sanity/omfile-module-test
+  extra-nitrate: TC#0419213
+  tag+:
+  - rsyslogSyntaxNEW

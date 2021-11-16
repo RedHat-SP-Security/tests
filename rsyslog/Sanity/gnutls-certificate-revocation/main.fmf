@@ -21,6 +21,7 @@ tag:
 - TIPfail
 - TIPfail_Security
 - rhel-8.0.0
+- customer_scenario
 extra-summary: /CoreOS/rsyslog/Sanity/gnutls-certificate-revocation
 extra-task: /CoreOS/rsyslog/Sanity/gnutls-certificate-revocation
 adjust:

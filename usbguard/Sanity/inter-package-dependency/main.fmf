@@ -10,13 +10,13 @@ enabled: true
 tag:
 - CI-Tier-1
 - Tier2
-- RHEL-8.5.0
+- RHEL-8.6.0
 tier: '2'
 extra-summary: /CoreOS/usbguard/Sanity/inter-package-dependency
 extra-nitrate: TC#0611292
 adjust:
 - enabled: false
-  when: distro < rhel-8.5
+  when: distro < rhel-8.6
   continue: false
 link:
 - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1986785

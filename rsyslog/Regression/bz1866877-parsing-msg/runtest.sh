@@ -33,7 +33,9 @@ rlJournalStart
     rlRun "rlImport --all" || rlDie 'cannot continue'
     CleanupRegister 'rlRun "RpmSnapshotRevert"; rlRun "RpmSnapshotDiscard"'
     rlRun "RpmSnapshotCreate"
-    rlRun "epel yum install -y Lmod ansible"
+    rlRun "epel yum install -y $(rlGetYAMLdeps recommend)"
+    CleanupRegister 'rlRun "rm -rf ~/.ansible/collections/ansible_collections/community/general"'
+    rlRun "ansible-galaxy collection install community.general" 0 "Install alternatives module from community.general collection"
     rlRun "rlCheckMakefileRequires" || rlDie 'cannot continue'
     CleanupRegister 'rlRun "rsyslogCleanup"'
     rlRun "rsyslogSetup"

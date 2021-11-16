@@ -5,16 +5,17 @@ duration: 10m
 require+:
 - library(epel/epel)
 - library(rpm/snapshot)
-recommned:
+recommend:
 - Lmod
-- ansible
+- /usr/bin/ansible
+- /usr/bin/ansible-galaxy
 tag:
 - Tier2
 - CI-Tier-1
 tier: '2'
 adjust:
 -   enabled: false
-    when: distro < rhel-8.5
+    when: distro < rhel-8.5 or distro < centos-8
 link:
 -   verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1866877
 extra-summary: /rsyslog/Regression/bz1866877-parsing-msg

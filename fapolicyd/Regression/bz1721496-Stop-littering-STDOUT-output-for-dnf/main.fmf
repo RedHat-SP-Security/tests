@@ -2,7 +2,7 @@ summary: Test for BZ#1721496 (Stop littering STDOUT output for dnf plugin in fap
 description: |
     Bug summary: Stop littering STDOUT output for dnf plugin in fapolicyd
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1721496
-contact: None <rsroka@redhat.com>
+contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
 - fapolicyd
@@ -19,5 +19,8 @@ extra-task: /CoreOS/fapolicyd/Regression/bz1721496-Stop-littering-STDOUT-output-
 extra-nitrate: TC#0602522
 adjust:
 -   enabled: false
-    when: distro < rhel-8
+    when: distro < rhel-8.1 or distro >= rhel-8.6
+    because: |
+        dnf plugin is not used since rhel-8.6 and rhel-9
+        there's no fapolicyd on rhel<8.1
     continue: false
