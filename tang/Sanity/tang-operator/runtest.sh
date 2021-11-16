@@ -153,6 +153,13 @@ checkPodKilled() {
     return 1
 }
 
+dumpTangdHealthCheckInfo() {
+    local pod_name=$1
+    local namespace=$2
+    KEY_INFO=$("${OC_CLIENT}" -n "${namespace}" exec -it "${pod_name}" -- cat /var/db/tang/key_info.txt)
+    rlLog "Key Info:${KEY_INFO}"
+}
+
 checkPodState() {
     local expected=$1
     local iterations=$2
@@ -199,8 +206,8 @@ checkActiveKeysAmount() {
     do
         ACTIVE_KEYS_AMOUNT=$("${OC_CLIENT}" -n ${namespace} get tangserver -o json | jq '.items[0].status.activeKeys | length')
         dumpVerbose "ACTIVE KEYS AMOUNT:${ACTIVE_KEYS_AMOUNT} EXPECTED:${expected} COUNTER:${counter}"
-        ### TODO: Until generation of just one key is checked, using "-ge" rather than "-eq"
-        if [ ${ACTIVE_KEYS_AMOUNT} -ge ${expected} ];
+        ### TODO: Until generation of just one key is checked, using "-ge" instead of "-eq"
+        if [ ${ACTIVE_KEYS_AMOUNT} -eq ${expected} ];
         then
             return 0
         fi
@@ -208,6 +215,8 @@ checkActiveKeysAmount() {
         sleep 1
     done
     rlLog "Active Keys Amount not as expected: Active Keys:${ACTIVE_KEYS_AMOUNT}, Expected:[${expected}]"
+    TANGSERVER_INFO=$("${OC_CLIENT}" -n ${namespace} describe tangserver)
+    rlLog "Tang Server Information:[${TANGSERVER_INFO}]"
     return 1
 }
 
@@ -220,8 +229,8 @@ checkHiddenKeysAmount() {
     do
         HIDDEN_KEYS_AMOUNT=$("${OC_CLIENT}" -n ${namespace} get tangserver -o json | jq '.items[0].status.hiddenKeys | length')
         dumpVerbose "HIDDEN KEYS AMOUNT:${HIDDEN_KEYS_AMOUNT} EXPECTED:${expected} COUNTER:${counter}"
-        ### TODO: Until generation of just one key is checked, using "-ge" rather than "-eq"
-        if [ ${HIDDEN_KEYS_AMOUNT} -ge ${expected} ];
+        ### TODO: Until generation of just one key is checked, using "-ge" instead of "-eq"
+        if [ ${HIDDEN_KEYS_AMOUNT} -eq ${expected} ];
         then
             return 0
         fi
@@ -229,6 +238,8 @@ checkHiddenKeysAmount() {
         sleep 1
     done
     rlLog "Hidden Keys Amount not as expected: Hidden Keys:${HIDDEN_KEYS_AMOUNT}, Expected:[${expected}]"
+    TANGSERVER_INFO=$("${OC_CLIENT}" -n ${namespace} describe tangserver)
+    rlLog "Tang Server Information:[${TANGSERVER_INFO}]"
     return 1
 }
 
@@ -611,227 +622,227 @@ rlJournalStart
     rlPhaseEnd
 
     ########## CONFIGURATION TESTS #########
-    rlPhaseStartTest "Minimal Configuration"
-        rlRun "${OC_CLIENT} apply -f reg_test/conf_test/minimal/" 0 "Creating minimal configuration"
-        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is started [Timeout=${TO_SERVICE_START} secs.]"
-        pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5)
-        rlAssertNotEquals "Checking pod name not empty" "${pod_name}" ""
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "${OC_CLIENT} delete -f reg_test/conf_test/minimal/" 0 "Deleting minimal configuration"
-        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no POD continues running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
-    rlPhaseEnd
-
-    rlPhaseStartTest "Main Configuration"
-        rlRun "${OC_CLIENT} apply -f reg_test/conf_test/main/" 0 "Creating main configuration"
-        rlRun "checkPodAmount 3 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 3 PODs are started [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is started [Timeout=${TO_SERVICE_START} secs.]"
-        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
-        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 2)
-        pod3_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 3)
-        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
-        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
-        rlAssertNotEquals "Checking pod name not empty" "${pod3_name}" ""
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name] in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD:[$pod2_name] in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod3_name}" 0 "Checking POD:[$pod3_name] in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "${OC_CLIENT} delete -f reg_test/conf_test/main/" 0 "Deleting main configuration"
-        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
-    rlPhaseEnd
-
-    rlPhaseStartTest "Multiple Deployment Configuration"
-        rlRun "${OC_CLIENT} apply -f reg_test/conf_test/multi_deployment/" 0 "Creating multiple deployment configuration"
-        rlRun "checkPodAmount 5 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 5 PODs are started [Timeout=${TO_POD_START} secs.]"
-        rlRun "sleep 5" 0 "Waiting to ensure no more than expected replicas are started"
-        rlRun "checkPodAmount 5 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 5 PODs continue running [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkServiceAmount 2 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 2 Services are running [Timeout=${TO_SERVICE_START} secs.]"
-        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
-        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 2)
-        pod3_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 3)
-        pod4_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 4)
-        pod5_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 5)
-        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
-        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
-        rlAssertNotEquals "Checking pod name not empty" "${pod3_name}" ""
-        rlAssertNotEquals "Checking pod name not empty" "${pod4_name}" ""
-        rlAssertNotEquals "Checking pod name not empty" "${pod5_name}" ""
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name] in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD:[$pod2_name] in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod3_name}" 0 "Checking POD:[$pod3_name] in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod4_name}" 0 "Checking POD:[$pod2_name] in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod5_name}" 0 "Checking POD:[$pod3_name] in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "${OC_CLIENT} delete -f reg_test/conf_test/multi_deployment/" 0 "Deleting multiple deployment configuration"
-        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
-    rlPhaseEnd
-    ######### /CONFIGURATION TESTS ########
-
-    ########### FUNCTIONAL TESTS ##########
-    rlPhaseStartTest "Unique deployment functional test"
-        rlRun "${OC_CLIENT} apply -f reg_test/func_test/unique_deployment_test/" 0 "Creating unique deployment"
-        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
-        pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
-        rlAssertNotEquals "Checking pod name not empty" "${pod_name}" ""
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is started [Timeout=${TO_SERVICE_START} secs.]"
-        service_name=$(getServiceNameWithPrefix "service" "${TEST_NAMESPACE}" 5 1)
-        service_ip=$(getServiceIp "${service_name}" "${TEST_NAMESPACE}" "${TO_EXTERNAL_IP}")
-        service_port=$(getServicePort "${service_name}" "${TEST_NAMESPACE}")
-        rlRun "serviceAdv ${service_ip} ${service_port}" 0 "Checking Service Advertisement [IP:${service_ip} PORT:${service_port}]"
-        rlRun "${OC_CLIENT} delete -f reg_test/func_test/unique_deployment_test/" 0 "Deleting unique deployment"
-        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
-    rlPhaseEnd
-
-    rlPhaseStartTest "Multiple deployment functional test"
-        rlRun "${OC_CLIENT} apply -f reg_test/func_test/multiple_deployment_test/" 0 "Creating multiple deployment"
-        rlRun "checkPodAmount 2 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 2 PODs are started [Timeout=${TO_POD_START} secs.]"
-        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
-        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 2)
-        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
-        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkServiceAmount 2 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 2 Services are started [Timeout=${TO_SERVICE_START} secs.]"
-        service1_name=$(getServiceNameWithPrefix "service" "${TEST_NAMESPACE}" 5 1)
-        service1_ip=$(getServiceIp "${service1_name}" "${TEST_NAMESPACE}" "${TO_EXTERNAL_IP}")
-        service1_port=$(getServicePort "${service1_name}" "${TEST_NAMESPACE}")
-        service2_name=$(getServiceNameWithPrefix "service" "${TEST_NAMESPACE}" 5 2)
-        service2_ip=$(getServiceIp "${service2_name}" "${TEST_NAMESPACE}" "${TO_EXTERNAL_IP}")
-        service2_port=$(getServicePort "${service2_name}" "${TEST_NAMESPACE}")
-        rlRun "serviceAdvCompare ${service1_ip} ${service1_port} ${service2_ip} ${service2_port}" 0 \
-              "Checking Services Advertisement [IP1:${service1_ip} PORT1:${service1_port}][IP2:${service2_ip} PORT2:${service2_port}]"
-        rlRun "${OC_CLIENT} delete -f reg_test/func_test/multiple_deployment_test/" 0 "Deleting multiple deployment"
-        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
-    rlPhaseEnd
-
-    rlPhaseStartTest "Key rotation functional test"
-        rlRun "${OC_CLIENT} apply -f reg_test/func_test/key_rotation/" 0 "Creating key rotation deployment"
-        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 PODs is started [Timeout=${TO_POD_START} secs.]"
-        pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
-        rlAssertNotEquals "Checking pod name not empty" "${pod_name}" ""
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is started [Timeout=${TO_SERVICE_START} secs.]"
-        service_name=$(getServiceNameWithPrefix "service" "${TEST_NAMESPACE}" 5 1)
-        service_ip=$(getServiceIp "${service_name}" "${TEST_NAMESPACE}" "${TO_EXTERNAL_IP}")
-        service_port=$(getServicePort "${service_name}" "${TEST_NAMESPACE}")
-        rlRun "checkKeyRotation ${service_ip} ${service_port} ${TEST_NAMESPACE}" 0\
-              "Checking Key Rotation [IP:${service_ip} PORT:${service_port}]"
-        rlRun "${OC_CLIENT} delete -f reg_test/func_test/key_rotation/" 0 "Deleting key rotation deployment"
-        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
-    rlPhaseEnd
-    ########### /FUNCTIONAL TESTS #########
-
-    ########### SCALABILTY TESTS ##########
-    rlPhaseStartTest "Scale-out scalability test"
-        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_out/scale_out0/" 0 "Creating scale out test [0]"
-        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is started [Timeout=${TO_SERVICE_START} secs.]"
-        pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
-        rlAssertNotEquals "Checking pod name not empty" "${pod_name}" ""
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_out/scale_out1/" 0 "Creating scale out test [1]"
-        rlRun "checkPodAmount 2 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1+1 PODs are started [Timeout=${TO_POD_START} secs.]"
-        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
-        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking aded POD in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "${OC_CLIENT} delete -f reg_test/scale_test/scale_out/scale_out0/" 0 "Deleting scale out test"
-        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
-    rlPhaseEnd
-
-    rlPhaseStartTest "Scale-in scalability test"
-        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_in/scale_in0/" 0 "Creating scale in test [0]"
-        rlRun "checkPodAmount 2 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 2 PODs are started [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is running [Timeout=${TO_SERVICE_START} secs.]"
-        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
-        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 2)
-        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
-        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD:[$pod2_name}] in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_in/scale_in1/" 0 "Creating scale in test [1]"
-        rlRun "checkPodAmount 1 ${TO_POD_SCALEIN_WAIT} ${TEST_NAMESPACE}" 0 "Checking only 1 POD continues running [Timeout=${TO_POD_SCALEIN_WAIT} secs.]"
-        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
-        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] still in Running state [Timeout=${TO_POD_START} secs.]"
-        rlRun "${OC_CLIENT} delete -f reg_test/scale_test/scale_in/scale_in0/" 0 "Deleting scale in test"
-        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_START} secs.]"
-    rlPhaseEnd
-
-    rlPhaseStartTest "Scale-up scalability test"
-        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_up/scale_up0/" 0 "Creating scale up test [0]"
-        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is running [Timeout=${TO_SERVICE_START} secs.]"
-        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
-        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] in Running state [Timeout=${TO_POD_START} secs.]"
-        cpu1=$(getPodCpuRequest "${pod1_name}" "${TEST_NAMESPACE}")
-        mem1=$(getPodMemRequest "${pod1_name}" "${TEST_NAMESPACE}")
-        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_up/scale_up1/" 0 "Creating scale up test [1]"
-        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking only 1 POD continues running [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodState Terminating ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] in Terminating state [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodKilled ${pod1_name} ${TEST_NAMESPACE} ${TO_POD_TERMINATE}" 0 "Checking POD:[${pod1_name}] not available any more [Timeout=${TO_POD_TERMINATE} secs.]"
-        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 new POD is running [Timeout=${TO_POD_START} secs.]"
-        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
-        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
-        rlAssertNotEquals "Checking new POD has been created" "${pod1_name}" "${pod2_name}"
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD:[$pod2_name}] in Running state [Timeout=${TO_POD_START} secs.]"
-        cpu2=$(getPodCpuRequest "${pod2_name}" "${TEST_NAMESPACE}")
-        mem2=$(getPodMemRequest "${pod2_name}" "${TEST_NAMESPACE}")
-        rlAssertGreater "Checking cpu request value increased" ${cpu2} ${cpu1}
-        rlAssertGreater "Checking mem request value increased" ${mem2} ${mem1}
-        rlRun "${OC_CLIENT} delete -f reg_test/scale_test/scale_up/scale_up0/" 0 "Deleting scale up test"
-        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
-    rlPhaseEnd
-
-    rlPhaseStartTest "Scale-down scalability test"
-        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_down/scale_down0/" 0 "Creating scale down test [0]"
-        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is running [Timeout=${TO_SERVICE_START} secs.]"
-        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
-        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] in Running state [Timeout=${TO_POD_START} secs.]"
-        cpu1=$(getPodCpuRequest "${pod1_name}" "${TEST_NAMESPACE}")
-        mem1=$(getPodMemRequest "${pod1_name}" "${TEST_NAMESPACE}")
-        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_down/scale_down1/" 0 "Creating scale down test [1]"
-        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking only 1 POD continues running [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodState Terminating ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] in Terminating state [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodKilled ${pod1_name} ${TEST_NAMESPACE} ${TO_POD_TERMINATE}" 0 "Checking POD:[${pod1_name}] not available any more [Timeout=${TO_POD_TERMINATE} secs.]"
-        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 new POD is running [Timeout=${TO_POD_START} secs.]"
-        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
-        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
-        rlAssertNotEquals "Checking new POD has been created" "${pod1_name}" "${pod2_name}"
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD:[$pod2_name}] in Running state [Timeout=${TO_POD_START} secs.]"
-        cpu2=$(getPodCpuRequest "${pod2_name}" "${TEST_NAMESPACE}")
-        mem2=$(getPodMemRequest "${pod2_name}" "${TEST_NAMESPACE}")
-        rlAssertLesser "Checking cpu request value decreased" ${cpu2} ${cpu1}
-        rlAssertLesser "Checking mem request value decreased" ${mem2} ${mem1}
-        rlRun "${OC_CLIENT} delete -f reg_test/scale_test/scale_down/scale_down0/" 0 "Deleting scale down test"
-        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
-    rlPhaseEnd
-    ########### /SCALABILTY TESTS #########
-
-    ############# LEGACY TESTS ############
-    rlPhaseStartTest "Legacy Test"
-        rlRun "${OC_CLIENT} apply -f reg_test/legacy_test/" 0 "Creating legacy test"
-        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is running [Timeout=${TO_SERVICE_START} secs.]"
-        pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5)
-        rlAssertNotEquals "Checking pod name not empty" "${pod_name}" ""
-        rlRun "checkPodState Running ${TO_LEGACY_POD_RUNNING} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_LEGACY_POD_RUNNING} secs.]"
-        rlRun "${OC_CLIENT} delete -f reg_test/legacy_test/" 0 "Deleting legacy test"
-        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
-    rlPhaseEnd
-    ############# /LEGACY TESTS ###########
+##    rlPhaseStartTest "Minimal Configuration"
+##        rlRun "${OC_CLIENT} apply -f reg_test/conf_test/minimal/" 0 "Creating minimal configuration"
+##        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is started [Timeout=${TO_SERVICE_START} secs.]"
+##        pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod_name}" ""
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "${OC_CLIENT} delete -f reg_test/conf_test/minimal/" 0 "Deleting minimal configuration"
+##        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no POD continues running [Timeout=${TO_POD_STOP} secs.]"
+##        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+##    rlPhaseEnd
+##
+##    rlPhaseStartTest "Main Configuration"
+##        rlRun "${OC_CLIENT} apply -f reg_test/conf_test/main/" 0 "Creating main configuration"
+##        rlRun "checkPodAmount 3 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 3 PODs are started [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is started [Timeout=${TO_SERVICE_START} secs.]"
+##        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+##        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 2)
+##        pod3_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 3)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
+##        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
+##        rlAssertNotEquals "Checking pod name not empty" "${pod3_name}" ""
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name] in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD:[$pod2_name] in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod3_name}" 0 "Checking POD:[$pod3_name] in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "${OC_CLIENT} delete -f reg_test/conf_test/main/" 0 "Deleting main configuration"
+##        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
+##        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+##    rlPhaseEnd
+##
+##    rlPhaseStartTest "Multiple Deployment Configuration"
+##        rlRun "${OC_CLIENT} apply -f reg_test/conf_test/multi_deployment/" 0 "Creating multiple deployment configuration"
+##        rlRun "checkPodAmount 5 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 5 PODs are started [Timeout=${TO_POD_START} secs.]"
+##        rlRun "sleep 5" 0 "Waiting to ensure no more than expected replicas are started"
+##        rlRun "checkPodAmount 5 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 5 PODs continue running [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkServiceAmount 2 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 2 Services are running [Timeout=${TO_SERVICE_START} secs.]"
+##        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+##        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 2)
+##        pod3_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 3)
+##        pod4_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 4)
+##        pod5_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 5)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
+##        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
+##        rlAssertNotEquals "Checking pod name not empty" "${pod3_name}" ""
+##        rlAssertNotEquals "Checking pod name not empty" "${pod4_name}" ""
+##        rlAssertNotEquals "Checking pod name not empty" "${pod5_name}" ""
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name] in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD:[$pod2_name] in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod3_name}" 0 "Checking POD:[$pod3_name] in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod4_name}" 0 "Checking POD:[$pod2_name] in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod5_name}" 0 "Checking POD:[$pod3_name] in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "${OC_CLIENT} delete -f reg_test/conf_test/multi_deployment/" 0 "Deleting multiple deployment configuration"
+##        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
+##        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+##    rlPhaseEnd
+##    ######### /CONFIGURATION TESTS ########
+##
+##    ########### FUNCTIONAL TESTS ##########
+##    rlPhaseStartTest "Unique deployment functional test"
+##        rlRun "${OC_CLIENT} apply -f reg_test/func_test/unique_deployment_test/" 0 "Creating unique deployment"
+##        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
+##        pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod_name}" ""
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is started [Timeout=${TO_SERVICE_START} secs.]"
+##        service_name=$(getServiceNameWithPrefix "service" "${TEST_NAMESPACE}" 5 1)
+##        service_ip=$(getServiceIp "${service_name}" "${TEST_NAMESPACE}" "${TO_EXTERNAL_IP}")
+##        service_port=$(getServicePort "${service_name}" "${TEST_NAMESPACE}")
+##        rlRun "serviceAdv ${service_ip} ${service_port}" 0 "Checking Service Advertisement [IP:${service_ip} PORT:${service_port}]"
+##        rlRun "${OC_CLIENT} delete -f reg_test/func_test/unique_deployment_test/" 0 "Deleting unique deployment"
+##        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
+##        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+##    rlPhaseEnd
+##
+##    rlPhaseStartTest "Multiple deployment functional test"
+##        rlRun "${OC_CLIENT} apply -f reg_test/func_test/multiple_deployment_test/" 0 "Creating multiple deployment"
+##        rlRun "checkPodAmount 2 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 2 PODs are started [Timeout=${TO_POD_START} secs.]"
+##        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+##        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 2)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
+##        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkServiceAmount 2 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 2 Services are started [Timeout=${TO_SERVICE_START} secs.]"
+##        service1_name=$(getServiceNameWithPrefix "service" "${TEST_NAMESPACE}" 5 1)
+##        service1_ip=$(getServiceIp "${service1_name}" "${TEST_NAMESPACE}" "${TO_EXTERNAL_IP}")
+##        service1_port=$(getServicePort "${service1_name}" "${TEST_NAMESPACE}")
+##        service2_name=$(getServiceNameWithPrefix "service" "${TEST_NAMESPACE}" 5 2)
+##        service2_ip=$(getServiceIp "${service2_name}" "${TEST_NAMESPACE}" "${TO_EXTERNAL_IP}")
+##        service2_port=$(getServicePort "${service2_name}" "${TEST_NAMESPACE}")
+##        rlRun "serviceAdvCompare ${service1_ip} ${service1_port} ${service2_ip} ${service2_port}" 0 \
+##              "Checking Services Advertisement [IP1:${service1_ip} PORT1:${service1_port}][IP2:${service2_ip} PORT2:${service2_port}]"
+##        rlRun "${OC_CLIENT} delete -f reg_test/func_test/multiple_deployment_test/" 0 "Deleting multiple deployment"
+##        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
+##        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+##    rlPhaseEnd
+##
+##    rlPhaseStartTest "Key rotation functional test"
+##        rlRun "${OC_CLIENT} apply -f reg_test/func_test/key_rotation/" 0 "Creating key rotation deployment"
+##        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 PODs is started [Timeout=${TO_POD_START} secs.]"
+##        pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod_name}" ""
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is started [Timeout=${TO_SERVICE_START} secs.]"
+##        service_name=$(getServiceNameWithPrefix "service" "${TEST_NAMESPACE}" 5 1)
+##        service_ip=$(getServiceIp "${service_name}" "${TEST_NAMESPACE}" "${TO_EXTERNAL_IP}")
+##        service_port=$(getServicePort "${service_name}" "${TEST_NAMESPACE}")
+##        rlRun "checkKeyRotation ${service_ip} ${service_port} ${TEST_NAMESPACE}" 0\
+##              "Checking Key Rotation [IP:${service_ip} PORT:${service_port}]"
+##        rlRun "${OC_CLIENT} delete -f reg_test/func_test/key_rotation/" 0 "Deleting key rotation deployment"
+##        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
+##        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+##    rlPhaseEnd
+##    ########### /FUNCTIONAL TESTS #########
+##
+##    ########### SCALABILTY TESTS ##########
+##    rlPhaseStartTest "Scale-out scalability test"
+##        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_out/scale_out0/" 0 "Creating scale out test [0]"
+##        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is started [Timeout=${TO_SERVICE_START} secs.]"
+##        pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod_name}" ""
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_out/scale_out1/" 0 "Creating scale out test [1]"
+##        rlRun "checkPodAmount 2 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1+1 PODs are started [Timeout=${TO_POD_START} secs.]"
+##        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking aded POD in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "${OC_CLIENT} delete -f reg_test/scale_test/scale_out/scale_out0/" 0 "Deleting scale out test"
+##        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
+##        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+##    rlPhaseEnd
+##
+##    rlPhaseStartTest "Scale-in scalability test"
+##        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_in/scale_in0/" 0 "Creating scale in test [0]"
+##        rlRun "checkPodAmount 2 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 2 PODs are started [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is running [Timeout=${TO_SERVICE_START} secs.]"
+##        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+##        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 2)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
+##        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD:[$pod2_name}] in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_in/scale_in1/" 0 "Creating scale in test [1]"
+##        rlRun "checkPodAmount 1 ${TO_POD_SCALEIN_WAIT} ${TEST_NAMESPACE}" 0 "Checking only 1 POD continues running [Timeout=${TO_POD_SCALEIN_WAIT} secs.]"
+##        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] still in Running state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "${OC_CLIENT} delete -f reg_test/scale_test/scale_in/scale_in0/" 0 "Deleting scale in test"
+##        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
+##        rlRun "checkServiceAmount 0 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_START} secs.]"
+##    rlPhaseEnd
+##
+##    rlPhaseStartTest "Scale-up scalability test"
+##        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_up/scale_up0/" 0 "Creating scale up test [0]"
+##        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is running [Timeout=${TO_SERVICE_START} secs.]"
+##        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] in Running state [Timeout=${TO_POD_START} secs.]"
+##        cpu1=$(getPodCpuRequest "${pod1_name}" "${TEST_NAMESPACE}")
+##        mem1=$(getPodMemRequest "${pod1_name}" "${TEST_NAMESPACE}")
+##        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_up/scale_up1/" 0 "Creating scale up test [1]"
+##        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking only 1 POD continues running [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkPodState Terminating ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] in Terminating state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkPodKilled ${pod1_name} ${TEST_NAMESPACE} ${TO_POD_TERMINATE}" 0 "Checking POD:[${pod1_name}] not available any more [Timeout=${TO_POD_TERMINATE} secs.]"
+##        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 new POD is running [Timeout=${TO_POD_START} secs.]"
+##        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
+##        rlAssertNotEquals "Checking new POD has been created" "${pod1_name}" "${pod2_name}"
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD:[$pod2_name}] in Running state [Timeout=${TO_POD_START} secs.]"
+##        cpu2=$(getPodCpuRequest "${pod2_name}" "${TEST_NAMESPACE}")
+##        mem2=$(getPodMemRequest "${pod2_name}" "${TEST_NAMESPACE}")
+##        rlAssertGreater "Checking cpu request value increased" ${cpu2} ${cpu1}
+##        rlAssertGreater "Checking mem request value increased" ${mem2} ${mem1}
+##        rlRun "${OC_CLIENT} delete -f reg_test/scale_test/scale_up/scale_up0/" 0 "Deleting scale up test"
+##        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
+##        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+##    rlPhaseEnd
+##
+##    rlPhaseStartTest "Scale-down scalability test"
+##        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_down/scale_down0/" 0 "Creating scale down test [0]"
+##        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is running [Timeout=${TO_SERVICE_START} secs.]"
+##        pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod1_name}" ""
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] in Running state [Timeout=${TO_POD_START} secs.]"
+##        cpu1=$(getPodCpuRequest "${pod1_name}" "${TEST_NAMESPACE}")
+##        mem1=$(getPodMemRequest "${pod1_name}" "${TEST_NAMESPACE}")
+##        rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_down/scale_down1/" 0 "Creating scale down test [1]"
+##        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking only 1 POD continues running [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkPodState Terminating ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] in Terminating state [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkPodKilled ${pod1_name} ${TEST_NAMESPACE} ${TO_POD_TERMINATE}" 0 "Checking POD:[${pod1_name}] not available any more [Timeout=${TO_POD_TERMINATE} secs.]"
+##        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 new POD is running [Timeout=${TO_POD_START} secs.]"
+##        pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
+##        rlAssertNotEquals "Checking new POD has been created" "${pod1_name}" "${pod2_name}"
+##        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD:[$pod2_name}] in Running state [Timeout=${TO_POD_START} secs.]"
+##        cpu2=$(getPodCpuRequest "${pod2_name}" "${TEST_NAMESPACE}")
+##        mem2=$(getPodMemRequest "${pod2_name}" "${TEST_NAMESPACE}")
+##        rlAssertLesser "Checking cpu request value decreased" ${cpu2} ${cpu1}
+##        rlAssertLesser "Checking mem request value decreased" ${mem2} ${mem1}
+##        rlRun "${OC_CLIENT} delete -f reg_test/scale_test/scale_down/scale_down0/" 0 "Deleting scale down test"
+##        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
+##        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+##    rlPhaseEnd
+##    ########### /SCALABILTY TESTS #########
+##
+##    ############# LEGACY TESTS ############
+##    rlPhaseStartTest "Legacy Test"
+##        rlRun "${OC_CLIENT} apply -f reg_test/legacy_test/" 0 "Creating legacy test"
+##        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
+##        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is running [Timeout=${TO_SERVICE_START} secs.]"
+##        pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5)
+##        rlAssertNotEquals "Checking pod name not empty" "${pod_name}" ""
+##        rlRun "checkPodState Running ${TO_LEGACY_POD_RUNNING} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_LEGACY_POD_RUNNING} secs.]"
+##        rlRun "${OC_CLIENT} delete -f reg_test/legacy_test/" 0 "Deleting legacy test"
+##        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
+##        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+##    rlPhaseEnd
+##    ############# /LEGACY TESTS ###########
 
     ############# KEY MANAGEMENT TESTS ############
     rlPhaseStartTest "Key Management Test"
@@ -842,6 +853,7 @@ rlJournalStart
         rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is running [Timeout=${TO_SERVICE_START} secs.]"
         rlRun "checkActiveKeysAmount 1 ${TO_ACTIVE_KEYS} ${TEST_NAMESPACE}" 0 "Checking Active Keys Amount is 1"
         rlRun "checkHiddenKeysAmount 0 ${TO_HIDDEN_KEYS} ${TEST_NAMESPACE}" 0 "Checking Hidden Keys Amount is 0"
+        dumpTangdHealthCheckInfo "${pod_name}" "${TEST_NAMESPACE}"
         ### Rotate VIA API
         rlRun "reg_test/key_management_test/api_key_rotate.sh -n ${TEST_NAMESPACE} -c ${OC_CLIENT}" 0 "Rotating keys"
         rlRun "checkActiveKeysAmount 1 ${TO_ACTIVE_KEYS} ${TEST_NAMESPACE}" 0 "Checking Active Keys Amount is 1"
