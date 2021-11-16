@@ -78,6 +78,13 @@ rlJournalStart
         rlRun "systemctl restart usbguard"
     rlPhaseEnd
 
+    rlPhaseStartTest "IPAddressDeny, bz1929364" && {
+      rlRun -s "cat `rpm -ql usbguard | grep service`"
+      rlAssertGrep "ExecStart" $rlRun_LOG
+      rlAssertNotGrep "IPAddressDeny" $rlRun_LOG
+      rm -rf $rlRun_LOG
+    rlPhaseEnd; }
+
     rlPhaseStartCleanup
         rlServiceRestore
         rlRun "popd"

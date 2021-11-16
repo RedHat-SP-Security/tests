@@ -25,3 +25,5 @@ adjust:
 -   enabled: false
     when: arch == s390x
     continue: false
+link:
+-   verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1929364
