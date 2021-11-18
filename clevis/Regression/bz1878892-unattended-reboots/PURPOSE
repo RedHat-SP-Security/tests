@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/clevis/Regression/bz1878892-unattended-reboots
+Description: Tests that the system unlocks a non-root device in early boot
+Author: Sergio Correia <scorreia@redhat.com>
