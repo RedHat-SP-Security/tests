@@ -1,0 +1,116 @@
+repo --name="AppStream" --baseurl="@APPSTREAM@"
+# Use network installation
+url --url="@BASEOS@"
+
+# Use text mode install
+text
+# Reboot when the install is finished.
+reboot
+
+%packages
+@^minimal-environment
+clevis-dracut
+clevis-systemd
+clevis-luks
+clevis
+grubby
+%end
+
+# SELinux configuration
+selinux --enforcing
+
+# Keyboard layouts
+keyboard --vckeymap=us-acentos --xlayouts='us (intl)'
+# System language
+lang en_US.UTF-8
+
+# Network information
+network --onboot=yes --device=eth0 --bootproto=static --ip=192.168.122.100 --netmask=255.255.255.0 --gateway=192.168.122.1 --nameserver=192.168.122.1
+network  --hostname=rhel
+
+# Run the Setup Agent on first boot
+firstboot --enable
+# Do not configure the X Window System
+skipx
+
+# Basic services
+services --enabled=sshd
+
+zerombr
+ignoredisk --only-use=vda
+# Partition clearing information
+clearpart --all @CDL@ --initlabel --drive=vda
+
+# Disk partitioning information
+@PREP_BOOT_PART@
+part /boot --fstype="ext4" --size=250
+part /boot/efi --fstype="efi" --size=250
+part /home --fstype="xfs" --size=250 --encrypted --luks-version=luks2 --pbkdf=pbkdf2 --pbkdf-iterations=1000  --pbkdf-memory=64 --passphrase=rhel
+part / --fstype="xfs" --size=1024 --grow
+
+%post --erroronfail --interpreter /bin/bash
+printf "Changing output to TTY 3; press Alt-F3 to view\r\n" > /dev/tty1
+{
+    # Add additional repos, maybe for testing a scratch build.
+    EXTRAREPOS=@REPOFILES@
+    if [ -n "${EXTRAREPOS}" ]; then
+        count=0
+        for repo in ${EXTRAREPOS}; do
+            count=$((count+1))
+            curl -kL "${repo}" -o "/etc/yum.repos.d/@PREFIX@-${count}.repo" ||:
+        done
+        dnf update -y ||:
+    fi
+
+    # Specify tang servers.
+    TANG=@TANGADDR@
+    # Download advertisement.
+    curl "${TANG}"/adv -o adv.jws
+    # Create tang config.
+    cfg=$(printf '{"url":"%s","adv":"adv.jws"}' "${TANG}")
+
+    # Now bind all LUKS devices.
+    for dev in $(lsblk -p -n -s -r | awk '$6 == "crypt" { getline; print $1 }' | sort -u); do
+        # We may hit an issue in which the generation of the new passphrase
+        # fails with "Error: Password generation failed - required entropy
+        # too low for settings" - loop until the binding succeeds.
+        # https://access.redhat.com/solutions/3486131
+        until clevis luks bind -f -d "${dev}" tang "${cfg}" <<< rhel; do
+            sleep 0.1
+        done
+
+        # Force our /home device to be unlocked in early-boot.
+        uuid=$(cryptsetup luksUUID "${dev}")
+        grubby --update-kernel=ALL --args="rd.luks.uuid=${uuid}"
+    done
+
+    systemctl enable clevis-luks-askpass.path
+
+    # Set up static IP address.
+    mkdir -p /etc/dracut.conf.d/
+    cat <<EOF >/etc/dracut.conf.d/clevis.conf
+kernel_cmdline="rd.neednet=1 ip=192.168.122.100::192.168.122.1:255.255.255.0::eth0:none:192.168.122.1"
+EOF
+
+    # Update initramfs.
+    dracut -f --regenerate-all
+
+    # Copy public ssh key.
+    mkdir -m0700 /root/.ssh/
+    cat <<EOF >/root/.ssh/authorized_keys
+    @SSHKEY@
+EOF
+    chmod 0600 /root/.ssh/authorized_keys
+    restorecon -R /root/.ssh/
+} 2>&1 | tee /root/postinstall.log > /dev/tty3
+%end
+
+# System timezone
+timezone America/Fortaleza --utc
+
+# Root password
+rootpw --plaintext redhat
+
+%addon com_redhat_kdump --disable --reserve-mb='128'
+
+%end
