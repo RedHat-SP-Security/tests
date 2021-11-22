@@ -2,6 +2,8 @@ summary: check the changed tests functionality
 discover:
     how: fmf
     modified-only: True
+    modified-url: https://github.com/RedHat-SP-Security/tests
+    modified-ref: reference/master
 
 execute:
     how: tmt
