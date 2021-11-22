@@ -112,7 +112,7 @@ rlJournalStart && {
 
     rlPhaseStartTest "file subcommands AC4" && {
       rlRun -s "fapolicyd-cli -f blabla" 1-255
-      rlAssertGrep "missing operation option|invalid|unknown|illegal|bad|unrecognized|undefined|unexpected" $rlRun_LOG -Eiq
+      rlAssertGrep "not a valid option|missing operation option|invalid|unknown|illegal|bad|unrecognized|undefined|unexpected" $rlRun_LOG -Eiq
       rm -f $rlRun_LOG
     rlPhaseEnd; }
 
