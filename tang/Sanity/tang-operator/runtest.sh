@@ -3,7 +3,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #   runtest.sh of /CoreOS/tang/Sanity/tang-operator
-#   Description: Deployment and basic functionality of the tang operator
+#   Description: Basic functionality tests of the tang operator
 #   Author: Martin Zeleny <mzeleny@redhat.com>
 #   Author: Sergio Arroutbi <sarroutb@redhat.com>
 #
@@ -29,18 +29,16 @@
 # Include Beaker environment
 . /usr/share/beakerlib/beakerlib.sh || exit 1
 
-PACKAGE="tang"
 TO_BUNDLE="5m"
 TEST_NAMESPACE_PATH="reg_test/all_test_namespace"
 TEST_NAMESPACE_FILE_NAME="daemons_v1alpha1_namespace.yaml"
 TEST_NAMESPACE_FILE="${TEST_NAMESPACE_PATH}/${TEST_NAMESPACE_FILE_NAME}"
-TEST_NAMESPACE=$(grep -i 'name:' "${TEST_NAMESPACE_FILE}" | awk -F ':' {'print $2'} | tr -d ' ')
+TEST_NAMESPACE=$(grep -i 'name:' "${TEST_NAMESPACE_FILE}" | awk -F ':' '{print $2}' | tr -d ' ')
 TEST_PVSC_PATH="reg_test/all_test_namespace"
 TEST_PV_FILE_NAME="daemons_v1alpha1_pv.yaml"
 TEST_PV_FILE="${TEST_PVSC_PATH}/${TEST_PV_FILE_NAME}"
 TEST_SC_FILE_NAME="daemons_v1alpha1_storageclass.yaml"
 TEST_SC_FILE="${TEST_PVSC_PATH}/${TEST_SC_FILE_NAME}"
-TEST_=$(grep -i 'name:' "${TEST_NAMESPACE_FILE}" | awk -F ':' {'print $2'} | tr -d ' ')
 EXECUTION_MODE=
 TO_POD_START=60 #seconds
 TO_POD_SCALEIN_WAIT=60 #seconds
@@ -48,7 +46,6 @@ TO_LEGACY_POD_RUNNING=60 #seconds
 TO_POD_STOP=5 #seconds
 TO_POD_TERMINATE=60 #seconds
 TO_POD_CONTROLLER_TERMINATE=180 #seconds (for controller to end must wait longer)
-TO_POD_DISAPPEARS=10 #seconds
 TO_SERVICE_START=60 #seconds
 TO_SERVICE_STOP=120 #seconds
 TO_EXTERNAL_IP=120 #seconds
@@ -90,7 +87,7 @@ parseAndDumpClient() {
 parseAndDumpMode() {
     if [ -z "${TEST_EXTERNAL_CLUSTER_MODE}" ];
     then
-        if [ ! -z "${TEST_CRC_MODE}" ];
+        if [ -n "${TEST_CRC_MODE}" ];
         then
             EXECUTION_MODE="CRC"
         else
@@ -105,7 +102,7 @@ parseAndDumpMode() {
 checkClusterStatus() {
     if [ "${EXECUTION_MODE}" == "CRC" ];
     then
-        rlRun "crc status | grep OpenShift | awk -F ':' {'print $2'} | awk {'print $1'} | grep -i Running" 0 "Checking Code Ready Containers up and running"
+        rlRun "crc status | grep OpenShift | awk -F ':' '{print $2}' | awk '{print $1}' | grep -i Running" 0 "Checking Code Ready Containers up and running"
     elif [ "${EXECUTION_MODE}" == "MINIKUBE" ];
     then
         rlRun "minikube status" 0 "Checking Minikube status"
@@ -123,15 +120,16 @@ checkPodAmount() {
     local expected=$1
     local iterations=$2
     local namespace=$3
-    local counter=0
+    local counter
+    counter=0
     while [ ${counter} -lt ${iterations} ];
     do
-        POD_AMOUNT=$("${OC_CLIENT}" -n "${namespace}" get pods | grep -v "^NAME" | wc -l)
+        POD_AMOUNT=$("${OC_CLIENT}" -n "${namespace}" get pods | grep -v "^NAME" -c)
         dumpVerbose "POD AMOUNT:${POD_AMOUNT} EXPECTED:${expected} COUNTER:${counter}"
         if [ ${POD_AMOUNT} -eq ${expected} ]; then
             return 0
         fi
-        let counter=$counter+1
+        counter=$((counter+1))
         sleep 1
     done
     return 1
@@ -141,7 +139,8 @@ checkPodKilled() {
     local pod_name=$1
     local namespace=$2
     local iterations=$3
-    local counter=0
+    local counter
+    counter=0
     while [ ${counter} -lt ${iterations} ];
     do
         if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ]; then
@@ -152,7 +151,7 @@ checkPodKilled() {
         if [ $? -ne 0 ]; then
             return 0
         fi
-        let counter=$counter+1
+        counter=$((counter+1))
         sleep 1
     done
     return 1
@@ -163,15 +162,16 @@ checkPodState() {
     local iterations=$2
     local namespace=$3
     local podname=$4
-    local counter=0
+    local counter
+    counter=0
     while [ ${counter} -lt ${iterations} ];
     do
-      pod_status=$("${OC_CLIENT}" -n "${namespace}" get pod "${podname}" | grep -v "^NAME" | awk {'print $3'})
+      pod_status=$("${OC_CLIENT}" -n "${namespace}" get pod "${podname}" | grep -v "^NAME" | awk '{print $3}')
       dumpVerbose "POD STATUS:${pod_status} EXPECTED:${expected} COUNTER:${counter}"
       if [ "${pod_status}" == "${expected}" ]; then
         return 0
       fi
-      let counter=$counter+1
+      counter=$((counter+1))
       sleep 1
     done
     return 1
@@ -181,15 +181,16 @@ checkServiceAmount() {
     local expected=$1
     local iterations=$2
     local namespace=$3
-    local counter=0
+    local counter
+    counter=0
     while [ ${counter} -lt ${iterations} ];
     do
-        SERVICE_AMOUNT=$("${OC_CLIENT}" -n "${namespace}" get services | grep -v "^NAME" | wc -l)
+        SERVICE_AMOUNT=$("${OC_CLIENT}" -n "${namespace}" get services | grep -v "^NAME" -c)
         dumpVerbose "SERVICE AMOUNT:${SERVICE_AMOUNT} EXPECTED:${expected} COUNTER:${counter}"
         if [ ${SERVICE_AMOUNT} -eq ${expected} ]; then
             return 0
         fi
-        let counter=$counter+1
+        counter=$((counter+1))
         sleep 1
     done
     return 1
@@ -199,16 +200,17 @@ checkActiveKeysAmount() {
     local expected=$1
     local iterations=$2
     local namespace=$3
-    local counter=0
+    local counter
+    counter=0
     while [ ${counter} -lt ${iterations} ];
     do
-        ACTIVE_KEYS_AMOUNT=$("${OC_CLIENT}" -n ${namespace} get tangserver -o json | jq '.items[0].status.activeKeys | length')
+        ACTIVE_KEYS_AMOUNT=$("${OC_CLIENT}" -n "${namespace}" get tangserver -o json | jq '.items[0].status.activeKeys | length')
         dumpVerbose "ACTIVE KEYS AMOUNT:${ACTIVE_KEYS_AMOUNT} EXPECTED:${expected} COUNTER:${counter}"
         if [ ${ACTIVE_KEYS_AMOUNT} -eq ${expected} ];
         then
             return 0
         fi
-        let counter=$counter+1
+        counter=$((counter+1))
         sleep 1
     done
     rlLog "Active Keys Amount not as expected: Active Keys:${ACTIVE_KEYS_AMOUNT}, Expected:[${expected}]"
@@ -219,16 +221,17 @@ checkHiddenKeysAmount() {
     local expected=$1
     local iterations=$2
     local namespace=$3
-    local counter=0
+    local counter
+    counter=0
     while [ ${counter} -lt ${iterations} ];
     do
-        HIDDEN_KEYS_AMOUNT=$("${OC_CLIENT}" -n ${namespace} get tangserver -o json | jq '.items[0].status.hiddenKeys | length')
+        HIDDEN_KEYS_AMOUNT=$("${OC_CLIENT}" -n "${namespace}" get tangserver -o json | jq '.items[0].status.hiddenKeys | length')
         dumpVerbose "HIDDEN KEYS AMOUNT:${HIDDEN_KEYS_AMOUNT} EXPECTED:${expected} COUNTER:${counter}"
         if [ ${HIDDEN_KEYS_AMOUNT} -eq ${expected} ];
         then
             return 0
         fi
-        let counter=$counter+1
+        counter=$((counter+1))
         sleep 1
     done
     rlLog "Hidden Keys Amount not as expected: Hidden Keys:${HIDDEN_KEYS_AMOUNT}, Expected:[${expected}]"
@@ -240,18 +243,20 @@ getPodNameWithPrefix() {
     local namespace=$2
     local iterations=$3
     local tail_position=$4
-    test -z "${tail_position}" && let tail_position=1
-    local counter=0
+    test -z "${tail_position}" && tail_position=1
+    local counter
+    counter=0
     while [ ${counter} -lt ${iterations} ];
     do
-      local pod_line=$("${OC_CLIENT}" -n "${namespace}" get pods | grep -v "^NAME" | grep "${prefix}" | tail -${tail_position} | head -1)
+      local pod_line
+      pod_line=$("${OC_CLIENT}" -n "${namespace}" get pods | grep -v "^NAME" | grep "${prefix}" | tail -${tail_position} | head -1)
       dumpVerbose "POD LINE:[${pod_line}] POD PREFIX:[${prefix}] COUNTER:[${counter}]"
       if [ "${pod_line}" != "" ]; then
-          echo "$(echo ${pod_line} | awk {'print $1'})"
-          dumpVerbose "FOUND POD name:[$(echo ${pod_line} | awk {'print $1'})] POD PREFIX:[${prefix}] COUNTER:[${counter}]"
+          echo "${pod_line}" | awk '{print $1}'
+          dumpVerbose "FOUND POD name:[$(echo ${pod_line} | awk '{print $1}')] POD PREFIX:[${prefix}] COUNTER:[${counter}]"
           return 0
       else
-          let counter=${counter}+1
+          counter=$((counter+1))
           sleep 1
       fi
     done
@@ -263,18 +268,20 @@ getServiceNameWithPrefix() {
     local namespace=$2
     local iterations=$3
     local tail_position=$4
-    test -z "${tail_position}" && let tail_position=1
-    local counter=0
+    test -z "${tail_position}" && tail_position=1
+    local counter
+    counter=0
     while [ ${counter} -lt ${iterations} ];
     do
-      local service_name=$("${OC_CLIENT}" -n "${namespace}" get services | grep -v "^NAME" | grep "${prefix}" | tail -${tail_position} | head -1)
+      local service_name
+      service_name=$("${OC_CLIENT}" -n "${namespace}" get services | grep -v "^NAME" | grep "${prefix}" | tail -${tail_position} | head -1)
       dumpVerbose "SERVICE NAME:[${service_name}] COUNTER:[${counter}]"
       if [ "${service_name}" != "" ]; then
-          dumpVerbose "FOUND SERVICE name:[$(echo ${service_name} | awk {'print $1'})] POD PREFIX:[${prefix}] COUNTER:[${counter}]"
-          echo "$(echo ${service_name} | awk {'print $1'})"
+          dumpVerbose "FOUND SERVICE name:[$(echo ${service_name} | awk '{print $1}')] POD PREFIX:[${prefix}] COUNTER:[${counter}]"
+          echo "${service_name}" | awk '{print $1}'
           return 0
       else
-          let counter=${counter}+1
+          counter=$((counter+1))
           sleep 1
       fi
     done
@@ -285,33 +292,36 @@ getServiceIp() {
     local service_name=$1
     local namespace=$2
     local iterations=$3
-    let counter=0
+    counter=0
     dumpVerbose "Getting SERVICE:[${service_name}](Namespace:[${namespace}]) IP ..."
     if [ ${EXECUTION_MODE} == "CRC" ];
     then
-        local crc_service_ip=$(crc ip)
+        local crc_service_ip
+        crc_service_ip=$(crc ip)
         dumpVerbose "CRC MODE, SERVICE IP:[${crc_service_ip}]"
         echo "${crc_service_ip}"
         return 0
     elif [ ${EXECUTION_MODE} == "MINIKUBE" ];
     then
-        local minikube_service_ip=$(minikube ip)
+        local minikube_service_ip
+        minikube_service_ip=$(minikube ip)
         dumpVerbose "MINIKUBE MODE, SERVICE IP:[${minikube_service_ip}]"
         echo "${minikube_service_ip}"
         return 0
     fi
     while [ ${counter} -lt ${iterations} ];
     do
-        local service_ip=$("${OC_CLIENT}" -n "${namespace}" describe service "${service_name}" | grep -i "LoadBalancer Ingress:" | awk -F ':' {'print $2'} | tr -d ' ')
+        local service_ip
+        service_ip=$("${OC_CLIENT}" -n "${namespace}" describe service "${service_name}" | grep -i "LoadBalancer Ingress:" | awk -F ':' '{print $2}' | tr -d ' ')
         dumpVerbose "SERVICE IP:[${service_ip}](Namespace:[${namespace}])"
-        if [ ! -z "${service_ip}" ] && [ "${service_ip}" != "<pending>" ];
+        if [ -n "${service_ip}" ] && [ "${service_ip}" != "<pending>" ];
         then
             echo "${service_ip}"
             return 0
         else
             dumpVerbose "PENDING OR EMPTY IP:[${service_ip}], COUNTER[${counter}/${iterations}]"
         fi
-        let counter=${counter}+1
+        counter=$((counter+1))
         sleep 1
     done
     return 1
@@ -324,9 +334,9 @@ getServicePort() {
     dumpVerbose "Getting SERVICE:[${service_name}](Namespace:[${namespace}]) PORT ..."
     if [ ${EXECUTION_MODE} == "CLUSTER" ];
     then
-        service_port=$("${OC_CLIENT}" -n "${namespace}" get service "${service_name}" | grep -v ^NAME | awk {'print $5'} | awk -F ':' {'print $1'})
+        service_port=$("${OC_CLIENT}" -n "${namespace}" get service "${service_name}" | grep -v ^NAME | awk '{print $5}' | awk -F ':' '{print $1}')
     else
-        service_port=$("${OC_CLIENT}" -n "${namespace}" get service "${service_name}" | grep -v ^NAME | awk {'print $5'} | awk -F ':' {'print $2'} | awk -F '/' {'print $1'})
+        service_port=$("${OC_CLIENT}" -n "${namespace}" get service "${service_name}" | grep -v ^NAME | awk '{print $5}' | awk -F ':' '{print $2}' | awk -F '/' '{print $1}')
     fi
     result=$?
     dumpVerbose "SERVICE PORT:[${service_port}](Namespace:[${namespace}])"
@@ -338,30 +348,33 @@ serviceAdv() {
     ip=$1
     port=$2
     URL="http://${ip}:${port}/${ADV_PATH}"
-    local file=$(mktemp)
+    local file
+    file=$(mktemp)
     COMMAND="wget ${URL} --timeout=${TO_WGET_CONNECTION} -O ${file} -o /dev/null"
     dumpVerbose "CONNECTION_COMMAND:[${COMMAND}]"
-    $(${COMMAND})
+    eval "${COMMAND}"
     wget_res=$?
     dumpVerbose "WGET RESULT:$(cat ${file})"
-    JSON_ADV=$(cat ${file})
+    JSON_ADV=$(cat "${file}")
     dumpVerbose "CONNECTION_COMMAND:[${COMMAND}],RESULT:[${wget_res}],JSON_ADV:[${JSON_ADV}])"
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ]; then
-        cat "${file}" | jq . -M -a
+        jq . -M -a < "${file}"
     else
-        cat "${file}" | jq . -M -a 2>/dev/null
+        jq . -M -a < "${file}" 2>/dev/null
     fi
     jq_res=$?
     rm "${file}"
-    return $((${wget_res}+${jq_res}))
+    return $((wget_res+jq_res))
 }
 
 checkKeyRotation() {
     local ip=$1
     local port=$2
     local namespace=$3
-    local file1=$(mktemp)
-    local file2=$(mktemp)
+    local file1
+    file1=$(mktemp)
+    local file2
+    file2=$(mktemp)
     dumpKeyAdv "${ip}" "${port}" "${file1}"
     rlRun "reg_test/func_test/key_rotation/rotate_keys.sh ${namespace} ${OC_CLIENT}" 0 "Rotating keys"
     rlLog "Waiting:${TO_KEY_ROTATION} secs. for keys to rotate"
@@ -379,8 +392,10 @@ dumpKeyAdv() {
     local port=$2
     local file=$3
     test -z "${file}" && file="-"
-    local url="http://${ip}:${port}/${ADV_PATH}"
-    local get_command1="wget ${url} --timeout=${TO_WGET_CONNECTION} -O ${file} -o /dev/null"
+    local url
+    url="http://${ip}:${port}/${ADV_PATH}"
+    local get_command1
+    get_command1="wget ${url} --timeout=${TO_WGET_CONNECTION} -O ${file} -o /dev/null"
     dumpVerbose "DUMP_KEY_ADV_COMMAND:[${get_command1}]"
     ${get_command1}
 }
@@ -390,15 +405,23 @@ serviceAdvCompare() {
     local port=$2
     local ip2=$3
     local port2=$4
-    local url="http://${ip}:${port}/${ADV_PATH}"
-    local url2="http://${ip2}:${port2}/${ADV_PATH}"
-    let jq_equal=1
-    local file1=$(mktemp)
-    local file2=$(mktemp)
-    local jq_json_file1=$(mktemp)
-    local jq_json_file2=$(mktemp)
-    local command1="wget ${url} --timeout=${TO_WGET_CONNECTION} -O ${file1} -o /dev/null"
-    local command2="wget ${url2} --timeout=${TO_WGET_CONNECTION} -O ${file2} -o /dev/null"
+    local url
+    url="http://${ip}:${port}/${ADV_PATH}"
+    local url2
+    url2="http://${ip2}:${port2}/${ADV_PATH}"
+    local jq_equal=1
+    local file1
+    local file2
+    file1=$(mktemp)
+    file2=$(mktemp)
+    local jq_json_file1
+    local jq_json_file2
+    jq_json_file1=$(mktemp)
+    jq_json_file2=$(mktemp)
+    local command1
+    command1="wget ${url} --timeout=${TO_WGET_CONNECTION} -O ${file1} -o /dev/null"
+    local command2
+    command2="wget ${url2} --timeout=${TO_WGET_CONNECTION} -O ${file2} -o /dev/null"
     dumpVerbose "CONNECTION_COMMAND:[${command1}]"
     dumpVerbose "CONNECTION_COMMAND:[${command2}]"
     ${command1}
@@ -408,61 +431,64 @@ serviceAdvCompare() {
     dumpVerbose "CONNECTION_COMMAND:[${command1}],RESULT:[${wget_res1}],json_adv:[$(cat ${file1})]"
     dumpVerbose "CONNECTION_COMMAND:[${command2}],RESULT:[${wget_res2}],json_adv:[$(cat ${file2})]"
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ]; then
-        cat "${file1}" | jq . -M -a 2>&1 | tee ${jq_json_file1}
+        jq . -M -a < "${file1}" 2>&1 | tee "${jq_json_file1}"
     else
-        cat "${file1}" | jq . -M -a > ${jq_json_file1}
+        jq . -M -a < "${file1}" > "${jq_json_file1}"
     fi
     jq_res1=$?
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ]; then
-        cat "${file2}" | jq . -M -a 2>&1 | tee ${jq_json_file2}
+        jq . -M -a < "${file2}" 2>&1 | tee "${jq_json_file2}"
     else
-        cat "${file2}" | jq . -M -a > ${jq_json_file2}
+        jq . -M -a < "${file2}" > "${jq_json_file2}"
     fi
     jq_res2=$?
     rlAssertDiffer "${jq_json_file1}" "${jq_json_file2}"
-    let jq_equal=$?
+    jq_equal=$?
     rm "${jq_json_file1}" "${jq_json_file2}"
-    return $((${wget_res1}+${wget_res2}+${jq_res1}+${jq_res2}+${jq_equal}))
+    return $((wget_res1+wget_res2+jq_res1+jq_res2+jq_equal))
 }
 
 checkStatusRunningReplicas() {
-    let counter=0
-    let expected=$1
+    local counter
+    counter=0
+    local expected=$1
     local namespace=$2
-    let iterations=$3
+    local iterations=$3
     while [ ${counter} -lt ${iterations} ];
     do
-      local running=$("${OC_CLIENT}" -n ${namespace} get tangserver -o json | jq '.items[0].status.running | length')
+      local running
+      running=$("${OC_CLIENT}" -n "${namespace}" get tangserver -o json | jq '.items[0].status.running | length')
       dumpVerbose "Status Running Replicas: Expected:[${expected}], Running:[${running}]"
       if [ ${expected} -eq ${running} ];
       then
           return 0
       fi
-      let counter=$counter+1
+      counter=$((counter+1))
       sleep 1
     done
     return 1
 }
 
 checkStatusReadyReplicas() {
-    let counter=0
-    let expected=$1
+    local counter
+    counter=0
+    local expected=$1
     local namespace=$2
-    let iterations=$3
+    local iterations=$3
     while [ ${counter} -lt ${iterations} ];
     do
-      local ready=$("${OC_CLIENT}" -n ${namespace} get tangserver -o json | jq '.items[0].status.ready | length')
+      local ready
+      ready=$("${OC_CLIENT}" -n "${namespace}" get tangserver -o json | jq '.items[0].status.ready | length')
       dumpVerbose "Status Ready Replicas: Expected:[${expected}], Ready:[${ready}]"
       if [ ${expected} -eq ${ready} ];
       then
           return 0
       fi
-      let counter=$counter+1
+      counter=$((counter+1))
       sleep 1
     done
     return 1
 }
-
 
 bundleStart() {
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
@@ -492,8 +518,9 @@ getPodCpuRequest() {
     local pod_name=$1
     local namespace=$2
     dumpVerbose "Getting POD:[${pod_name}](Namespace:[${namespace}]) CPU Request ..."
-    local cpu=$("${OC_CLIENT}" -n "${namespace}" describe pod "${pod_name}" | grep -i Requests -A2 | grep 'cpu' | awk -F ":" {'print $2'} | tr -d ' ' | tr -d "[A-Z,a-z]")
-    dumpVerbose "CPU REQUEST COMMAND:["${OC_CLIENT}" -n ${namespace} describe pod ${pod_name} | grep -i Requests -A2 | grep 'cpu' | awk -F ':' {'print $2'} | tr -d ' ' | tr -d \"[A-Z,a-z]\""
+    local cpu
+    cpu=$("${OC_CLIENT}" -n "${namespace}" describe pod "${pod_name}" | grep -i Requests -A2 | grep 'cpu' | awk -F ":" '{print $2}' | tr -d ' ' | tr -d "[A-Z,a-z]")
+    dumpVerbose "CPU REQUEST COMMAND:["${OC_CLIENT}" -n "${namespace}" describe pod ${pod_name} | grep -i Requests -A2 | grep 'cpu' | awk -F ':' '{print $2}' | tr -d ' ' | tr -d \"[A-Z,a-z]\""
     dumpVerbose "POD:[${pod_name}](Namespace:[${namespace}]) CPU Request:[${cpu}]"
     echo "${cpu}"
 }
@@ -502,30 +529,35 @@ getPodMemRequest() {
     local pod_name=$1
     local namespace=$2
     dumpVerbose "Getting POD:[${pod_name}](Namespace:[${namespace}]) MEM Request ..."
-    local mem=$("${OC_CLIENT}" -n "${namespace}" describe pod "${pod_name}" | grep -i Requests -A2 | grep 'memory' | awk -F ":" {'print $2'} | tr -d ' ')
-    local unit="${mem: -1}"
-    local mult=1
+    local mem
+    mem=$("${OC_CLIENT}" -n "${namespace}" describe pod "${pod_name}" | grep -i Requests -A2 | grep 'memory' | awk -F ":" '{print $2}' | tr -d ' ')
+    local unit
+    unit="${mem: -1}"
+    local mult
+    mult=1
     case "${unit}" in
         K|k)
-            let mult=1024
+            mult=1024
             ;;
         M|m)
-            let mult=$((1024*1024))
+            mult=$((1024*1024))
             ;;
         G|g)
-            let mult=$((1024*1024*1024))
+            mult=$((1024*1024*1024))
             ;;
         T|t)
-            let mult=$((1024*1024*1024*1024))
+            mult=$((1024*1024*1024*1024))
             ;;
         *)
-            let mult=1
+            mult=1
             ;;
     esac
-    dumpVerbose "MEM REQUEST COMMAND:["${OC_CLIENT}" -n ${namespace} describe pod ${pod_name} | grep -i Requests -A2 | grep 'memory' | awk -F ':' {'print $2'} | tr -d ' '"
+    dumpVerbose "MEM REQUEST COMMAND:["${OC_CLIENT}" -n "${namespace}" describe pod ${pod_name} | grep -i Requests -A2 | grep 'memory' | awk -F ':' '{print $2}' | tr -d ' '"
     dumpVerbose "POD:[${pod_name}](Namespace:[${namespace}]) MEM Request With Unit:[${mem}] Unit:[${unit}] Mult:[${mult}]"
-    local mem_no_unit="${mem/${unit}/}"
-    local mult_mem=$((mem_no_unit*mult))
+    local mem_no_unit
+    mem_no_unit="${mem/${unit}/}"
+    local mult_mem
+    mult_mem=$((mem_no_unit*mult))
     dumpVerbose "POD:[${pod_name}](Namespace:[${namespace}]) MEM Request:[${mult_mem}] Unit:[${unit}] Mult:[${mult}]"
     echo "${mult_mem}"
 }
@@ -552,7 +584,8 @@ installSecret() {
     if [ ${EXECUTION_MODE} == "MINIKUBE" ];
     then
         ## Only required for Minikube
-        local md5sum_secret=$(md5sum "${QUAY_FILE_NAME_PATH}" | awk {'print $1'})
+        local md5sum_secret
+        md5sum_secret=$(md5sum "${QUAY_FILE_NAME_PATH}" | awk '{print $1}')
         if [ "${md5sum_secret}" == "${QUAY_FILE_NAME_TO_FILL_UNFILLED_MD5}" ];
         then
              rlDie "Need to fill secret file for quay on MINIKUBE execution mode"
@@ -568,7 +601,7 @@ installSecret() {
 installScPv() {
     if [ ${EXECUTION_MODE} == "CLUSTER" ];
     then
-	for sc in $("${OC_CLIENT}" get storageclasses.storage.k8s.io  | grep '\(default\)' | awk {'print $1'} );
+	for sc in $("${OC_CLIENT}" get storageclasses.storage.k8s.io  | grep '\(default\)' | awk '{print $1}' );
         do
             "${OC_CLIENT}" patch storageclass "${sc}" -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "false"}}}'
 	done
@@ -854,8 +887,8 @@ rlJournalStart
         rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking POD:[$pod2_name}] in Running state [Timeout=${TO_POD_START} secs.]"
         cpu2=$(getPodCpuRequest "${pod2_name}" "${TEST_NAMESPACE}")
         mem2=$(getPodMemRequest "${pod2_name}" "${TEST_NAMESPACE}")
-        rlAssertLesser "Checking cpu request value decreased" ${cpu2} ${cpu1}
-        rlAssertLesser "Checking mem request value decreased" ${mem2} ${mem1}
+        rlAssertLesser "Checking cpu request value decreased" "${cpu2}" "${cpu1}"
+        rlAssertLesser "Checking mem request value decreased" "${mem2}" "${mem1}"
         rlRun "${OC_CLIENT} delete -f reg_test/scale_test/scale_down/scale_down0/" 0 "Deleting scale down test"
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
         rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
@@ -880,7 +913,7 @@ rlJournalStart
         rlRun "checkClusterStatus" 0 "Checking cluster status"
         controller_name=$(getPodNameWithPrefix "tang-operator-controller" "default" 1)
         dumpVerbose "Controller name:[${controller_name}]"
-        rlRun "bundleStop" 0 "Cleaning already installed tang-operator (if any)"
+        rlRun "bundleStop" 0 "Cleaning installed tang-operator"
         test -z "${controller_name}" ||
             rlRun "checkPodKilled ${controller_name} default ${TO_POD_CONTROLLER_TERMINATE}" 0 "Checking controller POD not available any more [Timeout=${TO_POD_CONTROLLER_TERMINATE} secs.]"
         rlRun "${OC_CLIENT} delete -f ${TEST_NAMESPACE_FILE}" 0 "Deleting test namespace:${TEST_NAMESPACE}"
