@@ -64,7 +64,7 @@ rlJournalStart && {
       rlRun "fapSetup"
       CleanupRegister 'rlRun "fapStop"'
       rlRun "fapStart" > /dev/null
-      tail -f $fapolicyd_out &
+      fapServiceOut -b -f
       CleanupRegister "kill $!"
       h=( $(hostname -A) )
       IPA_MACHINE_HOSTNAME=`hostname`

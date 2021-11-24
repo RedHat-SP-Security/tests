@@ -65,7 +65,7 @@ rlJournalStart && {
       rlRun "su - $testUser -c 'id'"
       rlRun "su - $testUser -c '$test_dir/ls'"
       CleanupDo --mark
-      rlRun "cat $fapolicyd_out"
+      rlRun "fapServiceOut -t"
     rlPhaseEnd; }
 
 
@@ -82,7 +82,7 @@ rlJournalStart && {
       rlRun "su - $testUser -c 'id'"
       rlRun "su - $testUser -c '$test_dir/ls'" 126
       CleanupDo --mark
-      rlRun "cat $fapolicyd_out"
+      rlRun "fapServiceOut -t"
     rlPhaseEnd; }
 
 
@@ -100,7 +100,7 @@ rlJournalStart && {
       rlRun "su - $testUser -c 'id'"
       rlRun "su - $testUser -c '$test_dir/ls'" 126
       CleanupDo --mark
-      rlRun "cat $fapolicyd_out"
+      rlRun "fapServiceOut -t"
     rlPhaseEnd; }
   tcfFin; }
 

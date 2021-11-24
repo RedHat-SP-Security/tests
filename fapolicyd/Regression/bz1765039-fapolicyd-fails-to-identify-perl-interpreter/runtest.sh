@@ -67,10 +67,10 @@ rlJournalStart
     	rlRun "fapStart"
 	rlRun "sudo -n -u $USER $INTERPRETER $SCRIPT_PATH" 1-255
 	rlRun "sleep 3"
-	rlRun "fapStop -k"
-	rlRun "cat $fapolicyd_out"
-	rlAssertGrep ".*dec=deny_audit.*exe=$INTERPRETER.*:.*(file|path)=$SCRIPT_PATH.*ftype=text/x-perl.*" $fapolicyd_out -Eq
-	rm -f $fapolicyd_out
+	rlRun "fapStop"
+	rlRun -s "fapServiceOut"
+	rlAssertGrep ".*dec=deny_audit.*exe=$INTERPRETER.*:.*(file|path)=$SCRIPT_PATH.*ftype=text/x-perl.*" $rlRun_LOG -Eq
+	rm -f $rlRun_LOG
     rlPhaseEnd
 
     rlPhaseStartCleanup

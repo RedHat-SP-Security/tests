@@ -75,8 +75,9 @@ rlJournalStart
     rlPhaseStartTest "running dynamic interpreter as a root with fapolicyd"
         rlRun "fapStart" >/dev/null
         rlRun "$DYNAMIC_INTERPRETER $LS"
-        rlRun "fapStop -k"
-        rlFileSubmit $fapolicyd_out fapolicyd.out1
+        rlRun "fapStop"
+        fapServiceOut > fapolicyd_out
+        rlFileSubmit fapolicyd_out fapolicyd.out1
     rlPhaseEnd
 
     rlPhaseStartTest "running dracut without fapolicyd"
@@ -86,8 +87,9 @@ rlJournalStart
     rlPhaseStartTest "running dracut with fapolicyd"
         rlRun "fapStart" >/dev/null
         rlRun "dracut -f --regenerate-all"
-        rlRun "fapStop -k"
-        rlFileSubmit $fapolicyd_out fapolicyd.out2
+        rlRun "fapStop"
+        fapServiceOut > fapolicyd_out
+        rlFileSubmit fapolicyd_out fapolicyd.out2
     rlPhaseEnd
 
     rlPhaseStartCleanup
