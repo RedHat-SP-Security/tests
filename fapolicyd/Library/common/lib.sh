@@ -25,7 +25,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = fap
-#   library-version = 20
+#   library-version = 22
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 true <<'=cut'
@@ -93,19 +93,47 @@ fapCleanup() {
   fapStop
   $__INTERNAL_fap_semodule && rlRun "semodule -r mujfamodul"
   rlRun 'rm -rf /var/lib/fapolicyd/*'
+  [[ -f /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf ]] && {
+    rm -f /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf
+    systemctl daemon-reload
+  }
   [[ -n "${fapolicyd_out[*]}" ]] && rm -f "${fapolicyd_out[@]}"
   rlRun "rlSEBooleanRestore --namespace fap"
   rlRun "rlFileRestore --namespace fap"
   rlRun "rlServiceRestore fapolicyd"
 }
 
+fapServiceOut() {
+  if [[ -n "$__INTERNAL_fapolicyd_start_timestamp" ]]; then
+    local background='0' output_style='cat'
+    while [[ -n "$1" ]]; do
+      case $1 in
+        -b)
+          background=1
+        ;;
+        -t)
+          output_style=short
+        ;;
+        *)
+          break
+        ;;
+      esac
+      shift
+    done
+    if [[ "$background" == "1" ]]; then
+      journalctl -u fapolicyd --full --since "$__INTERNAL_fapolicyd_start_timestamp" --no-pager --output $output_style "$@" &
+    else
+      journalctl -u fapolicyd --full --since "$__INTERNAL_fapolicyd_start_timestamp" --no-pager --output $output_style "$@"
+    fi
+  fi
+}
+
 fapStart() {
-  fapolicyd_out=( `mktemp` "${fapolicyd_out[@]}" )
   local res fapolicyd_path tail_pid FADEBUG
   res=0
   FADEBUG='--debug-deny'
   [[ "$1" == "--debug" ]] && {
-    FADEBUG='--debug'
+    FADEBUG='--debug '
     shift
   }
   fapolicyd_path="$1"
@@ -113,17 +141,33 @@ fapStart() {
     [[ "$fapolicyd_path" =~ /$ ]] || fapolicyd_path+="/"
     rlLogInfo "running fapolicyd from alternative path $fapolicyd_path"
   fi
-  runcon -u system_u -r system_r -t init_t sh -c "${fapolicyd_path}fapolicyd $FADEBUG; echo -e \"\nRETURN CODE: \$?\"" 2>&1 | cat > $fapolicyd_out &
-  tail -f $fapolicyd_out >&2 &
+  [[ -z "$fapolicyd_path" ]] && fapolicyd_path="/usr/sbin/"
+  mkdir -p /etc/systemd/system/fapolicyd.service.d
+  ! grep -q -- "${fapolicyd_path}" /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf 2>/dev/null || \
+  ! grep -q -- "$FADEBUG" /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf 2>/dev/null && {
+    cat > /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf <<EOF
+[Service]
+Type=simple
+Restart=no
+ExecStart=
+ExecStart=${fapolicyd_path}fapolicyd $FADEBUG
+EOF
+    restorecon -vR /etc/systemd/system/fapolicyd.service.d
+    systemctl daemon-reload
+  }
+  rm -f /run/fapolicyd/fapolicyd.fifo
+  __INTERNAL_fapolicyd_start_timestamp=$(date +"%F %T")
+  rlServiceStart fapolicyd || let res++
+  
+  fapServiceOut -b -f
   tail_pid=$!
-  local i=50
-  # wait up to 5s to start the process
-  while ((--i)) && ! pidof fapolicyd >/dev/null; do sleep 0.1; done
+  
   local t=$(($(date +%s) + 120))
-  while ! grep -q 'Starting to listen for events' $fapolicyd_out >&2 && pidof fapolicyd >/dev/null; do
+  while ! fapServiceOut | grep -q 'Starting to listen for events' \
+        && systemctl status fapolicyd > /dev/null; do
     sleep 1
     echo -n . >&2
-    [[ $(date +%s) -gt t ]] && {
+    [[ $(date +%s) -gt $t ]] && {
       let res++
       break
     }
@@ -131,49 +175,20 @@ fapStart() {
   disown $tail_pid
   kill $tail_pid
   echo
-  pidof fapolicyd >/dev/null || let res++
+  systemctl status fapolicyd > /dev/null || let res++
   return $res
 }
 
-# -k - keep output log file
 fapStop() {
-  local keep=false tail_pid
-  tail -n 0 -f $fapolicyd_out >&2 &
-  tail_pid=$!
-  rlLogInfo "stopping the daemon"
-  kill $(pidof fapolicyd)
-  local t=$(($(date +%s) + 120))
-  while pidof fapolicyd > /dev/null; do
-    sleep 1
-    echo -n .
-    [[ $(date +%s) -gt t ]] && {
-      res=1
-      break
-    }
-  done
-  pidof fapolicyd > /dev/null && {
-    rlLogInfo "killing the daemon"
-    rlRun "kill -9 \$(pidof fapolicyd); sleep 1s"
-  }
-  disown $tail_pid
-  kill $tail_pid
-  ! pidof fapolicyd > /dev/null
+  rlServiceStop fapolicyd
 }
 
 fapServiceStart() {
-  local res
-  rlServiceStart fapolicyd
-  res=$?
-  [[ $res -eq 0 ]] && sleep 30
-  return $?
+  fapStart "$@"
 }
 
 fapServiceStop() {
-  local res
-  rlServiceStop fapolicyd
-  res=$?
-  [[ $res -eq 0 ]] && sleep 5
-  return $?
+  fapStop "$@"
 }
 
 fapServiceRestore() {
