@@ -54,11 +54,13 @@ rlJournalStart
     rlRun "cat $testfile"
     rlRun "fapStop"
     rlRun "rm -f $testfile"
-    rlRun "cat $fapolicyd_out"
-    rlAssertGrep 'RETURN CODE: 0' $fapolicyd_out
-    rlAssertGrep 'Starting to listen for events' $fapolicyd_out
-    rlAssertNotGrep 'Error receiving fanotify_event (Permission denied)' $fapolicyd_out
-    rlAssertNotGrep 'Error reading (Permission denied)' $fapolicyd_out
+    rlRun -s "fapServiceOut -t"
+    rlAssertGrep 'shutting down' $rlRun_LOG
+    rlAssertGrep 'succeeded' $rlRun_LOG -iq
+    rlAssertGrep 'Starting to listen for events' $rlRun_LOG
+    rlAssertNotGrep 'Error receiving fanotify_event (Permission denied)' $rlRun_LOG
+    rlAssertNotGrep 'Error reading (Permission denied)' $rlRun_LOG
+    rm -f $rlRun_LOG
   rlPhaseEnd
 
   rlPhaseStartTest "blocked by permissions"
@@ -68,11 +70,13 @@ rlJournalStart
     rlRun "cat $testfile"
     rlRun "fapStop"
     rlRun "rm -f $testfile"
-    rlRun "cat $fapolicyd_out"
-    rlAssertGrep 'RETURN CODE: 0' $fapolicyd_out
-    rlAssertGrep 'Starting to listen for events' $fapolicyd_out
-    rlAssertNotGrep 'Error receiving fanotify_event (Permission denied)' $fapolicyd_out
-    rlAssertNotGrep 'Error reading (Permission denied)' $fapolicyd_out
+    rlRun -s "fapServiceOut -t"
+    rlAssertGrep 'shutting down' $rlRun_LOG
+    rlAssertGrep 'succeeded' $rlRun_LOG -iq
+    rlAssertGrep 'Starting to listen for events' $rlRun_LOG
+    rlAssertNotGrep 'Error receiving fanotify_event (Permission denied)' $rlRun_LOG
+    rlAssertNotGrep 'Error reading (Permission denied)' $rlRun_LOG
+    rm -f $rlRun_LOG
   rlPhaseEnd
 
   rlPhaseStartTest "blocked by selinux - modify fapolicyd module"
@@ -88,11 +92,13 @@ rlJournalStart
     rlRun "cat $testfile" 1-255
     rlRun "fapStop"
     rlRun "rm -f $testfile"
-    rlRun "cat $fapolicyd_out"
-    rlAssertGrep 'RETURN CODE: 0' $fapolicyd_out
-    rlAssertGrep 'Starting to listen for events' $fapolicyd_out
-    rlAssertGrep 'Error receiving fanotify_event (Permission denied)' $fapolicyd_out
-    rlAssertNotGrep 'Error reading (Permission denied)' $fapolicyd_out
+    rlRun -s "fapServiceOut -t"
+    rlAssertGrep 'shutting down' $rlRun_LOG
+    rlAssertGrep 'succeeded' $rlRun_LOG -iq
+    rlAssertGrep 'Starting to listen for events' $rlRun_LOG
+    rlAssertGrep 'Error receiving fanotify_event (Permission denied)' $rlRun_LOG
+    rlAssertNotGrep 'Error reading (Permission denied)' $rlRun_LOG
+    rm -f $rlRun_LOG
     rlRun "rlSEAVCCheck --expect sysctl_vm_t selinux"
     CleanupDo --mark
   rlPhaseEnd
@@ -125,11 +131,13 @@ EOF
     rlRun "cat $testfile" 1-255
     rlRun "fapStop"
     rlRun "rm -f $testfile"
-    rlRun "cat $fapolicyd_out"
-    rlAssertGrep 'RETURN CODE: 0' $fapolicyd_out
-    rlAssertGrep 'Starting to listen for events' $fapolicyd_out
-    rlAssertGrep 'Error receiving fanotify_event (Permission denied)' $fapolicyd_out
-    rlAssertNotGrep 'Error reading (Permission denied)' $fapolicyd_out
+    rlRun -s "fapServiceOut -t"
+    rlAssertGrep 'shutting down' $rlRun_LOG
+    rlAssertGrep 'succeeded' $rlRun_LOG -iq
+    rlAssertGrep 'Starting to listen for events' $rlRun_LOG
+    rlAssertGrep 'Error receiving fanotify_event (Permission denied)' $rlRun_LOG
+    rlAssertNotGrep 'Error reading (Permission denied)' $rlRun_LOG
+    rm -f $rlRun_LOG
     rlRun "rlSEAVCCheck --expect mujtyp_file_t selinux"
     CleanupDo --mark
   rlPhaseEnd

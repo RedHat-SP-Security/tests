@@ -73,13 +73,14 @@ EOF
     rlRun "rm -f $PYTHON.mojekopie"
     rlRun "lsof | grep test\.py | grep deleted"
     rlRun "fapStart --debug"
-    tail -f $fapolicyd_out &
+    fapServiceOut -b -f
     rlRun "sleep 5"
     kill %+
     kill %1
     rlRun "fapStop"
-    rlAssertGrep 'allow.*python.*:.*test\.py' $fapolicyd_out
-    rlAssertNotGrep 'deny.*python.*:.*test\.py' $fapolicyd_out
+    fapServiceOut > fapolicyd_out
+    rlAssertGrep 'allow.*python.*:.*test\.py' fapolicyd_out
+    rlAssertNotGrep 'deny.*python.*:.*test\.py' fapolicyd_out
   rlPhaseEnd; }
 
   rlPhaseStartTest "system instalability" && {

@@ -210,7 +210,7 @@ EOF
         rlRun "./$exe3" 126
         rlRun "./$exe4" 126
         rlRun "fapStop"
-        rlRun "cat $fapolicyd_out"
+        rlRun "fapServiceOut -t"
       tcfFin; }
       $spaces && tcfChk "space ( )" && {
         cat > /etc/fapolicyd/fapolicyd.rules <<EOF
@@ -226,7 +226,7 @@ EOF
         rlRun "./$exe3" 126
         rlRun "./$exe4" 126
         rlRun "fapStop"
-        rlRun "cat $fapolicyd_out"
+        rlRun "fapServiceOut -t"
       tcfFin; }
     rlPhaseEnd; }
 
@@ -246,7 +246,7 @@ EOF
         rlRun "./$exe3" 126
         rlRun "./$exe4" 126
         rlRun "fapStop"
-        rlRun "cat $fapolicyd_out"
+        rlRun "fapServiceOut -t"
       tcfFin; }
     rlPhaseEnd; }
 
@@ -263,7 +263,8 @@ EOF
         #rlRun "./$exe3" 126
         #rlRun "./$exe4" 126
         rlRun "fapStop"
-        rlAssertGrep "set 'mylist'.*not defined before" $fapolicyd_out -Eiq
+        fapServiceOut > fapolicyd_out
+        rlAssertGrep "set 'mylist'.*not defined before" fapolicyd_out -Eiq
     rlPhaseEnd; }
 
     rlPhaseStartTest "invalid rule AC20" && {

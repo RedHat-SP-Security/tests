@@ -75,7 +75,7 @@ rlJournalStart && {
     rlRun "fapStart --debug"
     uRun "$TmpDir/ls" 126
     CleanupDo --mark
-    rlRun "cat $fapolicyd_out"
+    rlRun "fapServiceOut -t"
   rlPhaseEnd; }
 
   rlPhaseStartTest "integrity none" && {
@@ -104,7 +104,7 @@ rlJournalStart && {
     rlRun "cat /bin/ls > $fapTestProgram"
     uRun "$fapTestProgram" 126
     CleanupDo --mark
-    rlRun "cat $fapolicyd_out"
+    rlRun "fapServiceOut -t"
   rlPhaseEnd; }
 
   rlPhaseStartTest "integrity sha256" && {
@@ -119,7 +119,7 @@ rlJournalStart && {
     rlRun "cat /bin/ls > $fapTestProgram"
     uRun "$fapTestProgram" 126
     CleanupDo --mark
-    rlRun "cat $fapolicyd_out"
+    rlRun "fapServiceOut -t"
   rlPhaseEnd; }
 
   rlPhaseStartCleanup && {

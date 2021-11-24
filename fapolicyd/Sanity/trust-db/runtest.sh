@@ -139,7 +139,8 @@ rlJournalStart && {
       Trust 'file;rpmdb'
       CleanupRegister --mark 'rlRun "Stop"'
       rlRun "Start" 0-255
-      rlAssertGrep 'file;rpmdb backend not supported, aborting' $fapolicyd_out
+      fapServiceOut > fapolicyd_out
+      rlAssertGrep 'file;rpmdb backend not supported, aborting' fapolicyd_out
       CleanupDo --mark
     rlPhaseEnd; }
 
@@ -147,7 +148,8 @@ rlJournalStart && {
       Trust 'blabla'
       CleanupRegister --mark 'rlRun "Stop"'
       rlRun "Start" 0-255
-      rlAssertGrep 'blabla backend not supported, aborting' $fapolicyd_out
+      fapServiceOut > fapolicyd_out
+      rlAssertGrep 'blabla backend not supported, aborting' fapolicyd_out
       CleanupDo --mark
     rlPhaseEnd; }
 

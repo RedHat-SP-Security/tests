@@ -47,7 +47,7 @@ rlJournalStart && {
   test() {
     rlLog "trying scenario $1 ::::::::"
     rlRun "fapStart"
-    tail -f $fapolicyd_out &
+    fapServiceOut -b -t -f
     CleanupRegister --mark "disown $!; kill $!"
     rlRun "$1" 0-255
     i=120
@@ -56,7 +56,12 @@ rlJournalStart && {
       sleep 1s
       echo -n .
     done
-    rlAssertGrep 'RETURN CODE: 0$' $fapolicyd_out
+    fapServiceOut > fapolicyd_out
+    rlAssertGrep 'shutting down' fapolicyd_out
+    rlAssertGrep 'succeeded' fapolicyd_out -iq
+    rlRun -s "rlServiceStatus fapolicyd" 1-255
+    rlAssertNotGrep 'SEGV' $rlRun_LOG
+    rm -f $rlRun_LOG
     CleanupDo --mark
   }
 
