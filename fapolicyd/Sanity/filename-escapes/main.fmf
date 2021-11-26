@@ -1,0 +1,18 @@
+summary: excaping of spaces in file names
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+  - library(ControlFlow/Cleanup)
+duration: 5m
+enabled: true
+tag:
+  - Tier3
+  - rhel-8.6
+tier: '3'
+adjust:
+  - enabled: false
+    when: distro < rhel-8.6
+    continue: false
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1939379
+extra-nitrate: TC#0612590
