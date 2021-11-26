@@ -8,6 +8,7 @@ enabled: true
 tag:
   - Tier3
   - rhel-8.6
+  - CI-Tier-1
 tier: '3'
 adjust:
   - enabled: false
