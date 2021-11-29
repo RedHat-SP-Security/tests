@@ -1,6 +1,6 @@
 summary: performs fuzz testing on config/rules files
 description: ''
-contact: J J <jjaburek@redhat.com>
+contact: Dalibor Pospisil <dapospis@redhat.com>
 test: ./runtest.sh
 require:
 - library(distribution/fuzz)
