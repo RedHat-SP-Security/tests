@@ -140,8 +140,9 @@ y'"
       }
       rlRun "cat /root/.ssh/id*.pub >> /root/.ssh/authorized_keys"
       rlRun "cat /root/.ssh/id*.pub | syncSet SSH_KEY -"
-      rlRun "epel yum install ansible -y"
-      rlRun "rpm -q ansible rhel-system-roles"
+      rlRun "epel yum install ansible -y || epel yum install ansible-core -y"
+      rlRun "rpm -q ansible || rpm -q ansible-core"
+      rlRun "rpm -q rhel-system-roles"
       cat > inventory.ini <<EOF
 [servers]
 server ansible_host=$syncSERVER_HOSTNAME
@@ -354,13 +355,6 @@ EOF
         rlRun "sleep 15" 0 "Give client 15 seconds to finish log transfer"
         rlRun "syncSet CLIENT_TEST_DONE"
         rlRun "check_messages"
-    rlPhaseEnd
-
-    rlPhaseStartTest "Bug 803550"
-        PID=`pidof rsyslogd`
-        lsof -p $PID | grep /dev/urandom
-        rlRun "OPENED=\`lsof -p $PID | grep /dev/urandom | wc -l\`" 0 "Getting the number of opened /dev/urandom"
-        rlAssertEquals "Only one /dev/urandom should be opened" 1 $OPENED
     rlPhaseEnd
 }
 
