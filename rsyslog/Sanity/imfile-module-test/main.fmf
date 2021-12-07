@@ -25,8 +25,6 @@ require+:
 - library(distribution/Cleanup)
 recommend:
 - rsyslog
-environment:
-    rsyslogSyntax: old
 duration: 25m
 enabled: true
 tag:
@@ -40,10 +38,16 @@ tag:
 - rhel-8.1
 - rsyslogSyntaxOLD
 tier: '2'
-extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/imfile-module-test
-extra-task: /CoreOS/rsyslog/Sanity/imfile-module-test
-extra-nitrate: TC#0059835
 adjust:
 -   enabled: false
-    when: distro == rhel-4
-    continue: false
+    when: distro < rhel-6
+/old-syntax:
+    environment:
+        rsyslogSyntax: old
+    extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Sanity/imfile-module-test
+    extra-nitrate: TC#0059835
+/new-syntax:
+    environment:
+        rsyslogSyntax: new
+    extra-summary: rsyslogSyntax=new /CoreOS/rsyslog/Sanity/imfile-module-test
+    extra-nitrate: TC#419211
