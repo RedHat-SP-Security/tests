@@ -4,6 +4,8 @@ component:
 - clevis
 test: ./runtest.sh
 framework: beakerlib
+require:
+- library(distribution/epel)
 recommend:
 - awk
 - coreutils
@@ -14,6 +16,8 @@ recommend:
 - openssh-clients
 - sed
 - util-linux
+- ansible
+- rhel-system-roles
 duration: 2h
 enabled: true
 tag:

@@ -30,7 +30,7 @@ export TESTVERSION=1.0
 
 BUILT_FILES=
 
-FILES=$(METADATA) runtest.sh Makefile PURPOSE ks.cfg.template
+FILES=$(METADATA) runtest.sh Makefile PURPOSE ks.cfg.template ks.cfg.root
 
 .PHONY: all install download clean
 
@@ -55,7 +55,8 @@ $(METADATA): Makefile
 	@echo "Type:            Regression" >> $(METADATA)
 	@echo "TestTime:        2h" >> $(METADATA)
 	@echo "RunFor:          clevis" >> $(METADATA)
-	@echo "Requires:        coreutils grep iproute NetworkManager openssh openssh-clients sed util-linux" >> $(METADATA)
+	@echo "Requires:        coreutils grep iproute NetworkManager openssh openssh-clients sed util-linux ansible rhel-system-roles" >> $(METADATA)
+	@echo "RhtsRequires:    library(distribution/epel)" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2+" >> $(METADATA)
 	@echo "Confidential:    no" >> $(METADATA)

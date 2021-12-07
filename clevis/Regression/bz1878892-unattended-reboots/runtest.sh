@@ -28,7 +28,7 @@
 # Include Beaker environment
 . /usr/share/beakerlib/beakerlib.sh || exit 1
 
-TEMPLATE=ks.cfg.template
+TEMPLATE=ks.cfg.root
 
 export PREFIX=bz1878892
 export BASEDIR="/var/tmp/${PREFIX}"
@@ -37,6 +37,7 @@ export NAME="${PREFIX}"-vm
 export SWAPFILE="${BASEDIR}/${PREFIX}"-swapfile
 export DISK="${BASEDIR}/${PREFIX}".qcow2
 export ARCH="$(uname -m)"
+export ADDR="192.168.122.100"
 
 get_compose() {
     if [ -n "${COMPOSE}" ]; then
@@ -210,13 +211,12 @@ EOF
     extra_args=
 
     # Network.
-    addr="192.168.122.100"
     mask="255.255.255.0"
     gw="192.168.122.1"
     dns="192.168.122.1"
     iface="eth0"
 
-    ip="ip=${addr}::${gw}:${mask}::${iface}:none:${dns}"
+    ip="ip=${ADDR}::${gw}:${mask}::${iface}:none:${dns}"
 
     case "${ARCH}" in
     ppc64le)
@@ -251,6 +251,8 @@ EOF
 
 rlJournalStart
     rlPhaseStartSetup
+        rlRun "rlImport --all" 0 "Import libraries" || rlDie "cannot continue"
+
         export PRESERVE_VM=${PRESERVE_VM:-}
         export EXTRA_REPOS=${EXTRA_REPOS:-}
         export RUNS=${RUNS:-3}
@@ -274,9 +276,36 @@ rlJournalStart
         rlRun "yum -y install tang"
         rlServiceStart tangd.socket
 
+        rlRun "epel yum install ansible -y" 0 "Install ansible from epel via epel beakerlib library"
+
         create_vm
         rlRun "virsh start ${NAME}" 0 "Start VM"
+        wait_for_vm 120
     rlPhaseEnd
+
+DEV="/dev/vda3"
+    rlPhaseStartTest "Setup NBDE client in virt machine to bind to the Tang server running on localhost"
+        cat > bind.yaml <<EOF
+---
+- hosts: ${ADDR}
+  vars:
+    nbde_client_bindings:
+      - device: ${DEV}
+        encryption_password: rhel
+        servers:
+          - localhost
+  roles:
+    - linux-system-roles.nbde_client
+EOF
+        rlRun "cat bind.yaml"
+        rlRun "ansible-playbook bind.yaml"
+
+        cmd "rm /root/.keyfile"
+        cmd "sed -ie 's/\/root\/\.keyfile/none/' /etc/crypttab"
+        cmd "rm /etc/dracut.conf.d/nbde.conf"
+        cmd "dracut -f --hostonly-cmdline"
+    rlPhaseEnd
+
 
     i=0
     FAILURES=0

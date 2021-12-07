@@ -1,0 +1,93 @@
+repo --name="AppStream" --baseurl="@APPSTREAM@"
+# Use network installation
+url --url="@BASEOS@"
+
+# Use text mode install
+text
+# Reboot when the install is finished.
+reboot
+
+%packages
+@^minimal-environment
+clevis-dracut
+clevis-systemd
+clevis-luks
+clevis
+grubby
+%end
+
+# SELinux configuration
+selinux --enforcing
+
+# Keyboard layouts
+keyboard --vckeymap=us-acentos --xlayouts='us (intl)'
+# System language
+lang en_US.UTF-8
+
+# Network information
+network --onboot=yes --device=eth0 --bootproto=static --ip=192.168.122.100 --netmask=255.255.255.0 --gateway=192.168.122.1 --nameserver=192.168.122.1
+network  --hostname=rhel
+
+# Run the Setup Agent on first boot
+firstboot --enable
+# Do not configure the X Window System
+skipx
+
+# Basic services
+services --enabled=sshd
+
+zerombr
+ignoredisk --only-use=vda
+# Partition clearing information
+clearpart --all @CDL@ --initlabel --drive=vda
+
+# Disk partitioning information
+@PREP_BOOT_PART@
+part /boot --fstype="xfs" --size=250
+part /boot/efi --fstype="efi" --size=250
+part / --fstype="xfs" --size=1024 --grow --encrypted --luks-version=luks2 --pbkdf=pbkdf2 --pbkdf-iterations=1000  --pbkdf-memory=64 --passphrase=rhel
+
+%post --erroronfail --interpreter /bin/bash
+echo -n 'rhel' > /root/.keyfile
+chmod 0 /root/.keyfile
+mkdir -p /etc/dracut.conf.d
+echo 'install_items+="/root/.keyfile"' > /etc/dracut.conf.d/nbde.conf
+sed -ie 's/none/\/root\/\.keyfile/' /etc/crypttab
+
+# Regen initramfs of every installed kernel.
+for kv in $(rpm -q kernel --qf '%{V}-%{R}.%{arch}\n'); do
+    dracut -f /boot/initramfs-${kv}.img ${kv}
+done
+
+printf "Changing output to TTY 3; press Alt-F3 to view\r\n" > /dev/tty1
+{
+    # Add additional repos, maybe for testing a scratch build.
+    EXTRAREPOS=@REPOFILES@
+    if [ -n "${EXTRAREPOS}" ]; then
+        count=0
+        for repo in ${EXTRAREPOS}; do
+            count=$((count+1))
+            curl -kL "${repo}" -o "/etc/yum.repos.d/@PREFIX@-${count}.repo" ||:
+        done
+        dnf update -y ||:
+    fi
+
+    # Copy public ssh key.
+    mkdir -m0700 /root/.ssh/
+    cat <<EOF >/root/.ssh/authorized_keys
+    @SSHKEY@
+EOF
+    chmod 0600 /root/.ssh/authorized_keys
+    restorecon -R /root/.ssh/
+} 2>&1 | tee /root/postinstall.log > /dev/tty3
+%end
+
+# System timezone
+timezone America/Fortaleza --utc
+
+# Root password
+rootpw --plaintext redhat
+
+%addon com_redhat_kdump --disable --reserve-mb='128'
+
+%end
