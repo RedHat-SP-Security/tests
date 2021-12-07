@@ -11,6 +11,7 @@ recommend:
 - rhel-system-roles
 environment:
     ANSIBLE: '1'
+    TEST: Multihost/relp/system-role
 extra-summary: ANSIBLE=1 /rsyslog/Multihost/relp
 extra-task: /rsyslog/Multihost/relp
 adjust:

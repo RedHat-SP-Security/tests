@@ -4,6 +4,8 @@ tag+:
 - NoRHEL4
 - NoRHEL5
 - Tier2
+environment:
+  TEST: Multihost/relp/direct-config
 extra-summary: /rsyslog/Multihost/relp
 extra-task: /rsyslog/Multihost/relp
 adjust:
