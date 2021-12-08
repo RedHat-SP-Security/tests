@@ -1,0 +1,31 @@
+summary: Test unattended reboots with clevis and the nbde_client ansible role from rhel-system-roles.
+contact: Sergio Correia <scorreia@redhat.com>
+component:
+- rhel-system-roles
+test: ./test.sh
+framework: beakerlib
+require:
+- library(distribution/epel)
+recommend:
+- awk
+- coreutils
+- grep
+- iproute
+- NetworkManager
+- openssh
+- openssh-clients
+- sed
+- util-linux
+- ansible
+- rhel-system-roles
+duration: 2h
+enabled: true
+tag:
+- NoRHEL4
+- NoRHEL5
+- NoRHEL6
+- NoRHEL7
+- TIPpass
+- TIPpass_Security
+relevancy: |
+    distro < rhel-8: False
