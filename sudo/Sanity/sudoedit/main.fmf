@@ -1,0 +1,16 @@
+summary: This sanity test for sudoedit
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+- library(ControlFlow/Cleanup)
+- library(ControlFlow/SessionControl)
+- library(distribution/testUser)
+- sudo
+duration: 5m
+enabled: true
+tag:
+- CI-Tier-1
+- Tier1
+tier: '1'
+extra-summary: /sudo/Sanity/sudoedit
+extra-nitrate: TC#0612659
