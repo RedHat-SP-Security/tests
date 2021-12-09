@@ -1,27 +1,34 @@
 summary: Tests that the system unlocks a non-root device in early boot
-contact: Sergio Correia <scorreia@redhat.com>
+description: ''
+contact: Martin Zelený <mzeleny@redhat.com>
 component:
-- clevis
+  - clevis
 test: ./runtest.sh
-framework: beakerlib
 recommend:
-- awk
-- coreutils
-- grep
-- iproute
-- NetworkManager
-- openssh
-- openssh-clients
-- sed
-- util-linux
+  - awk
+  - coreutils
+  - grep
+  - iproute
+  - NetworkManager
+  - openssh
+  - openssh-clients
+  - sed
+  - util-linux
 duration: 2h
 enabled: true
 tag:
-- NoRHEL4
-- NoRHEL5
-- NoRHEL6
-- NoRHEL7
-- TIPpass
-- TIPpass_Security
-relevancy: |
-    distro < rhel-8: False
+  - NoRHEL4
+  - NoRHEL5
+  - NoRHEL6
+  - NoRHEL7
+  - destructive
+adjust:
+  - enabled: false
+    when: distro < rhel-8
+    continue: false
+  - enabled: false
+    when: distro == rhel-alt-7
+    continue: false
+extra-nitrate: TC#0612660
+extra-summary: /CoreOS/clevis/Regression/bz1878892-unattended-reboots
+extra-task: /CoreOS/clevis/Regression/bz1878892-unattended-reboots
