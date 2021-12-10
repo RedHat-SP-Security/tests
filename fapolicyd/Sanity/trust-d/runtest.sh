@@ -103,7 +103,7 @@ rlJournalStart && {
       rlRun -s "cat /etc/fapolicyd/trust.d/trust_file2"
       rlAssertGrep 'test_file1' $rlRun_LOG
       rm -f $rlRun_LOG
-      
+
       rlRun "fapolicyd-cli -f delete ./test_file1 --trust-file trust_file2" 0 "delete a filed only from one trust DB even if there is a duplicate elsewhere"
       rlRun "fapStart"
       rlRun "fapStop"
@@ -147,7 +147,7 @@ rlJournalStart && {
       rlRun -s "cat /etc/fapolicyd/trust.d/trust_file2"
       rlAssertGrep 'test_file1' $rlRun_LOG
       rm -f $rlRun_LOG
-      
+
       rlRun "fapolicyd-cli -f delete ./test_file1" 0 "delete all apperances of a file from all trust DBs"
       rlRun -s "cat /etc/fapolicyd/trust.d/trust_file1"
       rlAssertNotGrep 'test_file1' $rlRun_LOG
@@ -163,6 +163,107 @@ rlJournalStart && {
       CleanupDo --mark
     rlPhaseEnd; }
 
+    #  9. fapolicyd-cli -f updateXY will update the file references in all the DB files where it was defined
+    rlPhaseStartTest "update all duplicates" && {
+      CleanupRegister --mark 'rlRun "fapStop"'
+      CleanupRegister 'rlRun "fapolicyd-cli -f delete ./test_file1 --trust-file trust_file1" 0-255'
+      CleanupRegister 'rlRun "fapolicyd-cli -f delete ./test_file1 --trust-file trust_file2" 0-255'
+
+      rlRun "echo a >./test_file1"
+      rlRun "fapolicyd-cli -f add ./test_file1 --trust-file trust_file1"
+      rlRun "mv /etc/fapolicyd/trust.d/trust_file1 ./trust_file1"
+      rlRun "fapolicyd-cli -f add ./test_file1 --trust-file trust_file2" 0 "add a second instance of a file to second trust DB"
+      rlRun "mv ./trust_file1 /etc/fapolicyd/trust.d/trust_file1"
+
+      rlRun -s "cat /etc/fapolicyd/trust.d/trust_file1"
+      rlAssertGrep 'test_file1' $rlRun_LOG
+      rm -f $rlRun_LOG
+      rlRun -s "cat /etc/fapolicyd/trust.d/trust_file2"
+      rlAssertGrep 'test_file1' $rlRun_LOG
+      rm -f $rlRun_LOG
+
+      rlRun "cp /etc/fapolicyd/trust.d/trust_file1 /etc/fapolicyd/trust.d/trust_file2 ./"
+
+      rlRun "echo bb >./test_file1"
+      rlRun "fapolicyd-cli -f update ./test_file1"
+
+      rlRun -s "cat /etc/fapolicyd/trust.d/trust_file1"
+      rlAssertGrep 'test_file1' $rlRun_LOG
+      rm -f $rlRun_LOG
+      rlRun -s "cat /etc/fapolicyd/trust.d/trust_file2"
+      rlAssertGrep 'test_file1' $rlRun_LOG
+      rm -f $rlRun_LOG
+
+      rlRun "diff -U0 ./trust_file1 /etc/fapolicyd/trust.d/trust_file1 | grep test_file1" 0
+      rlRun "diff -U0 ./trust_file2 /etc/fapolicyd/trust.d/trust_file2 | grep test_file1" 0
+
+      CleanupDo --mark
+    rlPhaseEnd; }
+
+    #  10. fapolicyd-cli -f update XY --trust-file DB will update the file reference in the DB file and no other (if defined in DB2 an error is produced)
+    rlPhaseStartTest "update particular duplicates" && {
+      CleanupRegister --mark 'rlRun "fapStop"'
+      CleanupRegister 'rlRun "fapolicyd-cli -f delete ./test_file1 --trust-file trust_file1" 0-255'
+      CleanupRegister 'rlRun "fapolicyd-cli -f delete ./test_file1 --trust-file trust_file2" 0-255'
+
+      rlRun "echo a >./test_file1"
+      rlRun "fapolicyd-cli -f add ./test_file1 --trust-file trust_file1"
+      rlRun "mv /etc/fapolicyd/trust.d/trust_file1 ./trust_file1"
+      rlRun "fapolicyd-cli -f add ./test_file1 --trust-file trust_file2" 0 "add a second instance of a file to second trust DB"
+      rlRun "mv ./trust_file1 /etc/fapolicyd/trust.d/trust_file1"
+
+      rlRun -s "cat /etc/fapolicyd/trust.d/trust_file1"
+      rlAssertGrep 'test_file1' $rlRun_LOG
+      rm -f $rlRun_LOG
+      rlRun -s "cat /etc/fapolicyd/trust.d/trust_file2"
+      rlAssertGrep 'test_file1' $rlRun_LOG
+      rm -f $rlRun_LOG
+
+      rlRun "cp /etc/fapolicyd/trust.d/trust_file1 /etc/fapolicyd/trust.d/trust_file2 ./"
+
+      rlRun "echo bb >./test_file1"
+      rlRun "fapolicyd-cli -f update ./test_file1 --trust-file trust_file1"
+
+      rlRun -s "cat /etc/fapolicyd/trust.d/trust_file1"
+      rlAssertGrep 'test_file1' $rlRun_LOG
+      rm -f $rlRun_LOG
+      rlRun -s "cat /etc/fapolicyd/trust.d/trust_file2"
+      rlAssertGrep 'test_file1' $rlRun_LOG
+      rm -f $rlRun_LOG
+
+      rlRun "diff -U0 ./trust_file1 /etc/fapolicyd/trust.d/trust_file1 | grep test_file1" 0
+      rlRun "diff -U0 ./trust_file2 /etc/fapolicyd/trust.d/trust_file2 | grep test_file1" 1
+
+      CleanupDo --mark
+    rlPhaseEnd; }
+
+    rlPhaseStartTest "no messing up with fapolicyd.trust on update" && {
+      CleanupRegister --mark 'rlRun "fapStop"'
+      CleanupRegister 'rlRun "fapolicyd-cli -f delete ./test_file1 --trust-file trust_file1" 0-255'
+      CleanupRegister 'rlRun "fapolicyd-cli -f delete ./test_file1 --trust-file trust_file2" 0-255'
+      CleanupRegister 'rlRun "fapolicyd-cli -f delete ./test_file2" 0-255'
+      rlRun "fapolicyd-cli -f add ./test_file2"
+
+      rlRun "echo a >./test_file1"
+      rlRun "fapolicyd-cli -f add ./test_file1 --trust-file trust_file1"
+
+      rlRun -s "cat /etc/fapolicyd/trust.d/trust_file1"
+      rlAssertGrep 'test_file1' $rlRun_LOG
+      rm -f $rlRun_LOG
+      rlRun -s "cat /etc/fapolicyd/fapolicyd.trust"
+      rlAssertGrep 'test_file2' $rlRun_LOG
+      rm -f $rlRun_LOG
+
+      rlRun "echo bb >./test_file1"
+      rlRun "fapolicyd-cli -f update ./test_file1"
+
+      rlRun -s "cat /etc/fapolicyd/trust.d/*"
+      rlAssertGrep 'test_file1' $rlRun_LOG
+      rlAssertNotGrep 'test_file2' $rlRun_LOG
+      rm -f $rlRun_LOG
+
+      CleanupDo --mark
+    rlPhaseEnd; }
   tcfFin; }
 
   rlPhaseStartCleanup && {
