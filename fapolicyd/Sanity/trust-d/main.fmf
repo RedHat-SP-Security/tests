@@ -1,0 +1,19 @@
+summary: Test for trust.d directory
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 5m
+enabled: true
+require+:
+  - library(distribution/tcf)
+  - library(ControlFlow/Cleanup)
+tag:
+  - CI-Tier-1
+  - Tier1
+  - rhel-8.6.0
+tier: '1'
+adjust:
+  - enabled: false
+    when: distro < rhel-8.6
+    continue: false
+extra-nitrate: TC#0612665
+extra-summary: tests/fapolicyd/Sanity/trust-d - Test for trust.d directory
