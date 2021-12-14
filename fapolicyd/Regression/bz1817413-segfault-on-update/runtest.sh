@@ -58,7 +58,7 @@ rlJournalStart && {
     done
     fapServiceOut > fapolicyd_out
     rlAssertGrep 'shutting down' fapolicyd_out
-    rlAssertGrep 'succeeded' fapolicyd_out -iq
+    rlAssertGrep 'fapolicyd.service: (succeeded|Deactivated successfully)' fapolicyd_out -Eiq
     rlRun -s "rlServiceStatus fapolicyd" 1-255
     rlAssertNotGrep 'SEGV' $rlRun_LOG
     rm -f $rlRun_LOG
