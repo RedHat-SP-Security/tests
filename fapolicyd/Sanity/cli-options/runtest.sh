@@ -158,15 +158,15 @@ rlJournalStart && {
     rlPhaseEnd; }
 
     rlPhaseStartTest "ftype - file AC8" && {
-      rlRun "cp $(rpm -qal | grep '\.pyc$' | head -n 1) files/application_x-bytecode.python_.pyc"
-      rlRun "cp $(rpm -qal | grep '\.so$' | grep -v libc | grep -v pthread | head -n 1) files/application_x-sharedlib_non-libc.so"
+      rlRun "cp '$(rpm -qal | grep '\.pyc$' | head -n 1)' files/application_x-bytecode.python_.pyc"
+      rlRun "cp '$(rpm -qal | grep '\.so$' | grep -v libc | grep -v pthread | head -n 1)' files/application_x-sharedlib_non-libc.so"
+      rlRun "cp /bin/bash files/application_x-executable_bash"
       libc=$(rpm -ql glibc | grep -E 'libc.*\.so(\.[0-9]+)?$' | head -n1)
       tcfChk "checking $libc for application/x-sharedlib" && {
         echo -n "file's output:      "; file --mime $libc
         echo -n "fapolicyd's output: "; fapolicyd-cli -t $libc | tee out
         rlAssertGrep "application/x-sharedlib" out -Eq
       tcfFin; }
-      rlRun "cp /bin/bash files/application_x-executable_bash"
       while IFS=_ read -r ftype1 ftype2 rest; do
         tcfChk "checking files/${ftype1}_${ftype2}_$rest for ${ftype1}/${ftype2}" && {
           echo -n 'shebang: '
