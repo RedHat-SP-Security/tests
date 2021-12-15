@@ -11,7 +11,6 @@ require+:
 duration: 5m
 enabled: true
 tag:
-- CI-Tier-1
 - Tier2
 tier: '2'
 extra-summary: /CoreOS/fapolicyd/Regression/bz1721496-Stop-littering-STDOUT-output-for-dnf
