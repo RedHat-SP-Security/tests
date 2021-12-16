@@ -53,7 +53,7 @@ TO_WGET_CONNECTION=5 #seconds
 TO_ALL_POD_CONTROLLER_TERMINATE=120 #seconds
 TO_KEY_ROTATION=1 #seconds
 TO_ACTIVE_KEYS=60 #seconds
-TO_HIDDEN_KEYS=20 #seconds
+TO_HIDDEN_KEYS=60 #seconds
 ADV_PATH="adv"
 QUAY_PATH="quay_secret"
 QUAY_FILE_NAME_TO_FILL="daemons_v1alpha1_tangserver_secret_registry_redhat_io.yaml"
@@ -62,6 +62,9 @@ QUAY_FILE_NAME_TO_FILL_UNFILLED_MD5="db099cc0b92220feb7a38783b02df897"
 OC_DEFAULT_CLIENT="kubectl"
 
 test -z "${VERSION}" && VERSION="latest"
+
+## UNCOMMENT TO FORCE VERBOSITY
+# VERBOSE=1
 
 dumpVerbose() {
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
@@ -655,11 +658,19 @@ rlJournalStart
         rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is running [Timeout=${TO_SERVICE_START} secs.]"
         rlRun "checkActiveKeysAmount 1 ${TO_ACTIVE_KEYS} ${TEST_NAMESPACE}" 0 "Checking Active Keys Amount is 1"
         rlRun "checkHiddenKeysAmount 0 ${TO_HIDDEN_KEYS} ${TEST_NAMESPACE}" 0 "Checking Hidden Keys Amount is 0"
-        ### Rotate VIA API
+        # Rotate VIA API
         rlRun "reg_test/key_management_test/api_key_rotate.sh -n ${TEST_NAMESPACE} -c ${OC_CLIENT}" 0 "Rotating keys"
+        rlRun "checkHiddenKeysAmount 1 ${TO_HIDDEN_KEYS} ${TEST_NAMESPACE}" 0 "Checking Hidden Keys Amount is 1"
+        rlRun "checkActiveKeysAmount 1 ${TO_ACTIVE_KEYS} ${TEST_NAMESPACE}" 0 "Checking Active Keys Amount is 1"
+        # Rotate again VIA API, keeping all the hidden
+        rlRun "reg_test/key_management_test/key_rotate_keep_existing.sh -n ${TEST_NAMESPACE} -c ${OC_CLIENT}" 0 "Rotating keys again"
+        rlRun "checkActiveKeysAmount 1 ${TO_ACTIVE_KEYS} ${TEST_NAMESPACE}" 0 "Checking Active Keys Amount is 1"
+        rlRun "checkHiddenKeysAmount 2 ${TO_HIDDEN_KEYS} ${TEST_NAMESPACE}" 0 "Checking Hidden Keys Amount is 2"
+        # Delete one, keep one (selective deletion of hidden keys)
+        rlRun "reg_test/key_management_test/key_delete_one_keep_one.sh -n ${TEST_NAMESPACE} -c ${OC_CLIENT}" 0 "Deleteing keys selectively"
         rlRun "checkActiveKeysAmount 1 ${TO_ACTIVE_KEYS} ${TEST_NAMESPACE}" 0 "Checking Active Keys Amount is 1"
         rlRun "checkHiddenKeysAmount 1 ${TO_HIDDEN_KEYS} ${TEST_NAMESPACE}" 0 "Checking Hidden Keys Amount is 1"
-        ### Delete VIA API
+        # Delete all VIA API
         rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve-deletehiddenkeys" 0 "Deleting hidden keys test"
         rlRun "checkActiveKeysAmount 1 ${TO_ACTIVE_KEYS} ${TEST_NAMESPACE}" 0 "Checking Active Keys Amount is 1"
         rlRun "checkHiddenKeysAmount 0 ${TO_HIDDEN_KEYS} ${TEST_NAMESPACE}" 0 "Checking Hidden Keys Amount is 0"

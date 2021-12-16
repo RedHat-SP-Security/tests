@@ -6,7 +6,7 @@ usage() {
   echo
   echo "Usage:"
   echo
-  echo "$1 -n namespace -c openshift_client"
+  echo "$1 -n namespace [-c k8s_client] [-v (verbose)]"
   echo
   exit "$2"
 }
@@ -30,8 +30,17 @@ done
 test -z "${namespace}" && namespace="default"
 test -z "${oc_client}" && oc_client="oc"
 
-sha1_1=$("${oc_client}" -n nbde get tangservers.daemons.redhat.com  -o json | jq '.items[0].status.activeKeys[0].sha1')
-replicas=$("${oc_client}" -n nbde get tangservers.daemons.redhat.com  -o json | jq '.items[0].spec.replicas')
+sha1_1=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq .items[0].status.hiddenKeys[0].sha1)
+sha1_2=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq .items[0].status.hiddenKeys[1].sha1)
+replicas=$("${oc_client}" -n "${namespace}" get tangservers.daemons.redhat.com  -o json | jq .items[0].spec.replicas)
+
+if [ "${sha1_2}" == "null" ] || [ "${sha1_2}" == "" ];
+then
+  echo "Less than 2 hidden keys exist, exiting ..."
+  exit 1
+fi
+
+echo "Keeping key:[$sha1_1], deleting other keys"
 
 ftemp=$(mktemp)
 cat<<EOF>"${ftemp}"
@@ -50,3 +59,4 @@ EOF
 
 "${oc_client}" apply -f "${ftemp}" -n "${namespace}"
 rm "${ftemp}"
+
