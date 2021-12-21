@@ -1,0 +1,18 @@
+summary: test execution of trusted objects
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+  - gcc
+  - library(ControlFlow/Cleanup)
+  - library(distribution/testUser)
+duration: 5m
+enabled: true
+tag:
+  - Tier2
+tier: 2
+adjust:
+  - enabled: false
+    when: distro < rhel-8.4
+    continue: false
+extra-nitrate: TC#0612715
+extra-summary: tests/fapolicyd/Sanity/trusted-execution - test execution of trusted objects
