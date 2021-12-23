@@ -3,7 +3,7 @@ description: ''
 contact: Martin Zelený <mzeleny@redhat.com>
 component:
   - tang
-test: ./runtest.sh
+test: ./tang_operator_test.sh
 recommend:
   - tang
 duration: 30m
