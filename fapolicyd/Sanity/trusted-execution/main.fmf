@@ -1,4 +1,4 @@
-summary: test execution of trusted objects
+description: test execution of trusted objects
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:

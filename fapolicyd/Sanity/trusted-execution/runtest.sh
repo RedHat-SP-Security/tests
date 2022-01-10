@@ -2,13 +2,13 @@
 # vim: dict+=/usr/share/beakerlib/dictionary.vim cpt=.,w,b,u,t,i,k
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#   runtest.sh of /CoreOS/fapolicyd/Sanity/FapolicydRules
+#   runtest.sh of /CoreOS/fapolicyd/Sanity/trusted-execution
 #   Description: The evaluator will configure fapolicyd to allow execution of executable based on path, hash and directory. The evaluator will then attempt to execute executables. The evaluator will ensure that the executables that are allowed to run has been executed and the executables that are not allowed to run will be denied.
-#   Author: Zoltan Fridrich <zfridric@redhat.com>
+#   Author: Dalibor Pospisil <dapospis@redhat.com>
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#   Copyright (c) 2019 Red Hat, Inc.
+#   Copyright (c) 2021 Red Hat, Inc.
 #
 #   This program is free software: you can redistribute it and/or
 #   modify it under the terms of the GNU General Public License as
@@ -43,6 +43,14 @@ set_config_option() {
   echo "---"
 }
 
+CleanupRegisterCond() {
+  if [[ -z "${IN_PLACE_UPGRADE}" ]]; then
+   CleanupRegister "$@"
+ else
+   echo -n "Skipping cleanup register of '$1'" >&2
+ fi
+}
+
 rlJournalStart
     rlPhaseStartSetup
         rlRun "rlImport --all" || rlDie 'cannot continue'
@@ -51,37 +59,46 @@ rlJournalStart
         CleanupRegister "rlRun 'rm -r $TmpDir' 0 'Removing tmp directory'"
         CleanupRegister 'rlRun "popd"'
         rlRun "pushd $TmpDir"
-        CleanupRegister 'rlRun "testUserCleanup"'
-        rlRun "testUserSetup"
-        CleanupRegister 'rlRun "fapCleanup"'
-        rlRun "fapSetup"
-        set_config_option integrity 'sha256'
-        echo 'int main(void) { return 0; }' > main.c
-        exe1="exe1"
-        exe2="exe2"
-        rlRun "gcc main.c -o $exe1" 0 "Creating binary $exe1"
-        rlRun "gcc main.c -g -o $exe2" 0 "Creating binary $exe2"
-        rlRun "chmod a+rx $exe1 $exe2 $TmpDir"
+        [[ "${IN_PLACE_UPGRADE,,}" != "new" ]] && {
+          CleanupRegisterCond 'rlRun "testUserCleanup"'
+          rlRun "testUserSetup"
+          CleanupRegisterCond 'rlRun "fapCleanup"'
+          rlRun "fapSetup"
+          set_config_option integrity 'sha256'
+          echo 'int main(void) { return 0; }' > main.c
+          exe1="${testUserHomeDir}/exe1"
+          exe2="${testUserHomeDir}/exe2"
+          rlRun "gcc main.c -o $exe1" 0 "Creating binary $exe1"
+          rlRun "gcc main.c -g -o $exe2" 0 "Creating binary $exe2"
+          rlRun "chmod a+rx $exe1 $exe2 ${testUserHomeDir}"
+          CleanupRegisterCond "rlRun 'fapolicyd-cli -f delete $exe1'"
+          rlRun "fapolicyd-cli -f add $exe1"
+          CleanupRegisterCond 'rlRun "fapStop"'
+          rlRun "fapStart"
+        }
+        [[ "${IN_PLACE_UPGRADE,,}" == "old" ]] && declare -p exe1 exe2 testUser > /var/tmp/fapolicyd-trusted-execution-persistent-storage
+        [[ "${IN_PLACE_UPGRADE,,}" == "new" ]] && . /var/tmp/fapolicyd-trusted-execution-persistent-storage
     rlPhaseEnd
 
     rlPhaseStartTest "cached object" && {
-      CleanupRegister --mark "rlRun 'fapolicyd-cli -f delete $PWD/$exe1'"
-      rlRun "fapolicyd-cli -f add $PWD/$exe1"
-      CleanupRegister 'rlRun "fapStop"'
-      rlRun "fapStart"
-      rlRun "su -c '$PWD/$exe1' - $testUser" 0 "cache trusted binary $exe1"
-      rlRun "su -c '$PWD/$exe2' - $testUser" 126 "check untrusted binary $exe2"
+      rlRun "rlServiceStatus fapolicyd"
+      rlAssertGrep "^integrity = sha256" /etc/fapolicyd/fapolicyd.conf
+      rlRun "su -c '$exe1' - $testUser" 0 "cache trusted binary $exe1"
+      rlRun "su -c '$exe2' - $testUser" 126 "check untrusted binary $exe2"
+      CleanupRegister --mark "rlRun 'cat ${exe1}a > ${exe1}; rm -f ${exe1}a' 0 'restore $exe1'"
+      rlRun "cat $exe1 > ${exe1}a" 0 "backup $exe1"
       rlRun "cat $exe2 > $exe1" 0 "replace $exe1 with $exe2"
-      rlRun "su -c '$PWD/$exe1' - $testUser" 126 "the cached $exe1 is invalidated by the binary change"
-      rlRun "su -c '$PWD/$exe2' - $testUser" 126 "check untrusted binary $exe2"
+      rlRun "su -c '$exe1' - $testUser" 126 "the cached $exe1 is invalidated by the binary change"
+      rlRun "su -c '$exe2' - $testUser" 126 "check untrusted binary $exe2"
       rlRun "fapServiceOut"
-      rlRun "fapStart"
-      rlRun "su -c '$PWD/$exe1' - $testUser" 126 "the cached $exe1 is invalidated by the binary change"
-      rlRun "su -c '$PWD/$exe2' - $testUser" 126 "check untrusted binary $exe2"
-      rlRun "fapServiceOut"
+      [[ -z "${IN_PLACE_UPGRADE}" ]] && {
+        rlRun "fapStart"
+        rlRun "su -c '$exe1' - $testUser" 126 "the cached $exe1 is invalidated by the binary change"
+        rlRun "su -c '$exe2' - $testUser" 126 "check untrusted binary $exe2"
+        rlRun "fapServiceOut"
+      }
       CleanupDo --mark
     rlPhaseEnd; }
-
 
     rlPhaseStartCleanup
       CleanupDo
