@@ -16,3 +16,4 @@ adjust:
     continue: false
 extra-nitrate: TC#0612715
 extra-summary: tests/fapolicyd/Sanity/trusted-execution - test execution of trusted objects
+extra-task: /CoreOS/fapolicyd/Sanity/trusted-execution
