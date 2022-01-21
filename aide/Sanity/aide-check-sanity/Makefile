@@ -1,12 +1,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#   runtest.sh of /CoreOS/aide/Sanity/aide-check-sanity
-#   Description: basic check sanity
-#   Author: Dalibor Pospisil <dapospis@redhat.com>
+#   Makefile of /CoreOS/rsyslog/Sanity/basic-logging-facility
+#   Description: Tests basic logging facility
+#   Author: Karel Srot <ksrot@redhat.com>
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#   Copyright (c) 2021 Red Hat, Inc.
+#   Copyright (c) 2010 Red Hat, Inc. All rights reserved.
 #
 #   This copyrighted material is made available to anyone wishing
 #   to use, modify, copy, or redistribute it subject to the terms
@@ -24,12 +24,12 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-export TEST=/CoreOS/aide/Sanity/aide-check-sanity
+export TEST=/CoreOS/rsyslog/Sanity/basic-logging-facility
 export TESTVERSION=1.0
 
 BUILT_FILES=
 
-FILES=$(METADATA) runtest.sh Makefile
+FILES=$(METADATA) runtest.sh Makefile PURPOSE
 
 .PHONY: all install download clean
 
@@ -37,7 +37,7 @@ run: $(FILES) build
 	./runtest.sh
 
 build: $(BUILT_FILES)
-	test -x runtest.sh || chmod a+x runtest.sh
+	chmod a+x runtest.sh
 
 clean:
 	rm -f *~ $(BUILT_FILES)
@@ -50,15 +50,17 @@ $(METADATA): Makefile
 	@echo "Name:            $(TEST)" >> $(METADATA)
 	@echo "TestVersion:     $(TESTVERSION)" >> $(METADATA)
 	@echo "Path:            $(TEST_DIR)" >> $(METADATA)
-	@echo "Description:     basinc check sanity" >> $(METADATA)
+	@echo "Description:     Tests basic logging facility" >> $(METADATA)
 	@echo "Type:            Sanity" >> $(METADATA)
-	@echo "TestTime:        5m" >> $(METADATA)
-	@echo "RunFor:          aide" >> $(METADATA)
-	@echo "Requires:        aide" >> $(METADATA)
+	@echo "TestTime:        30m" >> $(METADATA)
+	@echo "RunFor:          rsyslog" >> $(METADATA)
+	@echo "RhtsRequires:    library(rsyslog/basic)" >> $(METADATA)
+	@echo "RhtsRequires:    library(distribution/Log)" >> $(METADATA)
+	@echo "Requires:        rsyslog" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2" >> $(METADATA)
 	@echo "Confidential:    no" >> $(METADATA)
 	@echo "Destructive:     no" >> $(METADATA)
-	@echo "Releases:        -RHEL4 -RHELClient5 -RHELServer5" >> $(METADATA)
+	@echo "Releases:        -RHEL4" >> $(METADATA)
 
 	rhts-lint $(METADATA)
