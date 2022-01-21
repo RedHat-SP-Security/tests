@@ -1,10 +1,10 @@
-summary: Tests basic logging facility
-description: ''
+description: Tests basic logging facility
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 path: /rsyslog/Sanity/basic-logging-facility
 require+:
 - rsyslog
+- library(distribution/Log)
 duration: 30m
 enabled: true
 extra-task: /CoreOS/rsyslog/Sanity/basic-logging-facility

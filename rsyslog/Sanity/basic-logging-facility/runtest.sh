@@ -63,20 +63,31 @@ rlJournalStart
         rlRun "rsyslogServiceStop"
         sleep 5
         # now checking the logs
+        rlLog "check logged messages"
+        failed=''
+        LogProgressHeader $((18*8*18*8))
+        i=0
         for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
             for L in debug info notice warning err crit alert emerg; do
                 for F2 in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
                     for L2 in debug info notice warning err crit alert emerg; do
+                        LogProgressDraw $((i++))
                         FILE="/var/log/rsyslog_test/${F2}_${L2}.log"
                         if [[ "$L" == "$L2" && "$F2" == "$F" ]]; then
-                            rlAssertGrep "Test of message to facility $F with level $L" "$FILE"
+                            grep -q "Test of message to facility $F with level $L" "$FILE" || failed+=" facility $F with level $L should be in file $FILE"
                         else
-                            rlAssertNotGrep "Test of message to facility $F with level $L" "$FILE"
+                            grep -q "Test of message to facility $F with level $L" "$FILE" && failed+=" facility $F with level $L should not be in file $FILE"
                         fi
                     done
                 done
             done
         done
+        LogProgressFooter
+        if [[ -z "$failed" ]]; then
+          rlPass "all the messages logged into the proper files"
+        else
+          rlFail "found inconsistencies: $failed"
+        fi
         rlRun "rm -f /var/log/rsyslog_test/*"
     rlPhaseEnd
 
@@ -100,18 +111,29 @@ rlJournalStart
         rlRun "rsyslogServiceStop"
         sleep 5
         # now checking the logs
+        rlLog "check logged messages"
+        failed=''
+        LogProgressHeader $((18*8*8))
+        i=0
         for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
             for L in debug info notice warning err crit alert emerg; do
                 for L2 in debug info notice warning err crit alert emerg; do
+                    LogProgressDraw $((i++))
                     FILE="/var/log/rsyslog_test/star_${L2}.log"
                     if [[ "$L2" == "$L" ]]; then
-                        rlAssertGrep "Test of message to facility $F with level $L" "$FILE"
+                        grep -q "Test of message to facility $F with level $L" "$FILE" || failed+=" facility $F with level $L should be in file $FILE"
                     else
-                        rlAssertNotGrep "Test of message to facility $F with level $L" "$FILE"
+                        grep -q "Test of message to facility $F with level $L" "$FILE" && failed+=" facility $F with level $L should not be in file $FILE"
                     fi
                 done
             done
         done
+        LogProgressFooter
+        if [[ -z "$failed" ]]; then
+          rlPass "all the messages logged into the proper files"
+        else
+          rlFail "found inconsistencies: $failed"
+        fi
         rlRun "rm -f /var/log/rsyslog_test/*"
     rlPhaseEnd
 
@@ -134,18 +156,29 @@ rlJournalStart
         rlRun "rsyslogServiceStop"
         sleep 5
         # now checking the logs
+        rlLog "check logged messages"
+        failed=''
+        LogProgressHeader $((8*18*18))
+        i=0
         for L in debug info notice warning err crit alert emerg; do
             for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
                 for F2 in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
+                    LogProgressDraw $((i++))
                     FILE="/var/log/rsyslog_test/${F2}_star.log"
                     if [[ "$F2" == "$F" ]]; then
-                        rlAssertGrep "Test of message to facility $F with level $L" "$FILE"
+                        grep -q "Test of message to facility $F with level $L" "$FILE" || failed+=" facility $F with level $L should be in file $FILE"
                     else
-                        rlAssertNotGrep "Test of message to facility $F with level $L" "$FILE"
+                        grep -q "Test of message to facility $F with level $L" "$FILE" && failed+=" facility $F with level $L should not be in file $FILE"
                     fi
                 done
             done
         done
+        LogProgressFooter
+        if [[ -z "$failed" ]]; then
+          rlPass "all the messages logged into the proper files"
+        else
+          rlFail "found inconsistencies: $failed"
+        fi
         rlRun "rm -f /var/log/rsyslog_test/*"
     rlPhaseEnd
 
