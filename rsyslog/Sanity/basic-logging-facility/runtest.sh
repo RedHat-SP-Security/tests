@@ -37,13 +37,17 @@ rlJournalStart
     rlPhaseStartSetup
         rlRun "rlImport --all" || rlDie 'cannot continue'
         rlRun "rlCheckMakefileRequires"
+      [[ "${IN_PLACE_UPGRADE,,}" != "new" ]] && {
         rlRun "rsyslogSetup"
+        rlServiceEnable rsyslog
         rlRun "mkdir -p /var/log/rsyslog_test" 0 "Create directory for test messages"
+      }
     rlPhaseEnd
 
     # test of facilities and priorities
 
     rlPhaseStartTest "Facility and level test"
+      [[ "${IN_PLACE_UPGRADE,,}" != "new" ]] && {
         rlRun "rsyslogPrepareConf"
         rlRun "cat /etc/rsyslog.conf"
         for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
@@ -54,13 +58,13 @@ rlJournalStart
         rlRun "rsyslogPrintEffectiveConfig"
         rlRun "rsyslogServiceStart"
         sleep 5
+      }
         for F in auth authpriv cron daemon lpr mail news syslog user uucp local0 local1 local2 local3 local4 local5 local6 local7; do
             for L in debug info notice warning err crit alert emerg; do
                 logger -p "$F.$L" "Test of message to facility $F with level $L"
             done
             sleep 1
         done
-        rlRun "rsyslogServiceStop"
         sleep 5
         # now checking the logs
         rlLog "check logged messages"
@@ -89,9 +93,11 @@ rlJournalStart
           rlFail "found inconsistencies: $failed"
         fi
         rlRun "rm -f /var/log/rsyslog_test/*"
+        rlRun "rsyslogServiceStart"
     rlPhaseEnd
 
 
+  [[ -z "$IN_PLACE_UPGRADE" ]] && {
     # test of facility star operator
 
     rlPhaseStartTest "Facility star operator test"
@@ -187,6 +193,7 @@ rlJournalStart
         rlRun "rsyslogCleanup"
         rlRun "rsyslogServiceRestore"
     rlPhaseEnd
+  }
 
 rlJournalPrintText
 rlJournalEnd
