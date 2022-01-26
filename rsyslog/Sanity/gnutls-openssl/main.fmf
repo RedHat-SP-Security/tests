@@ -2,55 +2,239 @@ summary: a sanity test for TLS communication
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
-- library(distribution/dpcommon)
-- library(ControlFlow/ConditionalPhases)
-- /usr/bin/tshark
-- /usr/bin/certtool
+  - library(distribution/dpcommon)
+  - library(ControlFlow/ConditionalPhases)
+  - /usr/bin/tshark
+  - /usr/bin/certtool
 duration: 15m
 enabled: true
 tag:
-- Tier1
+  - Tier1
 tier: '1'
 adjust:
--   enabled: false
+  - enabled: false
     when: distro < rhel-8.5
+#/all:
+#    require+:
+#      - rsyslog-gnutls
+#      - rsyslog-openssl
+#    /old-syntax:
+#        environment+:
+#            rsyslogSyntax: old
+#        /x509_name:
+#            extra-summary: rsyslogSyntax=old /rsyslog/Sanity/gnutls-openssl
+#        /client_anon:
+#            environment+:
+#              CLIENT_NO_CERT: 1
+#            extra-summary: rsyslogSyntax=old CLIENT_NO_CERT=1 /rsyslog/Sanity/gnutls-openssl
+#        /server_anon:
+#            environment+:
+#              SERVER_NO_CERT: 1
+#            extra-summary: rsyslogSyntax=old SERVER_NO_CERT=1 /rsyslog/Sanity/gnutls-openssl
+#        /both_anon:
+#            environment+:
+#              CLIENT_NO_CERT: 1
+#              SERVER_NO_CERT: 1
+#            extra-summary: rsyslogSyntax=old SERVER_NO_CERT=1 CLIENT_NO_CERT=1 /rsyslog/Sanity/gnutls-openssl
+#    /new-syntax:
+#        environment+:
+#            rsyslogSyntax: new
+#        /x509_name:
+#            extra-summary: rsyslogSyntax=new /rsyslog/Sanity/gnutls-openssl
+#        /client_anon:
+#            environment+:
+#              CLIENT_NO_CERT: 1
+#            extra-summary: rsyslogSyntax=new CLIENT_NO_CERT=1 /rsyslog/Sanity/gnutls-openssl
+#        /server_anon:
+#            environment+:
+#              SERVER_NO_CERT: 1
+#            extra-summary: rsyslogSyntax=new SERVER_NO_CERT=1 /rsyslog/Sanity/gnutls-openssl
+#        /both_anon:
+#            environment+:
+#              CLIENT_NO_CERT: 1
+#              SERVER_NO_CERT: 1
+#            extra-summary: rsyslogSyntax=new SERVER_NO_CERT=1 CLIENT_NO_CERT=1 /rsyslog/Sanity/gnutls-openssl
 /gtls:
     require+:
       - rsyslog-gnutls
-    environment:
+    environment+:
         CONDITIONAL_PHASES_BL: ossl
-    extra-nitrate: TC#0610733
-    extra-summary: CONDITIONAL_PHASES_BL=ossl /rsyslog/Sanity/gnutls-openssl
+    /old-syntax:
+        environment+:
+            rsyslogSyntax: old
+        /x509_name:
+            extra-summary: CONDITIONAL_PHASES_BL=ossl rsyslogSyntax=old /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612984
+        /client_anon:
+            environment+:
+                CLIENT_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=ossl rsyslogSyntax=old CLIENT_NO_CERT=1
+                /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612982
+        /server_anon:
+            environment+:
+                SERVER_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=ossl rsyslogSyntax=old SERVER_NO_CERT=1
+                /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612983
+        /both_anon:
+            environment+:
+                CLIENT_NO_CERT: 1
+                SERVER_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=ossl rsyslogSyntax=old SERVER_NO_CERT=1
+                CLIENT_NO_CERT=1 /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612981
+    /new-syntax:
+        environment+:
+            rsyslogSyntax: new
+        /x509_name:
+            extra-nitrate: TC#0610733
+            extra-summary: CONDITIONAL_PHASES_BL=ossl rsyslogSyntax=new /rsyslog/Sanity/gnutls-openssl
+        /client_anon:
+            environment+:
+                CLIENT_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=ossl rsyslogSyntax=new CLIENT_NO_CERT=1
+                /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612979
+        /server_anon:
+            environment+:
+                SERVER_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=ossl rsyslogSyntax=new SERVER_NO_CERT=1
+                /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612980
+        /both_anon:
+            environment+:
+                CLIENT_NO_CERT: 1
+                SERVER_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=ossl rsyslogSyntax=new SERVER_NO_CERT=1
+                CLIENT_NO_CERT=1 /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612978
 /ossl:
-    tag+:
-      - CI-Tier-1
     require+:
       - rsyslog-openssl
-    environment:
+    environment+:
         CONDITIONAL_PHASES_BL: gtls
     adjust:
-    -   enabled: false
+      - enabled: false
         when: distro < rhel-8.5
         continue: false
-    link:
-      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1891458
-      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1972058
-    extra-nitrate: TC#0610735
-    extra-summary: CONDITIONAL_PHASES_BL=gtls /rsyslog/Sanity/gnutls-openssl
+    /old-syntax:
+        environment+:
+            rsyslogSyntax: old
+        /x509_name:
+            extra-summary: CONDITIONAL_PHASES_BL=gtls rsyslogSyntax=old /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612998
+        /client_anon:
+            environment+:
+                CLIENT_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=gtls rsyslogSyntax=old CLIENT_NO_CERT=1
+                /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612996
+        /server_anon:
+            environment+:
+                SERVER_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=gtls rsyslogSyntax=old SERVER_NO_CERT=1
+                /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612997
+        /both_anon:
+            environment+:
+                CLIENT_NO_CERT: 1
+                SERVER_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=gtls rsyslogSyntax=old SERVER_NO_CERT=1
+                CLIENT_NO_CERT=1 /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612995
+    /new-syntax:
+        environment+:
+            rsyslogSyntax: new
+        /x509_name:
+            tag+:
+              - CI-Tier-1
+            link:
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1891458
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1972058
+            extra-nitrate: TC#0610735
+            extra-summary: CONDITIONAL_PHASES_BL=gtls rsyslogSyntax=new /rsyslog/Sanity/gnutls-openssl
+        /client_anon:
+            environment+:
+                CLIENT_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=gtls rsyslogSyntax=new CLIENT_NO_CERT=1
+                /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612993
+        /server_anon:
+            environment+:
+                SERVER_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=gtls rsyslogSyntax=new SERVER_NO_CERT=1
+                /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612994
+        /both_anon:
+            environment+:
+                CLIENT_NO_CERT: 1
+                SERVER_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=gtls rsyslogSyntax=new SERVER_NO_CERT=1
+                CLIENT_NO_CERT=1 /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612992
 /interoperability:
-    tag+:
-      - CI-Tier-1
     require+:
       - rsyslog-gnutls
       - rsyslog-openssl
-    environment:
+    environment+:
         CONDITIONAL_PHASES_WL: '-'
     adjust:
-    -   enabled: false
+      - enabled: false
         when: distro < rhel-8.5
         continue: false
-    extra-nitrate: TC#0610734
-    extra-summary: CONDITIONAL_PHASES_WL=- /rsyslog/Sanity/gnutls-openssl
-    link:
-      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1891458
-      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1972058
+    /old-syntax:
+        environment+:
+            rsyslogSyntax: old
+        /x509_name:
+            extra-summary: CONDITIONAL_PHASES_WL=- rsyslogSyntax=old /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612991
+        /client_anon:
+            environment+:
+                CLIENT_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_WL=- rsyslogSyntax=old CLIENT_NO_CERT=1
+                /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612989
+        /server_anon:
+            environment+:
+                SERVER_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=- rsyslogSyntax=old SERVER_NO_CERT=1
+                /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612990
+        /both_anon:
+            environment+:
+                CLIENT_NO_CERT: 1
+                SERVER_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=- rsyslogSyntax=old SERVER_NO_CERT=1
+                CLIENT_NO_CERT=1 /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612988
+    /new-syntax:
+        environment+:
+            rsyslogSyntax: new
+        /x509_name:
+            tag+:
+              - CI-Tier-1
+            link:
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1891458
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1972058
+            extra-nitrate: TC#0610734
+            extra-summary: CONDITIONAL_PHASES_WL=- rsyslogSyntax=new /rsyslog/Sanity/gnutls-openssl
+        /client_anon:
+            environment+:
+                CLIENT_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_WL=- rsyslogSyntax=new CLIENT_NO_CERT=1
+                /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612986
+        /server_anon:
+            environment+:
+                SERVER_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=- rsyslogSyntax=new SERVER_NO_CERT=1
+                /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612987
+        /both_anon:
+            environment+:
+                CLIENT_NO_CERT: 1
+                SERVER_NO_CERT: 1
+            extra-summary: CONDITIONAL_PHASES_BL=- rsyslogSyntax=new SERVER_NO_CERT=1
+                CLIENT_NO_CERT=1 /rsyslog/Sanity/gnutls-openssl
+            extra-nitrate: TC#0612985

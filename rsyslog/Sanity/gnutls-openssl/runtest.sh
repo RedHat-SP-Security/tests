@@ -110,7 +110,20 @@ EOF
 
     client_config() {
       local driver="$1"
-      rsyslogConfigReplace "SSL" <<EOF
+      if rsyslogConfigIsNewSyntax; then
+        if [[ -n "$SERVER_NO_CERT" ]]; then
+          rsyslogConfigReplace "SSL" <<EOF
+*.* action(type="omfwd"
+    Protocol="tcp"
+    Target="127.0.0.1"
+    Port="6514"
+    StreamDriver="$driver"
+    StreamDriverMode="1"
+    RebindInterval="50"
+    StreamDriverAuthMode="anon")
+EOF
+        else
+          rsyslogConfigReplace "SSL" <<EOF
 *.* action(type="omfwd"
     Protocol="tcp"
     Target="127.0.0.1"
@@ -121,24 +134,77 @@ EOF
     StreamDriverAuthMode="x509/name"
     StreamDriverPermittedPeers="$(hostname)")
 EOF
+        fi
+      else
+        if [[ -n "$SERVER_NO_CERT" ]]; then
+          rsyslogConfigReplace "SSL" <<EOF
+\$DefaultNetstreamDriver $driver
+\$ActionSendStreamDriverAuthMode anon
+\$ActionSendStreamDriverMode 1
+*.* @@127.0.0.1:6514
+EOF
+        else
+          rsyslogConfigReplace "SSL" <<EOF
+\$DefaultNetstreamDriver $driver
+\$ActionSendStreamDriverAuthMode x509/name
+\$ActionSendStreamDriverPermittedPeer $(hostname)
+\$ActionSendStreamDriverMode 1
+*.* @@127.0.0.1:6514
+EOF
+        fi
+      fi
       rlRun "rsyslogPrintEffectiveConfig -n"
     }
 
     tcfChk "config client" && {
       rlRun "rsyslogPrepareConf"
-      rsyslogConfigAppend "GLOBALS" <<EOF
+      if rsyslogConfigIsNewSyntax; then
+        if [[ -n "$CLIENT_NO_CERT" ]]; then
+          rsyslogConfigAppend "GLOBALS" <<EOF
+global(
+    DefaultNetstreamDriverCAFile="/etc/rsyslogd.d/ca-cert.pem"
+)
+EOF
+        else
+          rsyslogConfigAppend "GLOBALS" <<EOF
 global(
     DefaultNetstreamDriverCAFile="/etc/rsyslogd.d/ca-cert.pem"
     DefaultNetstreamDriverCertFile="/etc/rsyslogd.d/client-cert.pem"
     DefaultNetstreamDriverKeyFile="/etc/rsyslogd.d/client-key.pem"
 )
 EOF
+        fi
+      else
+        if [[ -n "$CLIENT_NO_CERT" ]]; then
+          rsyslogConfigAppend "GLOBALS" <<EOF
+\$DefaultNetstreamDriverCAFile /etc/rsyslogd.d/ca-cert.pem
+EOF
+        else
+          rsyslogConfigAppend "GLOBALS" <<EOF
+\$DefaultNetstreamDriverCAFile /etc/rsyslogd.d/ca-cert.pem
+\$DefaultNetstreamDriverCertFile /etc/rsyslogd.d/client-cert.pem
+\$DefaultNetstreamDriverKeyFile /etc/rsyslogd.d/client-key.pem
+EOF
+        fi
+      fi
       rsyslogConfigAddTo "MODULES" < <(rsyslogConfigCreateSection 'SSL')
     tcfFin; }
 
     server_config() {
       local driver="$1"
-      rsyslogServerConfigReplace "SSL" <<EOF
+      if rsyslogConfigIsNewSyntax; then
+        if [[ -n "$CLIENT_NO_CERT" ]]; then
+          rsyslogServerConfigReplace "SSL" <<EOF
+module(
+    load="imtcp"
+    StreamDriver.AuthMode="anon"
+    StreamDriver.Mode="1"
+    StreamDriver.Name="$driver"
+)
+input(type="imtcp" Port="6514")
+EOF
+        else
+          rsyslogServerConfigReplace "SSL" <<EOF
 module(
     load="imtcp"
     StreamDriver.AuthMode="x509/name"
@@ -148,17 +214,62 @@ module(
 )
 input(type="imtcp" Port="6514")
 EOF
+        fi
+      else
+        if [[ -n "$CLIENT_NO_CERT" ]]; then
+          rsyslogServerConfigReplace "SSL" <<EOF
+\$ModLoad imtcp
+
+\$DefaultNetstreamDriver $driver
+\$InputTCPServerStreamDriverMode 1
+\$InputTCPServerStreamDriverAuthMode anon
+\$InputTCPServerRun 6514
+EOF
+        else
+          rsyslogServerConfigReplace "SSL" <<EOF
+\$ModLoad imtcp
+
+\$DefaultNetstreamDriver $driver
+\$InputTCPServerStreamDriverMode 1
+\$InputTCPServerStreamDriverAuthMode x509/name
+\$InputTCPServerStreamDriverPermittedPeer $(hostname)
+\$InputTCPServerRun 6514
+EOF
+        fi
+      fi
       rlRun "rsyslogServerPrintEffectiveConfig -n"
     }
 
     tcfChk "config server" && {
-      rsyslogServerConfigAppend "GLOBALS" <<EOF
+      if rsyslogConfigIsNewSyntax; then
+        if [[ -n "$SERVER_NO_CERT" ]]; then
+          rsyslogServerConfigAppend "GLOBALS" <<EOF
+global(
+    DefaultNetstreamDriverCAFile="/etc/rsyslogd.d/ca-cert.pem"
+)
+EOF
+        else
+          rsyslogServerConfigAppend "GLOBALS" <<EOF
 global(
     DefaultNetstreamDriverCAFile="/etc/rsyslogd.d/ca-cert.pem"
     DefaultNetstreamDriverCertFile="/etc/rsyslogd.d/server-cert.pem"
     DefaultNetstreamDriverKeyFile="/etc/rsyslogd.d/server-key.pem"
 )
 EOF
+        fi
+      else
+        if [[ -n "$SERVER_NO_CERT" ]]; then
+          rsyslogServerConfigAppend "GLOBALS" <<EOF
+\$DefaultNetstreamDriverCAFile /etc/rsyslogd.d/ca-cert.pem
+EOF
+        else
+          rsyslogServerConfigAppend "GLOBALS" <<EOF
+\$DefaultNetstreamDriverCAFile /etc/rsyslogd.d/ca-cert.pem
+\$DefaultNetstreamDriverCertFile /etc/rsyslogd.d/server-cert.pem
+\$DefaultNetstreamDriverKeyFile /etc/rsyslogd.d/server-key.pem
+EOF
+        fi
+      fi
       rsyslogServerConfigAddTo "MODULES" < <(rsyslogConfigCreateSection 'SSL')
     tcfFin; }
 
@@ -168,10 +279,11 @@ EOF
   tcfTry "Tests" --no-assert && {
     rlPhaseStartTest "gtls" && tcfChk && {
       tcfChk "setup gtls" && {
-        client_config gtls
-        server_config gtls
         > $rsyslogServerLogDir/messages
+        server_config gtls
         rlRun "rsyslogServerStart"
+        rlRun "rsyslogServerStatus"
+        client_config gtls
         rlRun "rsyslogServiceStart"
         rlRun "rsyslogServiceStatus"
       tcfFin; }
@@ -192,10 +304,11 @@ EOF
 
     rlPhaseStartTest "ossl" && tcfChk && {
       tcfChk "setup ossl" && {
-        client_config ossl
-        server_config ossl
         > $rsyslogServerLogDir/messages
+        server_config ossl
         rlRun "rsyslogServerStart"
+        rlRun "rsyslogServerStatus"
+        client_config ossl
         rlRun "rsyslogServiceStart"
         rlRun "rsyslogServiceStatus"
       tcfFin; }
@@ -216,10 +329,11 @@ EOF
 
     rlPhaseStartTest "gtls->ossl" && tcfChk && {
       tcfChk "setup gtls->ossl" && {
-        client_config gtls
-        server_config ossl
         > $rsyslogServerLogDir/messages
+        server_config ossl
         rlRun "rsyslogServerStart"
+        rlRun "rsyslogServerStatus"
+        client_config gtls
         rlRun "rsyslogServiceStart"
         rlRun "rsyslogServiceStatus"
       tcfFin; }
@@ -240,10 +354,11 @@ EOF
 
     rlPhaseStartTest "ossl->gtls" && tcfChk && {
       tcfChk "setup ossl->gtls" && {
-        client_config ossl
-        server_config gtls
         > $rsyslogServerLogDir/messages
+        server_config gtls
         rlRun "rsyslogServerStart"
+        rlRun "rsyslogServerStatus"
+        client_config ossl
         rlRun "rsyslogServiceStart"
         rlRun "rsyslogServiceStatus"
       tcfFin; }
