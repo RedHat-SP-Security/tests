@@ -318,7 +318,7 @@ do
 done
 
 rh_release=$(cat /etc/redhat-release  | awk -F "release" {'print $2'} | sed -e 's/^[ /t]*//g' | awk {'print $1'} | awk -F '.' {'print $1'})
-if [ $rh_release -lt 8 ] || [ $rh_release -gt 30 ];
+if [ $rh_release -lt 38 ];
 then
   let result=255
   echo "Red Hat release unsupported:[$rh_release],return:[${result}]"
