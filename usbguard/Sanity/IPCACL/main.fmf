@@ -1,16 +1,23 @@
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-test: ./runtest.sh
-duration: 5m
 enabled: true
 require+:
-- library(ControlFlow/Cleanup)
-- library(distribution/testUser)
-tag:
-- CI-Tier-1
-- rhel-8.5.0
-- Tier1
-tier: '1'
-summary: A fine grade IPC ACL test
-link:
--   verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2004511
-extra-nitrate: TC#0611711
+  - library(ControlFlow/Cleanup)
+  - library(distribution/testUser)
+/fine-grade:
+    tag:
+      - CI-Tier-1
+      - rhel-8.5.0
+      - Tier1
+    tier: '1'
+    duration: 5m
+    test: ./runtest.sh
+    summary: A fine grade IPC ACL test
+    link:
+      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2004511
+    extra-nitrate: TC#0611711
+/basic:
+    duration: 5m
+    test: ./basic.sh
+    summary: A basic IPC ACL test
+    extra-nitrate: TC#0612868
+    extra-task: /CoreOS/usbguard/Sanity/IPCACL/basic
