@@ -1,0 +1,14 @@
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+enabled: true
+require+:
+  - library(ControlFlow/Cleanup)
+  - library(distribution/testUser)
+tag:
+  - CI-Tier-1
+  - Tier1
+tier: '1'
+duration: 5m
+test: ./runtest.sh
+summary: A sudoers sanity test
+extra-task: /CoreOS/sudo/Sanity/sudoers-sanity
+extra-nitrate: TC#0612869
