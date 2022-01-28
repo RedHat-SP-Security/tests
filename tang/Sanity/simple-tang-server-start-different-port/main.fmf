@@ -1,0 +1,22 @@
+summary: Run tang server on different port, which stays running after test finishes.
+    For manual testing with --reserve parameter.
+description: ''
+contact: Martin Zelený <mzeleny@redhat.com>
+test: ./runtest.sh
+require+:
+  - tang
+  - http-parser
+  - curl
+  - /usr/sbin/semanage
+duration: 5m
+enabled: true
+tag:
+  - NoRHEL4
+  - NoRHEL5
+extra-summary: /CoreOS/tang/Sanity/simple-tang-server-start-different-port
+extra-task: /CoreOS/tang/Sanity/simple-tang-server-start-different-port
+adjust:
+  - enabled: false
+    when: distro < rhel-7
+    continue: false
+extra-nitrate: TC#0612871
