@@ -1,0 +1,17 @@
+description: basic check sanity
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+  - aide
+duration: 5m
+enabled: true
+tag:
+  - CI-Tier-1
+  - Tier1
+tier: '1'
+extra-task: /CoreOS/aide/Sanity/aide-check-sanity
+adjust:
+  - enabled: false
+    when: distro < rhel-7
+    continue: false
+extra-nitrate: TC#0612874
