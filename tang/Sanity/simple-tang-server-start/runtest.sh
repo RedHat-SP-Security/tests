@@ -36,8 +36,14 @@ TANG="tangd.socket"
 rlJournalStart
     rlPhaseStartSetup
         rlAssertRpm --all
-        rlRun "systemctl start ${TANG}"
-        rlRun "sleep 1"
+        [[ "${IN_PLACE_UPGRADE,,}" == "old" ]] && rlRun "systemctl enable ${TANG}"
+        [[ "${IN_PLACE_UPGRADE,,}" != "new" ]] && {
+          rlRun "systemctl start ${TANG}"
+          rlRun "sleep 1"
+        }
+    rlPhaseEnd
+
+    rlPhaseStartTest "Check for active socket"
         rlRun "systemctl status ${TANG}"
     rlPhaseEnd
 
@@ -49,10 +55,12 @@ rlJournalStart
         rm -f $rlRun_LOG
     rlPhaseEnd
 
-    rlPhaseStartCleanup
-        rlRun "systemctl stop ${TANG}"
-        rlRun "sleep 1"
-        rlRun "systemctl status ${TANG}" 1-100
-    rlPhaseEnd
+    [[ -z "${IN_PLACE_UPGRADE}" ]] && {
+      rlPhaseStartCleanup
+          rlRun "systemctl stop ${TANG}"
+          rlRun "sleep 1"
+          rlRun "systemctl status ${TANG}" 1-100
+      rlPhaseEnd
+    }
 rlJournalPrintText
 rlJournalEnd
