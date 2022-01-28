@@ -42,7 +42,11 @@ rlJournalStart
     rlPhaseEnd
 
     rlPhaseStartTest "Force server to generate advertisment and get it by curl"
-        rlRun "curl -sS http://localhost/adv" 0
+        rlRun -s "curl -sS http://localhost/adv" 0
+        rlAssertGrep '"payload":' $rlRun_LOG
+        rlAssertGrep '"protected":' $rlRun_LOG
+        rlAssertGrep '"signature":' $rlRun_LOG
+        rm -f $rlRun_LOG
     rlPhaseEnd
 
     rlPhaseStartCleanup
