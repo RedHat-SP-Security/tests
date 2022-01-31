@@ -79,6 +79,10 @@ rlJournalStart
         rlAssertRpm $PACKAGE
         rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
         rlRun "pushd $TmpDir"
+
+        rlRun "packageVersion=$(rpm -q ${PACKAGE} --qf '%{name}-%{version}-%{release}\n')"
+        rlTestVersion "${packageVersion}" '>=' 'clevis-15-8' && checkTangURL=true || checkTangURL=false
+        rlLog "Checking Tang URL in the error output: $checkTangURL"
     rlPhaseEnd
 
     rlPhaseStart FAIL "tangd setup"
@@ -149,19 +153,31 @@ rlJournalStart
         stop_tang "$port1"
         stop_tang "$port2"
         stop_tang "$port3"
-        rlRun "clevis decrypt < enc > plain2" 1
+        rlRun -s "clevis decrypt < enc > plain2" 1
+        $checkTangURL && {
+            rlAssertGrep "http://localhost:$port2" $rlRun_LOG
+            rlAssertGrep "http://localhost:$port3" $rlRun_LOG
+        }
+        rm $rlRun_LOG
         rlAssertDiffer plain plain2
     rlPhaseEnd
 
     rlPhaseStart FAIL "clevis decrypt, one server available"
         start_tang "tangd/cache1" "$port1"
-        rlRun "clevis decrypt < enc > plain2" 1
+        rlRun -s "clevis decrypt < enc > plain2" 1
+        $checkTangURL && {
+            rlAssertGrep "http://localhost:$port2" $rlRun_LOG
+            rlAssertGrep "http://localhost:$port3" $rlRun_LOG
+        }
+        rm $rlRun_LOG
         rlAssertDiffer plain plain2
     rlPhaseEnd
 
     rlPhaseStart FAIL "clevis decrypt, two servers available"
         start_tang "tangd/cache3" "$port3"
-        rlRun "clevis decrypt < enc > plain2"
+        rlRun -s "clevis decrypt < enc > plain2"
+        $checkTangURL && rlAssertGrep "http://localhost:$port2" $rlRun_LOG
+        rm $rlRun_LOG
         rlAssertNotDiffer plain plain2
     rlPhaseEnd
 
