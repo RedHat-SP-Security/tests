@@ -154,10 +154,7 @@ rlJournalStart
         stop_tang "$port2"
         stop_tang "$port3"
         rlRun -s "clevis decrypt < enc > plain2" 1
-        $checkTangURL && {
-            rlAssertGrep "http://localhost:$port2" $rlRun_LOG
-            rlAssertGrep "http://localhost:$port3" $rlRun_LOG
-        }
+        $checkTangURL && rlAssertGrep "http://localhost" $rlRun_LOG
         rm $rlRun_LOG
         rlAssertDiffer plain plain2
     rlPhaseEnd
@@ -165,10 +162,7 @@ rlJournalStart
     rlPhaseStart FAIL "clevis decrypt, one server available"
         start_tang "tangd/cache1" "$port1"
         rlRun -s "clevis decrypt < enc > plain2" 1
-        $checkTangURL && {
-            rlAssertGrep "http://localhost:$port2" $rlRun_LOG
-            rlAssertGrep "http://localhost:$port3" $rlRun_LOG
-        }
+        $checkTangURL && rlAssertGrep "http://localhost" $rlRun_LOG
         rm $rlRun_LOG
         rlAssertDiffer plain plain2
     rlPhaseEnd
@@ -176,7 +170,7 @@ rlJournalStart
     rlPhaseStart FAIL "clevis decrypt, two servers available"
         start_tang "tangd/cache3" "$port3"
         rlRun -s "clevis decrypt < enc > plain2"
-        $checkTangURL && rlAssertGrep "http://localhost:$port2" $rlRun_LOG
+        $checkTangURL && rlAssertGrep "http://localhost" $rlRun_LOG
         rm $rlRun_LOG
         rlAssertNotDiffer plain plain2
     rlPhaseEnd
