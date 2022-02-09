@@ -37,26 +37,32 @@ rlJournalStart
         rlRun "uname -a"
         rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
         rlRun "pushd $TmpDir"
+
         rlRun -s "captest --text"
         mv $rlRun_LOG captest.out
+
         rlRun -s "captest"
         mv $rlRun_LOG  hexadec.out
         HEXA=`awk '/^Effective:/ { print $2,$3; exit }' hexadec.out | sed 's/, //'`
+
         rlLogInfo "hexadecimal representation of Effective capabilities: $HEXA"
         rlRun -s "capsh --decode=$HEXA"
         mv $rlRun_LOG capsh.out
-        # now convert output to a better form
 
+        rlRun "cat capsh.out" 0 "capsh output before processing"
         rlRun "cut -d '=' -f 2 capsh.out \
+            | sed -e 's/,/\\n/g' \
             | sed -e 's/cap_//g' \
-                -e 's/,/\\n/g' \
-                -e 's/35/wake_alarm/' \
-                -e 's/36/block_suspend/' \
-                -e 's/37/audit_read/' \
-            | sed -e '/^[0-9]\+$/d' \
             | sort > capsh_sorted.out" 0 "substituting unknown/numeric capabilities in the output"
+        rlRun "cat capsh_sorted.out" 0 "capsh output after processing"
 
-        rlRun "grep '^Effective' captest.out | sed -e 's/Effective: //' -e 's/, /\\n/g' | sort > captest_sorted.out"
+        rlRun "cat captest.out" 0 "captest output before processing"
+        rlRun "grep '^Effective' captest.out \
+            | sed -e 's/Effective: //' \
+            | sed -e 's/, /\\n/g' \
+            | sed -e 's/cap_40/checkpoint_restore/' \
+            | sort > captest_sorted.out"
+        rlRun "cat captest_sorted.out" 0 "captest output after processing"
     rlPhaseEnd
 
     rlPhaseStartTest "Effective permissions listed by 'capsh --decode=$HEXA' are available in 'captest --text'"
