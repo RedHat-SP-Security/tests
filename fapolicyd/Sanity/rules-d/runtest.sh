@@ -38,6 +38,8 @@ rlJournalStart && {
     CleanupRegister "rlRun 'rm -r $TmpDir' 0 'Removing tmp directory'"
     CleanupRegister 'rlRun "popd"'
     rlRun "pushd $TmpDir"
+    CleanupRegister 'rlRun "rlFileRestore"'
+    rlRun "rlFileBackup --clean /root/rpmbuild"
     CleanupRegister --mark "rlRun 'RpmSnapshotRevert'; rlRun 'RpmSnapshotDiscard'"
     rlRun "RpmSnapshotCreate"
     CleanupRegister 'rlRun "fapCleanup"'
