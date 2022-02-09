@@ -116,6 +116,36 @@ EOF
       CleanupDo --mark
     rlPhaseEnd; }
 
+    rlPhaseStartTest "concurent rules present" && {
+      rlRun "rm -rf /etc/fapolicyd"
+      rlRun "yum reinstall fapolicyd-$V-$R -y"
+      rlRun "ls -la /etc/fapolicyd/"
+      rlRun "ls -la /etc/fapolicyd/rules.d/"
+      rlAssertNotExists /etc/fapolicyd/fapolicyd.rules
+      rlAssertGreater "rules are deployed into /etc/fapolicyd/rules.d" $(ls -1 /etc/fapolicyd/rules.d | wc -w) 0
+      cat > /etc/fapolicyd/fapolicyd.rules <<EOF
+%languages=application/x-bytecode.ocaml,application/x-bytecode.python,application/java-archive,text/x-java,application/x-java-applet,application/javascript,text/javascript,text/x-awk,text/x-gawk,text/x-lisp,application/x-elc,text/x-lua,text/x-m4,text/x-nftables,text/x-perl,text/x-php,text/x-python,text/x-R,text/x-ru
+deny_audit perm=any pattern=ld_so : all
+allow perm=any uid=0 : dir=/var/tmp/
+allow perm=any uid=0 trust=1 : all
+allow perm=open exe=/usr/bin/rpm : all
+allow perm=open exe=/usr/bin/python3.10 comm=dnf : all
+deny_audit perm=any all : ftype=application/x-bad-elf
+allow perm=open all : ftype=application/x-sharedlib trust=1
+deny_audit perm=open all : ftype=application/x-sharedlib
+allow perm=any exe=/my/special/rule : trust=1
+allow perm=execute all : trust=1
+allow perm=open all : ftype=%languages trust=1
+deny_audit perm=any all : ftype=%languages
+allow perm=any all : ftype=text/x-shellscript
+deny_audit perm=execute all : all
+allow perm=open all : all
+EOF
+      rlRun -s "fapStart" 1-255
+      rlAssertGrep 'Error - both old and new rules exist' $rlRun_LOG
+      rm -f /etc/fapolicyd/fapolicyd.rules
+    rlPhaseEnd; }
+
     rlPhaseStartTest "upgrade from old version - default rules" && {
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V_old-$R_old -y --allowerasing"
