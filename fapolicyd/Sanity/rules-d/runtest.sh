@@ -95,6 +95,16 @@ EOF
   rlPhaseEnd; }
 
   tcfTry "Tests" --no-assert && {
+    rlPhaseStartTest "clean install" && {
+      rlRun "rm -rf /etc/fapolicyd"
+      rlRun "yum remove fapolicyd -y"
+      rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
+      rlRun "ls -la /etc/fapolicyd/"
+      rlRun "ls -la /etc/fapolicyd/rules.d/"
+      rlAssertNotExists /etc/fapolicyd/fapolicyd.rules
+      rlAssertGreater "rules are deployed into /etc/fapolicyd/rules.d" $(ls -1 /etc/fapolicyd/rules.d | wc -w) 0
+    rlPhaseEnd; }
+
     rlPhaseStartTest "rules order" && {
       CleanupRegister --mark 'rlRun "rm -f /etc/fapolicyd/rules.d/5{1,2,3}-custom.rules"'
       rlRun "echo 'allow perm=open exe=/path/to/binary1 : all' > /etc/fapolicyd/rules.d/52-custom.rules"
