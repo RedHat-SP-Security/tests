@@ -38,6 +38,8 @@ rlJournalStart && {
     CleanupRegister "rlRun 'rm -r $TmpDir' 0 'Removing tmp directory'"
     CleanupRegister 'rlRun "popd"'
     rlRun "pushd $TmpDir"
+    CleanupRegister --mark "rlRun 'RpmSnapshotRevert'; rlRun 'RpmSnapshotDiscard'"
+    rlRun "RpmSnapshotCreate"
     CleanupRegister 'rlRun "fapCleanup"'
     rlRun "fapSetup"
     rlRun "rlFetchSrcForInstalled fapolicyd"
@@ -65,9 +67,6 @@ index c0ab31c..9103e12 100644
 +allow perm=any all : all
 EOF
     rlRun -s "rpmbuild -bb -D 'dist $(rpmbuild -E '%dist')_99' ~/rpmbuild/SPECS/fapolicyd.spec"
-    CleanupRegister --mark "rlRun 'RpmSnapshotRevert'; rlRun 'RpmSnapshotDiscard'"
-    rlRun "RpmSnapshotCreate"
-    #rlRun "RpmSnapshotRevert"
     rlRun "mkdir rpms"
     pushd rpms
     rlRun "cp $(grep 'Wrote:' $rlRun_LOG | cut -d ' ' -f 2 | tr '\n' ' ') $(grep 'Wrote:' $rlRun_LOG1 | cut -d ' ' -f 2 | tr '\n' ' ') ./"
