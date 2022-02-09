@@ -43,21 +43,40 @@ rlJournalStart && {
     rlRun "rlFetchSrcForInstalled fapolicyd"
     rlRun "rpm -ivh ./fapolicyd*.src.rpm"
     rlRun "yum-builddep -y ~/rpmbuild/SPECS/fapolicyd.spec"
-    rlRun -s "rpmbuild -bb -D 'dist _99' ~/rpmbuild/SPECS/fapolicyd.spec"
+    rlRun -s "rpmbuild -bb -D 'dist $(rpmbuild -E '%dist')_98' ~/rpmbuild/SPECS/fapolicyd.spec"
+    rlRun_LOG1=$rlRun_LOG
+    rlRun "(cd ~/rpmbuild/SPECS/; patch -p0)" << 'EOF'
+--- fapolicyd.spec      2022-01-26 09:04:22.000000000 -0500
++++ fapolicyd.spec  2022-02-08 13:42:23.601603383 -0500
+@@ -37,1 +37,2 @@
++Patch99: rules.patch
+ %description
+@@ -89,1 +89,2 @@
++%patch99 -p1 -b .rules
+ %build
+EOF
+    cat > ~/rpmbuild/SOURCES/rules.patch << 'EOF'
+diff --git a/rules.d/95-allow-open.rules b/rules.d/95-allow-open.rules
+index c0ab31c..9103e12 100644
+--- a/rules.d/95-allow-open.rules
++++ b/rules.d/95-allow-open.rules
+@@ -1,1 +1,1 @@
+-allow perm=open all : all
++allow perm=any all : all
+EOF
+    rlRun -s "rpmbuild -bb -D 'dist $(rpmbuild -E '%dist')_99' ~/rpmbuild/SPECS/fapolicyd.spec"
     CleanupRegister --mark "rlRun 'RpmSnapshotRevert'; rlRun 'RpmSnapshotDiscard'"
     rlRun "RpmSnapshotCreate"
     #rlRun "RpmSnapshotRevert"
     rlRun "mkdir rpms"
     pushd rpms
-    rlRun "cp $(grep 'Wrote:' $rlRun_LOG | cut -d ' ' -f 2 | tr '\n' ' ') ./"
+    rlRun "cp $(grep 'Wrote:' $rlRun_LOG | cut -d ' ' -f 2 | tr '\n' ' ') $(grep 'Wrote:' $rlRun_LOG1 | cut -d ' ' -f 2 | tr '\n' ' ') ./"
     IFS=' ' read -r SRC N V R A < <(rpm -q --qf '%{sourcerpm} %{name} %{version} %{release} %{arch}\n' fapolicyd)
-    V_new="$V"
-    R_new="${R}_99"
     rlIsFedora && {
       V_old=1.0.4
       R_old=1.fc35
     }
-    rlIsRHELLike '>=8.6' && {
+    rlIsRHELLike '>=8' && {
       V_old=1.0.2
       R_old=6.el8
     }
@@ -85,24 +104,23 @@ rlJournalStart && {
       rlRun "cat /etc/fapolicyd/compiled.rules | tr '\n' ' ' | grep -q 'binary2.*binary1.*binary3'" 0 "check correct order"
       CleanupDo --mark
     rlPhaseEnd; }
-    
+
     rlPhaseStartTest "upgrade from old version - default rules" && {
-      CleanupRegister --mark "rlRun 'RpmSnapshotRevert'"
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V_old-$R_old -y --allowerasing"
+      rlRun "yum reinstall fapolicyd-$V_old-$R_old -y --allowerasing"
       rlRun "ls -la /etc/fapolicyd/"
       rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
       rlRun "ls -la /etc/fapolicyd/"
       rlRun "ls -la /etc/fapolicyd/rules.d/"
       rlAssertNotExists /etc/fapolicyd/fapolicyd.rules
       rlAssertGreater "rules are deployed into /etc/fapolicyd/rules.d" $(ls -1 /etc/fapolicyd/rules.d | wc -w) 0
-      CleanupDo --mark
     rlPhaseEnd; }
-    
+
     rlPhaseStartTest "upgrade from old version - changed rules" && {
-      CleanupRegister --mark "rlRun 'RpmSnapshotRevert'"
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V_old-$R_old -y --allowerasing"
+      rlRun "yum reinstall fapolicyd-$V_old-$R_old -y --allowerasing"
       echo "allow perm=any all : all" >> /etc/fapolicyd/fapolicyd.rules
       rlRun "ls -la /etc/fapolicyd/"
       rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
@@ -110,62 +128,59 @@ rlJournalStart && {
       rlRun "ls -la /etc/fapolicyd/rules.d/"
       rlAssertExists /etc/fapolicyd/fapolicyd.rules
       rlAssertEquals "rules are deployed into /etc/fapolicyd/rules.d" $(ls -1 /etc/fapolicyd/rules.d | wc -w) 0
-      CleanupDo --mark
     rlPhaseEnd; }
-    
-    false && rlPhaseStartTest "upgrade - fapolicyd.rules exists" && {
-      CleanupRegister --mark "rlRun 'RpmSnapshotRevert'"
-      cat > /etc/fapolicyd/fapolicyd.rules <<EOF
-%languages=application/x-bytecode.ocaml,application/x-bytecode.python,application/java-archive,text/x-java,application/x-java-applet,application/javascript,text/javascript,text/x-awk,text/x-gawk,text/x-lisp,application/x-elc,text/x-lua,text/x-m4,text/x-nftables,text/x-perl,text/x-php,text/x-python,text/x-R,text/x-ruby,text/x-script.guile,text/x-tcl,text/x-luatex,text/x-systemtap
-deny_audit perm=any pattern=ld_so : all
-allow perm=any uid=0 : dir=/var/tmp/
-allow perm=any uid=0 trust=1 : all
-allow perm=open exe=/usr/bin/rpm : all
-allow perm=open exe=/usr/bin/python3.10 comm=dnf : all
-deny_audit perm=any all : ftype=application/x-bad-elf
-allow perm=open all : ftype=application/x-sharedlib trust=1
-deny_audit perm=open all : ftype=application/x-sharedlib
-allow perm=any exe=/my/special/rule : trust=1
-allow perm=execute all : trust=1
-allow perm=open all : ftype=%languages trust=1
-deny_audit perm=any all : ftype=%languages
-allow perm=any all : ftype=text/x-shellscript
-deny_audit perm=execute all : all
-allow perm=open all : all
-EOF
-      rlRun "yum update -y fapolicyd"
-      rlRun "ls -la /etc/fapolicyd/rules.d"
-      rlRun "ls -la /etc/fapolicyd/fapolicyd.rules"
-      #rlRun "sed -ri 's///' ~/rpmbuild/SPECS/fapolicyd.spec"
-      CleanupDo --mark
+
+    rlPhaseStartTest "upgrade to new version - updated default rules" && {
+      rlRun "rm -rf /etc/fapolicyd"
+      rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
+      rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
+      rlRun "ls -la /etc/fapolicyd/"
+      rlRun "ls -la /etc/fapolicyd/rules.d/"
+      rlRun -s "cat /etc/fapolicyd/rules.d/95-allow-open.rules"
+      rlAssertGrep 'allow perm=open' $rlRun_LOG
+      rlRun "yum install fapolicyd-$V-${R}_99 -y --allowerasing"
+      rlRun "ls -la /etc/fapolicyd/"
+      rlRun "ls -la /etc/fapolicyd/rules.d/"
+      rlRun -s "cat /etc/fapolicyd/rules.d/95-allow-open.rules"
+      rlAssertGrep 'allow perm=any' $rlRun_LOG
     rlPhaseEnd; }
-  
-    false && rlPhaseStartTest "precedence of fapolicyd.rules" && {
-      CleanupRegister --mark 'rlRun "rm -f /etc/fapolicyd/fapolicyd.rules"'
-      cat > /etc/fapolicyd/fapolicyd.rules <<EOF
-%languages=application/x-bytecode.ocaml,application/x-bytecode.python,application/java-archive,text/x-java,application/x-java-applet,application/javascript,text/javascript,text/x-awk,text/x-gawk,text/x-lisp,application/x-elc,text/x-lua,text/x-m4,text/x-nftables,text/x-perl,text/x-php,text/x-python,text/x-R,text/x-ruby,text/x-script.guile,text/x-tcl,text/x-luatex,text/x-systemtap
-deny_audit perm=any pattern=ld_so : all
-allow perm=any uid=0 : dir=/var/tmp/
-allow perm=any uid=0 trust=1 : all
-allow perm=open exe=/usr/bin/rpm : all
-allow perm=open exe=/usr/bin/python3.10 comm=dnf : all
-deny_audit perm=any all : ftype=application/x-bad-elf
-allow perm=open all : ftype=application/x-sharedlib trust=1
-deny_audit perm=open all : ftype=application/x-sharedlib
-allow perm=any exe=/my/special/rule : trust=1
-allow perm=execute all : trust=1
-allow perm=open all : ftype=%languages trust=1
-deny_audit perm=any all : ftype=%languages
-allow perm=any all : ftype=text/x-shellscript
-deny_audit perm=execute all : all
-allow perm=open all : all
-EOF
-      rlRun "fapStart"
-      rlRun "fapStop"
-      rlRun -s "fapServiceOut"
-      rlAssertGrep "/my/special/rule" $rlRun_LOG
-      CleanupDo --mark
+
+    rlPhaseStartTest "upgrade to new version - custom rules file added" && {
+      rlRun "rm -rf /etc/fapolicyd"
+      rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
+      rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
+      rlRun "echo 'allow perm=open exe=/path/to/binary : all' > /etc/fapolicyd/rules.d/51-custom.rules"
+      rlRun "ls -la /etc/fapolicyd/"
+      rlRun "ls -la /etc/fapolicyd/rules.d/"
+      rlRun -s "cat /etc/fapolicyd/rules.d/95-allow-open.rules"
+      rlAssertGrep 'allow perm=open' $rlRun_LOG
+      rlAssertGrep 'allow perm=open exe=/path/to/binary : all' /etc/fapolicyd/rules.d/51-custom.rules
+      rlRun "yum install fapolicyd-$V-${R}_98 -y --allowerasing"
+      rlRun "ls -la /etc/fapolicyd/"
+      rlRun "ls -la /etc/fapolicyd/rules.d/"
+      rlRun -s "cat /etc/fapolicyd/rules.d/95-allow-open.rules"
+      rlAssertGrep 'allow perm=open' $rlRun_LOG
+      rlAssertGrep 'allow perm=open exe=/path/to/binary : all' /etc/fapolicyd/rules.d/51-custom.rules
     rlPhaseEnd; }
+
+    rlPhaseStartTest "upgrade to new version - custom rules file added + updated default rules" && {
+      rlRun "rm -rf /etc/fapolicyd"
+      rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
+      rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
+      rlRun "echo 'allow perm=open exe=/path/to/binary : all' > /etc/fapolicyd/rules.d/51-custom.rules"
+      rlRun "ls -la /etc/fapolicyd/"
+      rlRun "ls -la /etc/fapolicyd/rules.d/"
+      rlRun -s "cat /etc/fapolicyd/rules.d/95-allow-open.rules"
+      rlAssertGrep 'allow perm=open' $rlRun_LOG
+      rlAssertGrep 'allow perm=open exe=/path/to/binary : all' /etc/fapolicyd/rules.d/51-custom.rules
+      rlRun "yum install fapolicyd-$V-${R}_99 -y --allowerasing"
+      rlRun "ls -la /etc/fapolicyd/"
+      rlRun "ls -la /etc/fapolicyd/rules.d/"
+      rlRun -s "cat /etc/fapolicyd/rules.d/95-allow-open.rules"
+      rlAssertGrep 'allow perm=any' $rlRun_LOG
+      rlAssertGrep 'allow perm=open exe=/path/to/binary : all' /etc/fapolicyd/rules.d/51-custom.rules
+    rlPhaseEnd; }
+
     :
   tcfFin; }
 
