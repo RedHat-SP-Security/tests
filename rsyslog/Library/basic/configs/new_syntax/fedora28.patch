@@ -45,10 +45,10 @@
  
 +##################### RSYSLOG-LIB BEGIN GLOBALS ################################
 +
-+##################### RSYSLOG-LIB BEGIN WOKRDIRECTORY ##########################
++##################### RSYSLOG-LIB BEGIN WORKDIRECTORY ##########################
  # Where to place auxiliary files
  global(workDirectory="/var/lib/rsyslog")
-+##################### RSYSLOG-LIB END WOKRDIRECTORY ############################
++##################### RSYSLOG-LIB END WORKDIRECTORY ############################
  
 +##################### RSYSLOG-LIB BEGIN MODLOAD OMFILE DEFAULT TEMPLATE ########
  # Use default timestamp format

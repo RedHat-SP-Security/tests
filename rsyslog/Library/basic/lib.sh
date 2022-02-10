@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 55
+#   library-version = 56
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=55
+__INTERNAL_rsyslog_LIB_VERSION=56
 
 : <<'=cut'
 =pod
