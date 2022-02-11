@@ -86,8 +86,8 @@ EOF
         [ -e "$file.$i" ] || break
         echo "$file.$i $(stat -c "%i" $file.$i)"
       done
-      rlRun -s "ls -la /var/lib/rsyslog/imfile*"
-      rlAssertLesser "there is only up to one state file" $(cat $rlRun_LOG | wc -l) 1
+      rlRun -s "ls -la /var/lib/rsyslog/imfile*" 0-255
+      rlAssertLesserOrEqual "there is only up to one state file" $(cat $rlRun_LOG | wc -l) 1
       cat /var/log/output.log | wc -l
     }
 
