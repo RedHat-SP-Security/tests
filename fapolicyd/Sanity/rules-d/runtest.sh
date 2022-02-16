@@ -29,11 +29,11 @@
 . /usr/share/beakerlib/beakerlib.sh || exit 1
 
 PACKAGE="fapolicyd"
-
 rlJournalStart && {
   rlPhaseStartSetup && {
     rlRun "rlImport --all" 0 "Import libraries" || rlDie "cannot continue"
     tcfRun "rlCheckMakefileRequires" || rlDie "cannot continue"
+    IFS=' ' read -r SRC N V R A < <(rpm -q --qf '%{sourcerpm} %{name} %{version} %{release} %{arch}\n' fapolicyd)
     rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
     CleanupRegister "rlRun 'rm -r $TmpDir' 0 'Removing tmp directory'"
     CleanupRegister 'rlRun "popd"'
@@ -47,7 +47,8 @@ rlJournalStart && {
     rlRun "rlFetchSrcForInstalled fapolicyd"
     rlRun "rpm -ivh ./fapolicyd*.src.rpm"
     rlRun "yum-builddep -y ~/rpmbuild/SPECS/fapolicyd.spec"
-    rlRun -s "rpmbuild -bb -D 'dist $(rpmbuild -E '%dist')_98' ~/rpmbuild/SPECS/fapolicyd.spec"
+    R2=".$(echo "$R" | cut -d . -f 2-)"
+    rlRun -s "rpmbuild -bb -D 'dist ${R2}_98' ~/rpmbuild/SPECS/fapolicyd.spec" 0 "build newer package"
     rlRun_LOG1=$rlRun_LOG
     rlRun "(cd ~/rpmbuild/SPECS/; patch -p0)" << 'EOF'
 --- fapolicyd.spec      2022-01-26 09:04:22.000000000 -0500
@@ -68,11 +69,10 @@ index c0ab31c..9103e12 100644
 -allow perm=open all : all
 +allow perm=any all : all
 EOF
-    rlRun -s "rpmbuild -bb -D 'dist $(rpmbuild -E '%dist')_99' ~/rpmbuild/SPECS/fapolicyd.spec"
+    rlRun -s "rpmbuild -bb -D 'dist ${R2}_99' ~/rpmbuild/SPECS/fapolicyd.spec" 0 "build newer package with updated default rules"
     rlRun "mkdir rpms"
     pushd rpms
     rlRun "cp $(grep 'Wrote:' $rlRun_LOG | cut -d ' ' -f 2 | tr '\n' ' ') $(grep 'Wrote:' $rlRun_LOG1 | cut -d ' ' -f 2 | tr '\n' ' ') ./"
-    IFS=' ' read -r SRC N V R A < <(rpm -q --qf '%{sourcerpm} %{name} %{version} %{release} %{arch}\n' fapolicyd)
     rlIsFedora && {
       V_old=1.0.4
       R_old=1.fc35
