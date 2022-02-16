@@ -154,8 +154,8 @@ EOF
       rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
       rlRun "ls -la /etc/fapolicyd/"
       rlRun "ls -la /etc/fapolicyd/rules.d/"
-      rlAssertNotExists /etc/fapolicyd/fapolicyd.rules
-      rlAssertGreater "rules are deployed into /etc/fapolicyd/rules.d" $(ls -1 /etc/fapolicyd/rules.d | wc -w) 0
+      rlAssertExists /etc/fapolicyd/fapolicyd.rules
+      rlAssertEquals "rules are deployed into /etc/fapolicyd/rules.d" $(ls -1 /etc/fapolicyd/rules.d | wc -w) 0
     rlPhaseEnd; }
 
     rlPhaseStartTest "upgrade from old version - changed rules" && {
@@ -183,7 +183,8 @@ EOF
       rlRun "ls -la /etc/fapolicyd/"
       rlRun "ls -la /etc/fapolicyd/rules.d/"
       rlRun -s "cat /etc/fapolicyd/rules.d/95-allow-open.rules"
-      rlAssertGrep 'allow perm=any' $rlRun_LOG
+      rlAssertGrep 'allow perm=open' $rlRun_LOG
+      rlAssertNotGrep 'allow perm=any' $rlRun_LOG
     rlPhaseEnd; }
 
     rlPhaseStartTest "upgrade to new version - custom rules file added" && {
@@ -218,7 +219,8 @@ EOF
       rlRun "ls -la /etc/fapolicyd/"
       rlRun "ls -la /etc/fapolicyd/rules.d/"
       rlRun -s "cat /etc/fapolicyd/rules.d/95-allow-open.rules"
-      rlAssertGrep 'allow perm=any' $rlRun_LOG
+      rlAssertGrep 'allow perm=open' $rlRun_LOG
+      rlAssertNotGrep 'allow perm=any' $rlRun_LOG
       rlAssertGrep 'allow perm=open exe=/path/to/binary : all' /etc/fapolicyd/rules.d/51-custom.rules
     rlPhaseEnd; }
 
