@@ -32,6 +32,8 @@
 
 PACKAGE="rsyslog"
 
+driver=${driver:-gtls}
+
 rlJournalStart && {
   rlPhaseStartSetup && {
     rlRun "rlCheckMakefileRequires" || rlDie "cannot continue"
@@ -134,7 +136,7 @@ EOF
       rlRun "rsyslogPrepareConf"
       rsyslogConfigAppend "GLOBALS" <<EOF
 global(
-    DefaultNetstreamDriver="gtls"
+    DefaultNetstreamDriver="$driver"
     DefaultNetstreamDriverCAFile="/etc/rsyslogd.d/ca-root-cert.pem"
     DefaultNetstreamDriverCertFile="/etc/rsyslogd.d/client-cert.pem"
     DefaultNetstreamDriverKeyFile="/etc/rsyslogd.d/client-key.pem"
@@ -146,7 +148,7 @@ EOF
     Protocol="tcp"
     Target="127.0.0.1"
     Port="6514"
-    StreamDriver="gtls"
+    StreamDriver="$driver"
     StreamDriverMode="1"
     RebindInterval="50"
     StreamDriverAuthMode="x509/name"
@@ -162,13 +164,13 @@ module(
     StreamDriver.AuthMode="x509/name"
     PermittedPeer="$(hostname)"
     StreamDriver.Mode="1"
-    StreamDriver.Name="gtls"
+    StreamDriver.Name="$driver"
 )
 input(type="imtcp" Port="6514")
 EOF
       rsyslogServerConfigAppend "GLOBALS" <<EOF
 global(
-    DefaultNetstreamDriver="gtls"
+    DefaultNetstreamDriver="$driver"
     DefaultNetstreamDriverCAFile="/etc/rsyslogd.d/ca-cert.pem"
     DefaultNetstreamDriverCertFile="/etc/rsyslogd.d/server-cert.pem"
     DefaultNetstreamDriverKeyFile="/etc/rsyslogd.d/server-key.pem"

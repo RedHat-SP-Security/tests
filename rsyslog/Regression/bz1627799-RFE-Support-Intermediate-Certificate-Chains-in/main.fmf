@@ -5,28 +5,49 @@ description: |
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
-- library(distribution/dpcommon)
-recommend:
-- rsyslog
-- gnutls
-- gnutls-utils
-- rsyslog-gnutls
+  - library(distribution/dpcommon)
+  - rsyslog
+  - /usr/bin/certtool
 duration: 5m
 enabled: true
-tag:
-- NoRHEL4
-- NoRHEL5
-- TIPfail_Security
-- Tier1
-- rhel-7.8
-tier: '1'
-extra-summary: /CoreOS/rsyslog/Regression/bz1627799-RFE-Support-Intermediate-Certificate-Chains-in
-extra-task: /CoreOS/rsyslog/Regression/bz1627799-RFE-Support-Intermediate-Certificate-Chains-in
-extra-nitrate: TC#0604085
-adjust:
--   enabled: false
-    when: distro < rhel-7
-    continue: false
--   enabled: false
-    when: distro ~< rhel-7.8
-    continue: false
+/gnutls:
+    require+:
+      - rsyslog-gnutls
+    environment:
+        driver: gtls
+    extra-summary: driver=gtls /CoreOS/rsyslog/Regression/bz1627799-RFE-Support-Intermediate-Certificate-Chains-in
+    extra-task: /CoreOS/rsyslog/Regression/bz1627799-RFE-Support-Intermediate-Certificate-Chains-in
+    extra-nitrate: TC#0604085
+    tag:
+      - NoRHEL4
+      - NoRHEL5
+      - TIPfail_Security
+      - Tier1
+      - rhel-7.8
+    tier: '1'
+    link:
+      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1627799
+    adjust:
+      - enabled: false
+        when: distro < rhel-7
+        continue: false
+      - enabled: false
+        when: distro ~< rhel-7.8
+        continue: false
+/openssl:
+    require+:
+      - rsyslog-openssl
+    environment:
+        driver: ossl
+    extra-summary: driver=ossl /CoreOS/rsyslog/Regression/bz1627799-RFE-Support-Intermediate-Certificate-Chains-in
+    link:
+      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2026346
+    tag:
+      - Tier2
+      - rhel-8.5
+    tier: '2'
+    adjust:
+      - enabled: false
+        when: distro < rhel-8.5
+        continue: false
+    extra-nitrate: TC#0613026
