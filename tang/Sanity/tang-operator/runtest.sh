@@ -29,7 +29,7 @@
 # Include Beaker environment
 . /usr/share/beakerlib/beakerlib.sh || exit 1
 
-TO_BUNDLE="5m"
+TO_BUNDLE="15m"
 TEST_NAMESPACE_PATH="reg_test/all_test_namespace"
 TEST_NAMESPACE_FILE_NAME="daemons_v1alpha1_namespace.yaml"
 TEST_NAMESPACE_FILE="${TEST_NAMESPACE_PATH}/${TEST_NAMESPACE_FILE_NAME}"
@@ -75,6 +75,31 @@ dumpVerbose() {
 
 dumpDate() {
     rlLog "DATE:$(date)"
+}
+
+dumpInfo() {
+    rlLog "HOSTNAME:$(hostname)"
+    rlLog "RELEASE:$(cat /etc/redhat-release)"
+    rlLog "IMAGE:quay.io/sec-eng-special/tang-operator-bundle:${VERSION}"
+    rlLog "vvvvvvvvv IP vvvvvvvvvv"
+    ip a | grep 'inet '
+    rlLog "^^^^^^^^^ IP ^^^^^^^^^^"
+    #rlLog "vvvvvvvvv IP TABLES vvvvvvvvvv"
+    #sudo iptables -L
+    #rlLog "Flushing iptables"
+    #sudo iptables -F
+    #sudo iptables -L
+    #rlLog "^^^^^^^^^ IP TABLES ^^^^^^^^^^"
+}
+
+minikubeInfo() {
+    rlLog "MINIKUBE IP:$(minikube ip)"
+    rlLog "vvvvvvvvvvvv MINIKUBE STATUS vvvvvvvvvvvv"
+    minikube status
+    rlLog "^^^^^^^^^^^^ MINIKUBE STATUS ^^^^^^^^^^^^"
+    rlLog "vvvvvvvvvvvv MINIKUBE SERVICE LIST vvvvvvvvvvvv"
+    minikube service list
+    rlLog "^^^^^^^^^^^^ MINIKUBE SERVICE LIST ^^^^^^^^^^^^"
 }
 
 parseAndDumpClient() {
@@ -353,9 +378,10 @@ serviceAdv() {
     URL="http://${ip}:${port}/${ADV_PATH}"
     local file
     file=$(mktemp)
+    ### wget
     COMMAND="wget ${URL} --timeout=${TO_WGET_CONNECTION} -O ${file} -o /dev/null"
     dumpVerbose "CONNECTION_COMMAND:[${COMMAND}]"
-    eval "${COMMAND}"
+    ${COMMAND}
     wget_res=$?
     dumpVerbose "WGET RESULT:$(cat ${file})"
     JSON_ADV=$(cat "${file}")
@@ -618,22 +644,15 @@ installScPv() {
     return 0
 }
 
-addContainerRootPermission() {
-    if [ "${EXECUTION_MODE}" == "crc" ] || [ "${EXECUTION_MODE}" == "CLUSTER" ];
-    then
-        rlRun "${OC_CLIENT} adm policy add-scc-to-group anyuid system:authenticated" 0 "Configuring cluster to allow deployment of containers (anyuid)"
-    fi
-}
-
 rlJournalStart
     parseAndDumpMode
     parseAndDumpClient
     dumpDate
+    dumpInfo
     rlPhaseStartSetup
         rlRun "dumpOpenShiftClientStatus" 0 "Checking OpenshiftClient installation"
         rlRun "operator-sdk version > /dev/null" 0 "Checking operator-sdk installation"
         rlRun "checkClusterStatus" 0 "Checking cluster status"
-        addContainerRootPermission
         # In case previous execution was abruptelly stopped:
         rlRun "bundleStop" 0 "Cleaning already installed tang-operator (if any)"
         rlRun "bundleStart" 0 "Installing tang-operator-bundle version:${VERSION}"
