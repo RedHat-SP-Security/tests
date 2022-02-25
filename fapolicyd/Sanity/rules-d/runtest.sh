@@ -77,9 +77,13 @@ EOF
       V_old=1.0.4
       R_old=1.fc35
     }
-    rlIsRHELLike '>=8' && {
+    rlIsRHEL '>=8' || rlIsRHELLike '>=8' && {
       V_old=1.0.2
       R_old=6.el8
+    }
+    rlIsRHEL '>=9' || rlIsRHELLike '>=9' && {
+      V_old=1.0.3
+      R_old=4.el9
     }
     while read -r NULL N NULL NULL A; do
       rlRpmDownload $N $V_old $R_old $A
