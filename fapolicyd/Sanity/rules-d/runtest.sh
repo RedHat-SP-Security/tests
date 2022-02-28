@@ -85,9 +85,16 @@ EOF
       V_old=1.0.3
       R_old=4.el9
     }
-    while read -r NULL N NULL NULL A; do
-      rlRpmDownload $N $V_old $R_old $A
-    done < <(rpm -qa --qf '%{sourcerpm} %{name} %{version} %{release} %{arch}\n' | grep "^$SRC ")
+    packages=(
+      fapolicyd-${V_old}-${R_old}.$A
+      fapolicyd-debuginfo-${V_old}-${R_old}.$A
+      fapolicyd-debugsource-${V_old}-${R_old}.$A
+      fapolicyd-dnf-plugin-${V_old}-${R_old}.noarch
+      fapolicyd-selinux-${V_old}-${R_old}.noarch
+    )
+    for package in "${packages[@]}"; do
+      rlRpmDownload $package
+    done
     rlRun "createrepo --database ./"
     rlRun "ls -la"
     popd
@@ -95,6 +102,7 @@ EOF
     rlRun "${_dnfc}config-manager --add-repo file://$PWD/rpms"
     repofile=$(grep -l "file://$PWD/rpms" /etc/yum.repos.d/*.repo)
     CleanupRegister "rlRun 'rm -f $repofile'"
+    rlRun "yum clean all"
     rlRun "echo -e 'sslverify=0\ngpgcheck=0\nskip_if_unavailable=1' >> $repofile"
   rlPhaseEnd; }
 
