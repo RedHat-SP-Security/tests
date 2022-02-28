@@ -38,6 +38,10 @@ rlJournalStart
         rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
         rlRun "pushd $TmpDir"
         rlRun "fapSetup"
+        [[ -e /etc/fapolicyd/rules.d ]] && {
+          rlRun "mv /etc/fapolicyd/compiled.rules /etc/fapolicyd/fapolicyd.rules"
+          rlRun "rm -f /etc/fapolicyd/rules.d/*"
+        }
 	rlRun "mkdir testing"
 	rlRun 'echo -e "#!/bin/bash\nid\n" > testing/myscript'
 	rlRun "chmod a+x testing/myscript"

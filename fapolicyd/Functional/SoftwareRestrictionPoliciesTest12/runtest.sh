@@ -55,7 +55,7 @@ int main(int argc, char * argv[]){
 EOF
     rlRun "gcc main.c -o my-ls"
         rlRun "chown -R xxx:xxx ."
-    rlRun "cat /etc/fapolicyd/fapolicyd.rules"
+    rlRun "cat /etc/fapolicyd/fapolicyd.rules || cat /etc/fapolicyd/compiled.rules"
     rlPhaseEnd
 
     rlPhaseStartTest

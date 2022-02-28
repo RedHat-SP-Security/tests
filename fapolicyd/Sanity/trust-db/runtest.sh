@@ -62,6 +62,10 @@ rlJournalStart && {
     rlRun "pushd $TmpDir"
     CleanupRegister 'rlRun "fapCleanup"'
     rlRun "fapSetup"
+    [[ -e /etc/fapolicyd/rules.d ]] && {
+      rlRun "mv /etc/fapolicyd/compiled.rules /etc/fapolicyd/fapolicyd.rules"
+      rlRun "rm -f /etc/fapolicyd/rules.d/*"
+    }
     CleanupRegister "rlFileRestore"
     rlRun "rlFileBackup --clean /opt/testdir/ /opt/testfile"
     rlRun "mkdir -p '/opt/testdir/subdir'"
