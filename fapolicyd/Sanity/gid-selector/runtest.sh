@@ -47,6 +47,10 @@ rlJournalStart && {
     rlRun "chmod -R a+rx $test_dir"
     CleanupRegister 'rlRun "fapCleanup"'
     rlRun "fapSetup"
+    [[ -e /etc/fapolicyd/rules.d ]] && {
+      rlRun "mv /etc/fapolicyd/compiled.rules /etc/fapolicyd/fapolicyd.rules"
+      rlRun "rm -f /etc/fapolicyd/rules.d/*"
+    }
     rlRun "sed -r -i '/^syslog_format = /d' /etc/fapolicyd/fapolicyd.conf"
     rlRun "echo 'syslog_format = rule,dec,perm,auid,pid,gid,exe,:,path,ftype' >> /etc/fapolicyd/fapolicyd.conf"
   rlPhaseEnd; }

@@ -195,7 +195,9 @@ rlJournalStart && {
     rlPhaseStartTest "rules listing AC10" && {
       rlRun -s "fapolicyd-cli -l 2> /dev/null"
       a=$rlRun_LOG
-      rlRun -s "grep -Ev '^(#|\s*\$)' /etc/fapolicyd/fapolicyd.rules | grep -E '^(allow|deny|%)' | sed -r 's/^%/-> \0/' | awk 'BEGIN {i=1} /^(allow|deny)/{print i++ \". \" \$0} /^-> %/{print}'"
+      rule_file="/etc/fapolicyd/fapolicyd.rules"
+      [[ -e /etc/fapolicyd/compiled.rules ]] && rule_file="/etc/fapolicyd/compiled.rules"
+      rlRun -s "grep -Ev '^(#|\s*\$)' $rule_file | grep -E '^(allow|deny|%)' | sed -r 's/^%/-> \0/' | awk 'BEGIN {i=1} /^(allow|deny)/{print i++ \". \" \$0} /^-> %/{print}'"
       b=$rlRun_LOG
       rlRun "diff -u $a $b"
       rm -f $a $b

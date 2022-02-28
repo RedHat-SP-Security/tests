@@ -38,6 +38,10 @@ rlJournalStart
         rlRun 'TmpDir=$(mktemp -d)' 0 'Creating tmp directory'
         rlRun "pushd $TmpDir"
         rlRun "fapSetup"
+        [[ -e /etc/fapolicyd/rules.d ]] && {
+          rlRun "mv /etc/fapolicyd/compiled.rules /etc/fapolicyd/fapolicyd.rules"
+          rlRun "rm -f /etc/fapolicyd/rules.d/*"
+        }
         echo 'int main(void) { return 0; }' > main.c
         exe1="exe1"
         exe2="exe2"

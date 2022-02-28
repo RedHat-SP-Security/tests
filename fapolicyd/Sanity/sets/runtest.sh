@@ -42,6 +42,10 @@ rlJournalStart
         rlRun "pushd $TmpDir"
         CleanupRegister 'rlRun "fapCleanup"'
         rlRun "fapSetup"
+        [[ -e /etc/fapolicyd/rules.d ]] && {
+          rlRun "mv /etc/fapolicyd/compiled.rules /etc/fapolicyd/fapolicyd.rules"
+          rlRun "rm -f /etc/fapolicyd/rules.d/*"
+        }
         echo 'int main(void) { return 0; }' > main.c
         exe1="exe1"
         exe2="exe2"
