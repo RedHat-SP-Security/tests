@@ -48,29 +48,33 @@ rlJournalStart
         rlRun "rm -rf /var/db/$PACKAGE/*"
     rlPhaseEnd
 
-    rlPhaseStartTest "fapolicyd enabled -> no stderr nor stdout from dnf plugin"
+    rlPhaseStartTest "fapolicyd active -> no stderr nor stdout from dnf plugin"
         rlRun "fapServiceStart"
         rlRun -s -t "dnf reinstall -y sed"
+        sed -r -i '/[nN]o matches found for the following disable/d' $rlRun_LOG
         rlAssertGrep "STDOUT" $rlRun_LOG
         rlAssertNotGrep "STDOUT.*fapolicyd" $rlRun_LOG
         rlAssertNotGrep "STDERR.*fapolicyd" $rlRun_LOG
         rm -f $rlRun_LOG
 
         rlRun -s -t "dnf reinstall -y sed --disableplugin=\"fapolicyd-dnf-plugin\""
+        sed -r -i '/[nN]o matches found for the following disable/d' $rlRun_LOG
         rlAssertGrep "STDOUT" $rlRun_LOG
         rlAssertNotGrep "STDOUT.*fapolicyd" $rlRun_LOG
         rlAssertNotGrep "STDERR.*fapolicyd" $rlRun_LOG
         rm -f $rlRun_LOG
     rlPhaseEnd
 
-    rlPhaseStartTest "fapolicyd disabled -> dnf plugin's stderr contains something but stdout should not be touched"
+    rlPhaseStartTest "fapolicyd inactive -> dnf plugin's stderr contains something but stdout should not be touched"
         rlRun "fapServiceStop"
         rlRun -s -t "dnf reinstall -y sed"
+        sed -r -i '/[nN]o matches found for the following disable/d' $rlRun_LOG
         rlAssertGrep "STDOUT" $rlRun_LOG
         rlAssertNotGrep "STDOUT.*fapolicyd" $rlRun_LOG
         rm -f $rlRun_LOG
 
         rlRun -s -t "dnf reinstall -y sed --disableplugin=\"fapolicyd-dnf-plugin\""
+        sed -r -i '/[nN]o matches found for the following disable/d' $rlRun_LOG
         rlAssertGrep "STDOUT" $rlRun_LOG
         rlAssertNotGrep "STDOUT.*fapolicyd" $rlRun_LOG
         rlAssertNotGrep "STDERR.*fapolicyd" $rlRun_LOG
