@@ -45,6 +45,10 @@ rlJournalStart && {
     rlRun "chmod -R a+rx $PWD"
     CleanupRegister 'rlRun "fapCleanup"'
     rlRun "fapSetup"
+    [[ -e /etc/fapolicyd/rules.d ]] && {
+      rlRun "mv /etc/fapolicyd/compiled.rules /etc/fapolicyd/fapolicyd.rules"
+      rlRun "rm -f /etc/fapolicyd/rules.d/*"
+    }
     CleanupRegister 'rlRun "rlServiceRestore auditd"'
     CleanupRegister 'rlRun "rlFileRestore"'
     rlRun "rlFileBackup --clean /etc/audit/rules.d"
@@ -55,10 +59,14 @@ rlJournalStart && {
   tcfTry "Tests" --no-assert && {
     rlPhaseStartTest "default deny_audit check" && {
       CleanupRegister --mark 'rlRun "fapServiceStop"'
+      rlRun "cat /etc/fapolicyd/fapolicyd.rules"
       rlRun "fapServiceStart"
+      rlRun "rlServiceStatus fapolicyd"
       start_time=`LC_ALL='en_US.UTF-8' date "+%x %T"`
+      sleep 1
       rlRun "su - $testUser -c '$PWD/ls'" 126
-      rlRun -s "LC_ALL='en_US.UTF-8' ausearch -m fanotify -ts $start_time"
+      sleep 1
+      rlRun -s "LC_ALL='en_US.UTF-8' ausearch --input-logs -m fanotify -ts $start_time"
       rlAssertGrep 'name="/tmp/[^/]*/ls"' $rlRun_LOG -Eq
       rlAssertGrep 'exe="/usr/bin/bash"' $rlRun_LOG -Eq
       rm -f $rlRun_LOG
@@ -70,7 +78,9 @@ rlJournalStart && {
       CleanupRegister --mark 'rlRun "fapServiceStop"'
       rlRun "sed -r -i '/^syslog_format = /d' /etc/fapolicyd/fapolicyd.conf"
       rlRun "echo 'syslog_format = rule,dec,perm,auid,pid,exe,:,path,ftype' >> /etc/fapolicyd/fapolicyd.conf"
+      rlRun "cat /etc/fapolicyd/fapolicyd.rules"
       rlRun "fapServiceStart"
+      rlRun "rlServiceStatus fapolicyd"
       start_time=$(date +"%F %T")
       rlRun "su - $testUser -c '$PWD/ls'" 126
       rlRun -s "journalctl --no-pager --since=\"$start_time\""
