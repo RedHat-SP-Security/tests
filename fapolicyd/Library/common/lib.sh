@@ -25,7 +25,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = fap
-#   library-version = 22
+#   library-version = 23
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 true <<'=cut'
@@ -67,7 +67,7 @@ It restores files,services and selinux booleans.
 
 fapSetup() {
   rlRun "rlServiceStop fapolicyd"
-  rlRun "rlFileBackup --namespace fap --clean /etc/fapolicyd/"
+  rlRun "rlFileBackup --namespace fap --clean /etc/fapolicyd/ /etc/systemd/system/fapolicyd.service.d"
   rlRun "rm -f /var/lib/fapolicyd/*"
   rlRun "rlSEBooleanOn --namespace fap daemons_use_tty"
   if [[ -z "$(sesearch -A -s init_t -t unconfined_t -c fifo_file -p write)" ]]; then
@@ -129,39 +129,51 @@ fapServiceOut() {
 }
 
 fapStart() {
-  local res fapolicyd_path tail_pid FADEBUG
+  local res fapolicyd_path tail_pid FADEBUG SYSTEMD_RELOAD
   res=0
   FADEBUG='--debug-deny'
-  [[ "$1" == "--debug" ]] && {
+  if [[ "$1" == "--debug" ]]; then
     FADEBUG='--debug '
     shift
-  }
+  elif [[ "$1" == "--no-debug" ]]; then
+    FADEBUG=''
+    [[ -s /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf ]] && {
+      rm -f /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf
+      SYSTEMD_RELOAD=1
+    }
+    shift
+  fi
   fapolicyd_path="$1"
   if [[ -n "$fapolicyd_path" ]]; then
     [[ "$fapolicyd_path" =~ /$ ]] || fapolicyd_path+="/"
     rlLogInfo "running fapolicyd from alternative path $fapolicyd_path"
   fi
   [[ -z "$fapolicyd_path" ]] && fapolicyd_path="/usr/sbin/"
-  mkdir -p /etc/systemd/system/fapolicyd.service.d
-  ! grep -q -- "${fapolicyd_path}" /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf 2>/dev/null || \
-  ! grep -q -- "$FADEBUG" /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf 2>/dev/null && {
-    cat > /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf <<EOF
+  if [[ -n "$FADEBUG" ]]; then
+    mkdir -p /etc/systemd/system/fapolicyd.service.d
+    ! grep -q -- "${fapolicyd_path}" /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf 2>/dev/null || \
+    ! grep -q -- "$FADEBUG" /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf 2>/dev/null && {
+      cat > /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf <<EOF
 [Service]
 Type=simple
 Restart=no
 ExecStart=
 ExecStart=${fapolicyd_path}fapolicyd $FADEBUG
 EOF
+      SYSTEMD_RELOAD=1
+    }
     restorecon -vR /etc/systemd/system/fapolicyd.service.d
-    systemctl daemon-reload
-  }
+  fi
+
+  [[ -n "$SYSTEMD_RELOAD" ]] && systemctl daemon-reload
+
   rm -f /run/fapolicyd/fapolicyd.fifo
   __INTERNAL_fapolicyd_start_timestamp=$(date +"%F %T")
   rlServiceStart fapolicyd || let res++
-  
+
   fapServiceOut -b -f
   tail_pid=$!
-  
+
   local t=$(($(date +%s) + 120))
   while ! fapServiceOut | grep -q 'Starting to listen for events' \
         && systemctl status fapolicyd > /dev/null; do
@@ -184,7 +196,7 @@ fapStop() {
 }
 
 fapServiceStart() {
-  fapStart "$@"
+  fapStart --no-debug "$@"
 }
 
 fapServiceStop() {
