@@ -46,6 +46,66 @@ rlRunAs() {
   rlRun "su - $user -c '$command'" "$@"
 }
 
+method=${method:-cli}
+
+ugListRules() {
+  local user="$1" ER="$2"
+  case $method in
+    cli)
+      rlRunAs ${user} 'usbguard list-rules' $ER
+    ;;
+    dbus)
+      rlRunAs ${user} 'timeout 2 dbus-send --system --print-reply --dest=org.usbguard1 /org/usbguard1/Policy org.usbguard.Policy1.listRules string:match' $ER
+    ;;
+    *)
+      rlLogError "unsupported method '$method'"
+  esac
+}
+
+ugListDevices() {
+  local user="$1" ER="$2"
+  case $method in
+    cli)
+      rlRunAs ${user} 'usbguard list-devices' $ER
+    ;;
+    dbus)
+      rlRunAs ${user} 'timeout 2 dbus-send --system --print-reply --dest=org.usbguard1 /org/usbguard1/Devices org.usbguard.Devices1.listDevices string:match' $ER
+    ;;
+    *)
+      rlLogError "unsupported method '$method'"
+  esac
+}
+
+ugGetParameter() {
+  local user="$1" ER="$2"
+  case $method in
+    cli)
+      rlRunAs ${user} 'usbguard get-parameter InsertedDevicePolicy' $ER
+    ;;
+    dbus)
+      rlRunAs ${user} 'timeout 2 dbus-send --system --print-reply --dest=org.usbguard1 /org/usbguard1 org.usbguard1.getParameter string:InsertedDevicePolicy' $ER
+    ;;
+    *)
+      rlLogError "unsupported method '$method'"
+  esac
+}
+
+ugStart() {
+  case $method in
+    cli)
+      systemctl reset-failed usbguard
+      rlRun "rlServiceStart usbguard"
+    ;;
+    dbus)
+      systemctl reset-failed usbguard usbguard-dbus
+      rlRun "rlServiceStart usbguard usbguard-dbus"
+      LogSleepWithProgress 4
+    ;;
+    *)
+      rlLogError "unsupported method '$method'"
+  esac
+}
+
 rlJournalStart && {
   rlPhaseStartSetup && {
     rlRun "rlImport --all" 0 "Import libraries" || rlDie "cannot continue"
@@ -56,6 +116,7 @@ rlJournalStart && {
     rlRun "pushd $TmpDir"
     CleanupRegister 'rlRun "rlFileRestore"'
     rlRun "rlFileBackup --clean /etc/usbguard"
+    [[ "$method" == "dbus" ]] && CleanupRegister 'rlRun "rlServiceRestore usbguard-dbus"'
     CleanupRegister 'rlRun "rlServiceRestore usbguard"'
     CleanupRegister "rlRun 'testUserCleanup'"
     rlRun "testUserSetup --fast 6"
@@ -66,58 +127,58 @@ rlJournalStart && {
     CleanupRegister --mark "rlRun 'usermod -G \"\" ${testUser[0]}'"
     rlRun "usermod -aG ${testUserGroup[1]} ${testUser[0]}"
     rlRunAs ${testUser[0]} "id"
-    rlRun "rlServiceStart 'usbguard'"
-    rlRunAs ${testUser[0]} 'usbguard list-devices' 1-255
-    rlRunAs ${testUser[0]} 'usbguard list-rules' 1-255
-    rlRunAs ${testUser[0]} 'usbguard get-parameter InsertedDevicePolicy' 1-255
+    ugStart
+    ugListDevices ${testUser[0]} 1-255
+    ugListRules ${testUser[0]} 1-255
+    ugGetParameter ${testUser[0]} 1-255
     rlRun "usbguard add-user ${testUser[0]} --device list"
     rlRun "showACLfolder"
-    rlRun "rlServiceStart 'usbguard'"
-    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[0]} 'usbguard list-rules' 1-255
-    rlRunAs ${testUser[0]} 'usbguard get-parameter InsertedDevicePolicy' 1-255
+    ugStart
+    ugListDevices ${testUser[0]} 0
+    ugListRules ${testUser[0]} 1-255
+    ugGetParameter ${testUser[0]} 1-255
     rlRun "usbguard add-user ${testUserGroup[0]} -g --policy list"
     rlRun "showACLfolder"
-    rlRun "rlServiceStart 'usbguard'"
-    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[0]} 'usbguard list-rules' 0
-    rlRunAs ${testUser[0]} 'usbguard get-parameter InsertedDevicePolicy' 1-255
+    ugStart
+    ugListDevices ${testUser[0]} 0
+    ugListRules ${testUser[0]} 0
+    ugGetParameter ${testUser[0]} 1-255
     rlRun "usbguard add-user ${testUserGroup[1]} -g --parameters list"
     rlRun "showACLfolder"
-    rlRun "rlServiceStart 'usbguard'"
-    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[0]} 'usbguard list-rules' 0
-    rlRunAs ${testUser[0]} 'usbguard get-parameter InsertedDevicePolicy' 0
+    ugStart
+    ugListDevices ${testUser[0]} 0
+    ugListRules ${testUser[0]} 0
+    ugGetParameter ${testUser[0]} 0
     CleanupDo --mark
   rlPhaseEnd; }
 
   rlPhaseStartTest "inclusive permissions propagation (UID/GID)" && {
-    clearACLfolder
+    # clearACLfolder
     CleanupRegister --mark "rlRun 'usermod -G \"\" ${testUser[0]}'"
     rlRun "usermod -aG ${testUserGroup[1]} ${testUser[0]}"
     rlRunAs ${testUser[0]} "id"
-    rlRun "rlServiceStart 'usbguard'"
-    rlRunAs ${testUser[0]} 'usbguard list-devices' 1-255
-    rlRunAs ${testUser[0]} 'usbguard list-rules' 1-255
-    rlRunAs ${testUser[0]} 'usbguard get-parameter InsertedDevicePolicy' 1-255
+    ugStart
+    ugListDevices ${testUser[0]} 1-255
+    ugListRules ${testUser[0]} 1-255
+    ugGetParameter ${testUser[0]} 1-255
     rlRun "usbguard add-user ${testUserUID[0]} --device list"
     rlRun "showACLfolder"
-    rlRun "rlServiceStart 'usbguard'"
-    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[0]} 'usbguard list-rules' 1-255
-    rlRunAs ${testUser[0]} 'usbguard get-parameter InsertedDevicePolicy' 1-255
+    ugStart
+    ugListDevices ${testUser[0]} 0
+    ugListRules ${testUser[0]} 1-255
+    ugGetParameter ${testUser[0]} 1-255
     rlRun "usbguard add-user ${testUserGID[0]} -g --policy list"
     rlRun "showACLfolder"
-    rlRun "rlServiceStart 'usbguard'"
-    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[0]} 'usbguard list-rules' 0
-    rlRunAs ${testUser[0]} 'usbguard get-parameter InsertedDevicePolicy' 1-255
+    ugStart
+    ugListDevices ${testUser[0]} 0
+    ugListRules ${testUser[0]} 0
+    ugGetParameter ${testUser[0]} 1-255
     rlRun "usbguard add-user ${testUserGID[1]} -g --parameters list"
     rlRun "showACLfolder"
-    rlRun "rlServiceStart 'usbguard'"
-    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[0]} 'usbguard list-rules' 0
-    rlRunAs ${testUser[0]} 'usbguard get-parameter InsertedDevicePolicy' 0
+    ugStart
+    ugListDevices ${testUser[0]} 0
+    ugListRules ${testUser[0]} 0
+    ugGetParameter ${testUser[0]} 0
     CleanupDo --mark
   rlPhaseEnd; }
 
@@ -125,22 +186,22 @@ rlJournalStart && {
     clearACLfolder
     rlRun "usbguard add-user ${testUser[0]} --device list"
     rlRun "usbguard add-user ${testUser[1]} --policy list"
-    rlRun "rlServiceStart 'usbguard'"
-    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[0]} 'usbguard list-rules' 1-255
-    rlRunAs ${testUser[1]} 'usbguard list-devices' 1-255
-    rlRunAs ${testUser[1]} 'usbguard list-rules' 0
+    ugStart
+    ugListDevices ${testUser[0]} 0
+    ugListRules ${testUser[0]} 1-255
+    ugListDevices ${testUser[1]} 1-255
+    ugListRules ${testUser[1]} 0
   rlPhaseEnd; }
 
   rlPhaseStartTest "separate groups" && {
     clearACLfolder
     rlRun "usbguard add-user ${testUserGroup[0]} -g --device list"
     rlRun "usbguard add-user ${testUserGroup[1]} -g --policy list"
-    rlRun "rlServiceStart 'usbguard'"
-    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[0]} 'usbguard list-rules' 1-255
-    rlRunAs ${testUser[1]} 'usbguard list-devices' 1-255
-    rlRunAs ${testUser[1]} 'usbguard list-rules' 0
+    ugStart
+    ugListDevices ${testUser[0]} 0
+    ugListRules ${testUser[0]} 1-255
+    ugListDevices ${testUser[1]} 1-255
+    ugListRules ${testUser[1]} 0
   rlPhaseEnd; }
 
   rlPhaseStartTest "primary group permissions" && {
@@ -152,11 +213,11 @@ rlJournalStart && {
     "
     rlRun "usermod -g ${testUserGroup[2]} ${testUser[0]}"
     rlRun "usermod -g ${testUserGroup[2]} ${testUser[1]}"
-    rlRun "rlServiceStart 'usbguard'"
-    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[0]} 'usbguard list-rules' 1-255
-    rlRunAs ${testUser[1]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[1]} 'usbguard list-rules' 1-255
+    ugStart
+    ugListDevices ${testUser[0]} 0
+    ugListRules ${testUser[0]} 1-255
+    ugListDevices ${testUser[1]} 0
+    ugListRules ${testUser[1]} 1-255
     CleanupDo --mark
   rlPhaseEnd; }
 
@@ -169,11 +230,11 @@ rlJournalStart && {
     "
     rlRun "usermod -aG ${testUserGroup[2]} ${testUser[0]}"
     rlRun "usermod -aG ${testUserGroup[2]} ${testUser[1]}"
-    rlRun "rlServiceStart 'usbguard'"
-    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[0]} 'usbguard list-rules' 1-255
-    rlRunAs ${testUser[1]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[1]} 'usbguard list-rules' 1-255
+    ugStart
+    ugListDevices ${testUser[0]} 0
+    ugListRules ${testUser[0]} 1-255
+    ugListDevices ${testUser[1]} 0
+    ugListRules ${testUser[1]} 1-255
     CleanupDo --mark
   rlPhaseEnd; }
 
@@ -193,15 +254,15 @@ rlJournalStart && {
     "
     rlRun "usermod -aG ${testUserGroup[5]} ${testUser[2]}"
     rlRun "usermod -aG ${testUserGroup[5]} ${testUser[3]}"
-    rlRun "rlServiceStart 'usbguard'"
-    rlRunAs ${testUser[0]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[0]} 'usbguard list-rules' 1-255
-    rlRunAs ${testUser[1]} 'usbguard list-devices' 0
-    rlRunAs ${testUser[1]} 'usbguard list-rules' 1-255
-    rlRunAs ${testUser[2]} 'usbguard list-devices' 1-255
-    rlRunAs ${testUser[2]} 'usbguard list-rules' 0
-    rlRunAs ${testUser[3]} 'usbguard list-devices' 1-255
-    rlRunAs ${testUser[3]} 'usbguard list-rules'
+    ugStart
+    ugListDevices ${testUser[0]} 0
+    ugListRules ${testUser[0]} 1-255
+    ugListDevices ${testUser[1]} 0
+    ugListRules ${testUser[1]} 1-255
+    ugListDevices ${testUser[2]} 1-255
+    ugListRules ${testUser[2]} 0
+    ugListDevices ${testUser[3]} 1-255
+    ugListRules ${testUser[3]} 0
     CleanupDo --mark
   rlPhaseEnd; }
 

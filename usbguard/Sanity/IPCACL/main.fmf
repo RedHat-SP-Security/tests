@@ -3,14 +3,27 @@ test: ./runtest.sh
 duration: 5m
 enabled: true
 require+:
-- library(ControlFlow/Cleanup)
-- library(distribution/testUser)
+  - library(ControlFlow/Cleanup)
+  - library(distribution/testUser)
+  - library(distribution/Log)
 tag:
-- CI-Tier-1
-- rhel-8.5.0
-- Tier1
+  - CI-Tier-1
+  - rhel-8.5.0
+  - Tier1
 tier: '1'
-summary: A fine grade IPC ACL test
-link:
--   verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2004511
-extra-nitrate: TC#0611711
+/cli:
+    description: A fine grade IPC ACL test using CLI
+    environment:
+        method: cli
+    link:
+      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2004511
+    extra-nitrate: TC#0611711
+/dbus:
+    description: A fine grade IPC ACL test using D-BUS
+    environment:
+        method: dbus
+    require+:
+      - /usr/bin/dbus-daemon
+      - /usr/bin/dbus-send
+      - /usr/bin/timeout
+    extra-nitrate: TC#0613064
