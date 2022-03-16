@@ -73,6 +73,7 @@ EOF
     rlRun "mkdir rpms"
     pushd rpms
     rlRun "cp $(grep 'Wrote:' $rlRun_LOG | cut -d ' ' -f 2 | tr '\n' ' ') $(grep 'Wrote:' $rlRun_LOG1 | cut -d ' ' -f 2 | tr '\n' ' ') ./"
+    packages=()
     rlIsFedora && {
       V_old=1.0.4
       R_old=1.fc35
@@ -84,14 +85,17 @@ EOF
     rlIsRHEL '>=9' || rlIsRHELLike '>=9' && {
       V_old=1.0.3
       R_old=4.el9
+      packages+=(
+        fapolicyd-dnf-plugin-${V_old}-${R_old}.noarch
+      )
     }
-    packages=(
+    packages+=(
       fapolicyd-${V_old}-${R_old}.$A
-      fapolicyd-debuginfo-${V_old}-${R_old}.$A
-      fapolicyd-debugsource-${V_old}-${R_old}.$A
-      fapolicyd-dnf-plugin-${V_old}-${R_old}.noarch
+      #fapolicyd-debuginfo-${V_old}-${R_old}.$A
+      #fapolicyd-debugsource-${V_old}-${R_old}.$A
       fapolicyd-selinux-${V_old}-${R_old}.noarch
     )
+
     for package in "${packages[@]}"; do
       rlRpmDownload $package
     done

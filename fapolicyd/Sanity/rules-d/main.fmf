@@ -21,3 +21,6 @@ adjust:
     when: distro < rhel-8.6
     continue: false
 extra-nitrate: TC#0612915
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2054740
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2054741
