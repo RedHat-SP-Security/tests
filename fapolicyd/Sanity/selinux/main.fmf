@@ -27,7 +27,6 @@ extra-summary: /CoreOS/fapolicyd/Sanity/selinux
 extra-task: /CoreOS/fapolicyd/Sanity/selinux
 extra-nitrate: TC#0607391
 link:
-- verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1683567
 - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1714529
 - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1841518
 - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1932225
