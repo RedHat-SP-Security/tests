@@ -40,12 +40,11 @@ rlJournalStart
         rlRun "rlImport --all" || rlDie "cannot continue"
         rlRun "rsyslogSetup"
         rlLog "Updating /etc/rsyslog.conf"
-        cat > /etc/rsyslog.conf <<EOF
-module(load="imjournal" StateFile="imjournal.state")
+        rsyslogConfigAppend "RULES" <<EOF
 action(type="omfwd" target="1.2.3.4" port="1234" Protocol="tcp" NetworkNamespace="doesNotExist"
        action.errorfile="${RSYSLOG_ERRFILE}" action.errorfile.maxsize="${RSYSLOG_ERRFILE_MAXSIZE}")
 EOF
-        rlRun "rsyslogPrintEffectiveConfig"
+        rlRun "rsyslogPrintEffectiveConfig -n"
         rlRun "rsyslogServiceStart"
         sleep 3
         rlRun "rsyslogServiceStatus"
