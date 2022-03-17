@@ -37,15 +37,18 @@ NUM_LOGS=200
 rlJournalStart
     rlPhaseStartSetup
         rlAssertRpm $PACKAGE
-        rlFileBackup /etc/rsyslog.conf
+        rlRun "rlImport --all" || rlDie "cannot continue"
+        rlRun "rsyslogSetup"
         rlLog "Updating /etc/rsyslog.conf"
         cat > /etc/rsyslog.conf <<EOF
 module(load="imjournal" StateFile="imjournal.state")
 action(type="omfwd" target="1.2.3.4" port="1234" Protocol="tcp" NetworkNamespace="doesNotExist"
        action.errorfile="${RSYSLOG_ERRFILE}" action.errorfile.maxsize="${RSYSLOG_ERRFILE_MAXSIZE}")
 EOF
-        rlServiceStart rsyslog
+        rlRun "rsyslogPrintEffectiveConfig"
+        rlRun "rsyslogServiceStart"
         sleep 3
+        rlRun "rsyslogServiceStatus"
     rlPhaseEnd
 
     rlPhaseStartTest "Ensure initially empty error file size limits to ${RSYSLOG_ERRFILE_MAXSIZE}"
@@ -75,7 +78,7 @@ EOF
     rlPhaseStartCleanup
         rm -fvr ${RSYSLOG_ERRFILE}
         rlFileRestore
-        rlServiceRestore rsyslog
+        rlRun "rsyslogCleanup"
     rlPhaseEnd
 
 rlJournalPrintText
