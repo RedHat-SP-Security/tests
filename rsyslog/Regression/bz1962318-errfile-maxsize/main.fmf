@@ -13,6 +13,9 @@ adjust:
 -   enabled: false
     when: distro < rhel-8.7
     continue: false
+-   enabled: false
+    when: distro ~< rhel-9.1
+    continue: false
 extra-summary: /rsyslog/Regression/bz1962318-errfile-maxsize
 # TODO: set correct TC extra-nitrate: TC#0610787
 link:
