@@ -1,0 +1,16 @@
+summary: ldd should work for root
+contact: Dalibor Pospisil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+  - library(ControlFlow/Cleanup)
+  - library(distribution/testUser)
+duration: 5m
+enabled: true
+tag:
+  - CI-Tier-1
+  - Tier1
+tier: '1'
+adjust:
+  - enabled: false
+    when: distro < rhel-8.2
+extra-nitrate: TC#0613118
