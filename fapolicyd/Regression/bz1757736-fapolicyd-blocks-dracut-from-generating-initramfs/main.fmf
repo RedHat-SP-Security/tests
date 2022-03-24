@@ -11,11 +11,15 @@ require+:
 duration: 30m
 enabled: true
 tag:
-- CI-Tier-1
+- Tier3
 - rhel-8.2
+tier: 3
 adjust:
 - enabled: false
   when: distro < rhel-8.2
+links:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2066300
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2068052
 
 /base:
   extra-summary: /CoreOS/fapolicyd/Regression/bz1757736-fapolicyd-blocks-dracut-from-generating-initramfs
