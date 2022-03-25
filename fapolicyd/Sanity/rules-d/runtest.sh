@@ -242,6 +242,51 @@ EOF
       rlAssertGrep 'allow perm=open exe=/path/to/binary : all' /etc/fapolicyd/rules.d/51-custom.rules
     rlPhaseEnd; }
 
+    rlPhaseStartTest "uninstall - default rules" && {
+      rlRun "rm -rf /etc/fapolicyd"
+      rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
+      rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
+      rlRun "ls -la /etc/fapolicyd/"
+      rlRun "ls -la /etc/fapolicyd/rules.d/"
+      rlRun -s "cat /etc/fapolicyd/rules.d/95-allow-open.rules"
+      rlAssertGrep 'allow perm=open' $rlRun_LOG
+      rlRun "yum remove fapolicyd -y"
+      rlRun "ls -la /etc/fapolicyd/" 0-255
+      rlRun "ls -la /etc/fapolicyd/rules.d/" 0-255
+      [[ -d /etc/fapolicyd/rules.d/ ]] && rlAssertEquals "rules are deployed into /etc/fapolicyd/rules.d" $(ls -1 /etc/fapolicyd/rules.d | wc -w) 0
+    rlPhaseEnd; }
+
+    rlPhaseStartTest "uninstall - custom rules" && {
+      rlRun "rm -rf /etc/fapolicyd"
+      rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
+      rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
+      rlRun "echo 'allow perm=open exe=/path/to/binary : all' > /etc/fapolicyd/rules.d/51-custom.rules"
+      rlRun "ls -la /etc/fapolicyd/"
+      rlRun "ls -la /etc/fapolicyd/rules.d/"
+      rlRun -s "cat /etc/fapolicyd/rules.d/95-allow-open.rules"
+      rlAssertGrep 'allow perm=open' $rlRun_LOG
+      rlAssertGrep 'allow perm=open exe=/path/to/binary : all' /etc/fapolicyd/rules.d/51-custom.rules
+      rlRun "yum remove fapolicyd -y"
+      rlRun "ls -la /etc/fapolicyd/" 0-255
+      rlRun "ls -la /etc/fapolicyd/rules.d/" 0-255
+      rlAssertGreater "rules are deployed into /etc/fapolicyd/rules.d" $(ls -1 /etc/fapolicyd/rules.d | wc -w) 0
+    rlPhaseEnd; }
+
+    rlPhaseStartTest "uninstall - changed default rules" && {
+      rlRun "rm -rf /etc/fapolicyd"
+      rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
+      rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
+      rlRun "sed -ir 's/open/any/' /etc/fapolicyd/rules.d/95-allow-open.rules"
+      rlRun "ls -la /etc/fapolicyd/"
+      rlRun "ls -la /etc/fapolicyd/rules.d/"
+      rlRun -s "cat /etc/fapolicyd/rules.d/95-allow-open.rules"
+      rlAssertGrep 'allow perm=any' $rlRun_LOG
+      rlRun "yum remove fapolicyd -y"
+      rlRun "ls -la /etc/fapolicyd/" 0-255
+      rlRun "ls -la /etc/fapolicyd/rules.d/" 0-255
+      rlAssertGreater "rules are deployed into /etc/fapolicyd/rules.d" $(ls -1 /etc/fapolicyd/rules.d | wc -w) 0
+    rlPhaseEnd; }
+
     :
   tcfFin; }
 
