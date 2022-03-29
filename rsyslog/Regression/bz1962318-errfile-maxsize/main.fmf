@@ -1,0 +1,22 @@
+summary: errfile maxsize
+contact: Sergio Arroutbi <sarroutb@redhat.com>
+test: ./runtest.sh
+require+:
+  - rsyslog
+duration: 15m
+enabled: true
+tag:
+  - Tier3
+  - CI-Tier-1
+tier: '3'
+adjust:
+  - enabled: false
+    when: distro < rhel-8.7
+    continue: false
+  - enabled: false
+    when: distro ~< rhel-9.1
+    continue: false
+extra-summary: /rsyslog/Regression/bz1962318-errfile-maxsize
+link:
+    verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1962318
+extra-nitrate: TC#0613106
