@@ -62,6 +62,8 @@ QUAY_FILE_NAME_TO_FILL_UNFILLED_MD5="db099cc0b92220feb7a38783b02df897"
 OC_DEFAULT_CLIENT="kubectl"
 
 test -z "${VERSION}" && VERSION="latest"
+test -z "${OPERATOR_NAMESPACE}" && OPERATOR_NAMESPACE="default"
+test -z "${DISABLE_BUNDLE_INSTALL_TESTS}" && DISABLE_BUNDLE_INSTALL_TESTS=0
 
 ## UNCOMMENT TO FORCE VERBOSITY
 # VERBOSE=1
@@ -81,6 +83,10 @@ dumpInfo() {
     rlLog "HOSTNAME:$(hostname)"
     rlLog "RELEASE:$(cat /etc/redhat-release)"
     rlLog "IMAGE:quay.io/sec-eng-special/tang-operator-bundle:${VERSION}"
+    rlLog "OPERATOR NAMESPACE:${OPERATOR_NAMESPACE}"
+    rlLog "DISABLE_BUNDLE_INSTALL_TESTS:${DISABLE_BUNDLE_INSTALL_TESTS}"
+    rlLog "OC_CLIENT:${OC_CLIENT}"
+    rlLog "EXECUTION_MODE:${EXECUTION_MODE}"
     rlLog "vvvvvvvvv IP vvvvvvvvvv"
     ip a | grep 'inet '
     rlLog "^^^^^^^^^ IP ^^^^^^^^^^"
@@ -520,6 +526,10 @@ checkStatusReadyReplicas() {
 }
 
 bundleStart() {
+    if [ "${DISABLE_BUNDLE_INSTALL_TESTS}" == "1" ];
+    then
+      return 0
+    fi
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
     then
       operator-sdk run bundle --timeout ${TO_BUNDLE} quay.io/sec-eng-special/tang-operator-bundle:${VERSION}
@@ -530,6 +540,10 @@ bundleStart() {
 }
 
 bundleStop() {
+    if [ "${DISABLE_BUNDLE_INSTALL_TESTS}" == "1" ];
+    then
+      return 0
+    fi
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
     then
         operator-sdk cleanup tang-operator
@@ -538,7 +552,7 @@ bundleStop() {
     fi
     if [ $? -eq 0 ];
     then
-        checkPodAmount 0 ${TO_ALL_POD_CONTROLLER_TERMINATE} default
+        checkPodAmount 0 ${TO_ALL_POD_CONTROLLER_TERMINATE} ${OPERATOR_NAMESPACE}
     fi
     return 0
 }
@@ -630,7 +644,7 @@ installSecret() {
 installScPv() {
     if [ ${EXECUTION_MODE} == "CLUSTER" ];
     then
-	for sc in $("${OC_CLIENT}" get storageclasses.storage.k8s.io  | grep '\(default\)' | awk '{print $1}' );
+	for sc in $("${OC_CLIENT}" get storageclasses.storage.k8s.io  | grep "\(${OPERATOR_NAMESPACE}\)" | awk '{print $1}' );
         do
             "${OC_CLIENT}" patch storageclass "${sc}" -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "false"}}}'
 	done
@@ -664,13 +678,17 @@ rlJournalStart
     ########## CHECK CONTROLLER RUNNING #########
     rlPhaseStartTest "Check tang-operator controller is running"
         sleep 10
-        controller_name=$(getPodNameWithPrefix "tang-operator-controller" "default" 5)
-        rlRun "checkPodState Running ${TO_POD_START} default ${controller_name}" 0 "Checking controller POD in Running [Timeout=${TO_POD_START} secs.]"
+        controller_name=$(getPodNameWithPrefix "tang-operator-controller" "${OPERATOR_NAMESPACE}" 5)
+        rlRun "checkPodState Running ${TO_POD_START} "${OPERATOR_NAMESPACE}" ${controller_name}" 0 "Checking controller POD in Running [Timeout=${TO_POD_START} secs.]"
     rlPhaseEnd
 
     ############# KEY MANAGEMENT TESTS ############
     rlPhaseStartTest "Key Management Test"
-        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve" 0 "Creating key management test"
+        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_clusterrole.yaml" 0 "Creating key management test clusterrole"
+        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_pv.yaml" 0 "Creating key management test pv"
+        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_tangserver.yaml" 0 "Creating key management test tangserver"
+        cat reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_clusterrolebinding.yaml \
+          | sed "s/{{OPERATOR_NAMESPACE}}/${OPERATOR_NAMESPACE}/g" | ${OC_CLIENT} apply -f -
         rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
         pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
         rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
@@ -689,18 +707,31 @@ rlJournalStart
         rlRun "reg_test/key_management_test/key_delete_one_keep_one.sh -n ${TEST_NAMESPACE} -c ${OC_CLIENT}" 0 "Deleteing keys selectively"
         rlRun "checkActiveKeysAmount 1 ${TO_ACTIVE_KEYS} ${TEST_NAMESPACE}" 0 "Checking Active Keys Amount is 1"
         rlRun "checkHiddenKeysAmount 1 ${TO_HIDDEN_KEYS} ${TEST_NAMESPACE}" 0 "Checking Hidden Keys Amount is 1"
+
         # Delete all VIA API
-        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve-deletehiddenkeys" 0 "Deleting hidden keys test"
+        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve-deletehiddenkeys/daemons_v1alpha1_clusterrole.yaml" 0 "Deleting key management test clusterrole"
+        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve-deletehiddenkeys/daemons_v1alpha1_pv.yaml" 0 "Deleting key management test pv"
+        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve-deletehiddenkeys/daemons_v1alpha1_tangserver.yaml" 0 "Deleting key management test tangserver"
+        cat reg_test/key_management_test/minimal-keyretrieve-deletehiddenkeys/daemons_v1alpha1_clusterrolebinding.yaml \
+          | sed "s/{{OPERATOR_NAMESPACE}}/${OPERATOR_NAMESPACE}/g" | ${OC_CLIENT} apply -f -
         rlRun "checkActiveKeysAmount 1 ${TO_ACTIVE_KEYS} ${TEST_NAMESPACE}" 0 "Checking Active Keys Amount is 1"
         rlRun "checkHiddenKeysAmount 0 ${TO_HIDDEN_KEYS} ${TEST_NAMESPACE}" 0 "Checking Hidden Keys Amount is 0"
-        rlRun "${OC_CLIENT} delete -f reg_test/key_management_test/minimal-keyretrieve" 0 "Deleting key management test"
+        rlRun "${OC_CLIENT} delete -f reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_clusterrole.yaml" 0 "Deleting key management test clusterrole"
+        rlRun "${OC_CLIENT} delete -f reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_tangserver.yaml" 0 "Deleting key management test tangserver"
+        rlRun "${OC_CLIENT} delete -f reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_pv.yaml" 0 "Deleting key management test pv"
+        cat reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_clusterrolebinding.yaml \
+          | sed "s/{{OPERATOR_NAMESPACE}}/${OPERATOR_NAMESPACE}/g" | ${OC_CLIENT} delete -f -
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
         rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
     rlPhaseEnd
 
-    rlPhaseStartTest "Key Management Ready Replicas Test"
+    rlPhaseStartTest "Multiple Key Management Replicas Test"
         ### Check Running / Ready Replicas
-        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/multiple-keyretrieve" 0 "Creating key management ready replicas test"
+        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/multiple-keyretrieve/daemons_v1alpha1_clusterrole.yaml" 0 "Creating multiple key management test clusterrole"
+        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/multiple-keyretrieve/daemons_v1alpha1_pv.yaml" 0 "Creating multiple key management test pv"
+        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/multiple-keyretrieve/daemons_v1alpha1_tangserver.yaml" 0 "Creating multiple key management test tangserver"
+        cat reg_test/key_management_test/multiple-keyretrieve/daemons_v1alpha1_clusterrolebinding.yaml \
+          | sed "s/{{OPERATOR_NAMESPACE}}/${OPERATOR_NAMESPACE}/g" | ${OC_CLIENT} apply -f -
         rlRun "checkPodAmount 3 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 3 PODs are started [Timeout=${TO_POD_START} secs.]"
         pod1_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
         pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 2)
@@ -710,7 +741,11 @@ rlJournalStart
         rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod3_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
         rlRun "checkStatusRunningReplicas 3 ${TEST_NAMESPACE} ${TO_POD_START}" 0 "Checking Running Replicas in tangserver status"
         rlRun "checkStatusReadyReplicas 3 ${TEST_NAMESPACE} ${TO_POD_START}" 0 "Checking Ready Replicas in tangserver status"
-        rlRun "${OC_CLIENT} delete -f reg_test/key_management_test/multiple-keyretrieve" 0 "Deleting ready replicas test"
+        rlRun "${OC_CLIENT} delete -f reg_test/key_management_test/multiple-keyretrieve/daemons_v1alpha1_clusterrole.yaml" 0 "Deleting key management test clusterrole"
+        rlRun "${OC_CLIENT} delete -f reg_test/key_management_test/multiple-keyretrieve/daemons_v1alpha1_tangserver.yaml" 0 "Deleting key management test tangserver"
+        rlRun "${OC_CLIENT} delete -f reg_test/key_management_test/multiple-keyretrieve/daemons_v1alpha1_pv.yaml" 0 "Deleting key management test pv"
+        cat reg_test/key_management_test/multiple-keyretrieve/daemons_v1alpha1_clusterrolebinding.yaml \
+          | sed "s/{{OPERATOR_NAMESPACE}}/${OPERATOR_NAMESPACE}/g" | ${OC_CLIENT} delete -f -
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
         rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
     rlPhaseEnd
@@ -941,11 +976,13 @@ rlJournalStart
 
     rlPhaseStartCleanup
         rlRun "checkClusterStatus" 0 "Checking cluster status"
-        controller_name=$(getPodNameWithPrefix "tang-operator-controller" "default" 1)
+        controller_name=$(getPodNameWithPrefix "tang-operator-controller" "${OPERATOR_NAMESPACE}" 1)
         dumpVerbose "Controller name:[${controller_name}]"
         rlRun "bundleStop" 0 "Cleaning installed tang-operator"
-        test -z "${controller_name}" ||
-            rlRun "checkPodKilled ${controller_name} default ${TO_POD_CONTROLLER_TERMINATE}" 0 "Checking controller POD not available any more [Timeout=${TO_POD_CONTROLLER_TERMINATE} secs.]"
+        if [ "${DISABLE_BUNDLE_INSTALL_TESTS}" != "1" ]; then
+          test -z "${controller_name}" ||
+              rlRun "checkPodKilled ${controller_name} ${OPERATOR_NAMESPACE} ${TO_POD_CONTROLLER_TERMINATE}" 0 "Checking controller POD not available any more [Timeout=${TO_POD_CONTROLLER_TERMINATE} secs.]"
+        fi
         rlRun "${OC_CLIENT} delete -f ${TEST_NAMESPACE_FILE}" 0 "Deleting test namespace:${TEST_NAMESPACE}"
     rlPhaseEnd
 
