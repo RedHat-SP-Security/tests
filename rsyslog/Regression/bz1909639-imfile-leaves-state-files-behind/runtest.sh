@@ -40,7 +40,7 @@ rlJournalStart
     rsyslogPrepareConf
     rsyslogResetLogFilePointer /var/log/messages
     rsyslogConfigAddTo "MODULES" /etc/rsyslog.conf <<EOF
-module(load="imfile" mode="inotify")
+module(load="imfile" mode="inotify" deleteStateOnFileMove="on")
 EOF
     rsyslogConfigAddTo "RULES" /etc/rsyslog.conf <<EOF
 input(type="imfile"
