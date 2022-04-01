@@ -110,6 +110,7 @@ EOF
     CleanupRegister "rlRun 'rm -f $repofile'"
     rlRun "yum clean all"
     rlRun "echo -e 'sslverify=0\ngpgcheck=0\nskip_if_unavailable=1' >> $repofile"
+    rlRun "repoquery -a | grep fapolicyd" 0-255
   rlPhaseEnd; }
 
   tcfTry "Tests" --no-assert && {
