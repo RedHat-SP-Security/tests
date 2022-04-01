@@ -190,6 +190,24 @@ EOF
       rlAssertEquals "rules are deployed into /etc/fapolicyd/rules.d" $(ls -1 /etc/fapolicyd/rules.d | wc -w) 0
     rlPhaseEnd; }
 
+    rlPhaseStartTest "upgrade to new version - changed default rules" && {
+      rlRun "rm -rf /etc/fapolicyd"
+      rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
+      rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
+      rlRun "ls -la /etc/fapolicyd/"
+      rlRun "ls -la /etc/fapolicyd/rules.d/"
+      echo "allow perm=any all : all" >> /etc/fapolicyd/rules.d/95-allow-open.rules
+      rlRun -s "cat /etc/fapolicyd/rules.d/95-allow-open.rules"
+      rlAssertGrep 'allow perm=open' $rlRun_LOG
+      rlAssertGrep 'allow perm=any' $rlRun_LOG
+      rlRun "yum install ${_98} -y --allowerasing"
+      rlRun "ls -la /etc/fapolicyd/"
+      rlRun "ls -la /etc/fapolicyd/rules.d/"
+      rlRun -s "cat /etc/fapolicyd/rules.d/95-allow-open.rules"
+      rlAssertGrep 'allow perm=open' $rlRun_LOG
+      rlAssertGrep 'allow perm=any' $rlRun_LOG
+    rlPhaseEnd; }
+
     rlPhaseStartTest "upgrade to new version - updated default rules" && {
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
