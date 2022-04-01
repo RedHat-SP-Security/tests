@@ -1,7 +1,7 @@
 description: Test for rules.d directory
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
-duration: 15m
+duration: 35m
 enabled: true
 require+:
   - library(distribution/tcf)

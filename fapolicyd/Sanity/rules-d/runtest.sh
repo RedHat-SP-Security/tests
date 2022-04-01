@@ -115,6 +115,8 @@ EOF
 
   tcfTry "Tests" --no-assert && {
     rlPhaseStartTest "clean install" && {
+      # fapolicyd.rules should not exit
+      # rules.d should be populated
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum remove fapolicyd -y"
       rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
@@ -125,6 +127,7 @@ EOF
     rlPhaseEnd; }
 
     rlPhaseStartTest "rules order" && {
+      # rules.d alphanumeric sorting generates correct compiled.rules order
       CleanupRegister --mark 'rlRun "rm -f /etc/fapolicyd/rules.d/5{1,2,3}-custom.rules"'
       rlRun "echo 'allow perm=open exe=/path/to/binary1 : all' > /etc/fapolicyd/rules.d/52-custom.rules"
       rlRun "echo 'allow perm=open exe=/path/to/binary2 : all' > /etc/fapolicyd/rules.d/51-custom.rules"
@@ -136,6 +139,8 @@ EOF
     rlPhaseEnd; }
 
     rlPhaseStartTest "concurent rules present" && {
+      # fapolicyd service does not start if both fapolicyd.rules
+      # and populated rules.d exist
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum reinstall fapolicyd-$V-$R -y"
       rlRun "ls -la /etc/fapolicyd/"
@@ -166,6 +171,7 @@ EOF
     rlPhaseEnd; }
 
     rlPhaseStartTest "upgrade from old version - default rules" && {
+      # fapolicyd.rules should be replace with populated rules.d
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V_old-$R_old -y --allowerasing"
       rlRun "yum reinstall fapolicyd-$V_old-$R_old -y --allowerasing"
@@ -178,6 +184,8 @@ EOF
     rlPhaseEnd; }
 
     rlPhaseStartTest "upgrade from old version - changed rules" && {
+      # fapolicyd.rules should stay untouched
+      # rules.d should not be populated
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V_old-$R_old -y --allowerasing"
       rlRun "yum reinstall fapolicyd-$V_old-$R_old -y --allowerasing"
@@ -191,6 +199,8 @@ EOF
     rlPhaseEnd; }
 
     rlPhaseStartTest "upgrade to new version - still with fapolicyd.rules" && {
+      # fapolicyd.rules should stay untouched
+      # rules.d should not be populated
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
       rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
@@ -225,6 +235,8 @@ EOF
     rlPhaseEnd; }
 
     rlPhaseStartTest "upgrade to new version - changed default rules" && {
+      # fapolicyd.rules should not exit
+      # rules.d should stay untouched
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
       rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
@@ -243,6 +255,8 @@ EOF
     rlPhaseEnd; }
 
     rlPhaseStartTest "upgrade to new version - updated default rules" && {
+      # fapolicyd.rules should not exit
+      # rules.d should be updated
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
       rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
@@ -259,6 +273,8 @@ EOF
     rlPhaseEnd; }
 
     rlPhaseStartTest "upgrade to new version - custom rules file added" && {
+      # fapolicyd.rules should not exit
+      # rules.d should stay untouched
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
       rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
@@ -277,6 +293,8 @@ EOF
     rlPhaseEnd; }
 
     rlPhaseStartTest "upgrade to new version - custom rules file added + updated default rules" && {
+      # fapolicyd.rules should not exit
+      # rules.d should be populated
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
       rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
@@ -296,6 +314,8 @@ EOF
     rlPhaseEnd; }
 
     rlPhaseStartTest "uninstall - default rules" && {
+      # fapolicyd.rules should be removed
+      # rules.d should be removed
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
       rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
@@ -310,6 +330,8 @@ EOF
     rlPhaseEnd; }
 
     rlPhaseStartTest "uninstall - custom rules" && {
+      # fapolicyd.rules should not exit
+      # rules.d should stay untouched
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
       rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
@@ -326,6 +348,8 @@ EOF
     rlPhaseEnd; }
 
     rlPhaseStartTest "uninstall - changed default rules" && {
+      # fapolicyd.rules should not exit
+      # rules.d should stay untouched
       rlRun "rm -rf /etc/fapolicyd"
       rlRun "yum install fapolicyd-$V-$R -y --allowerasing"
       rlRun "yum reinstall fapolicyd-$V-$R -y --allowerasing"
