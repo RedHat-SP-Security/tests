@@ -28,7 +28,7 @@ tag:
 extra-summary: /CoreOS/usbguard/Sanity/rules-fuzz
 extra-task: /CoreOS/usbguard/Sanity/rules-fuzz
 extra-nitrate: TC#0560406
-adjust:
+adjust+:
 -   enabled: false
     when: arch != x86_64
     continue: false

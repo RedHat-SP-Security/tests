@@ -20,7 +20,7 @@ tag:
 tier: '1'
 link:
     verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2000000
-adjust:
+adjust+:
 -   enable: false
     when: distro < rhel-8.6
 extra-nitrate: TC#0611602

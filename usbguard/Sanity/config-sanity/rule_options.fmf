@@ -6,10 +6,7 @@ tag:
 - CI-Tier-1
 extra-summary: CONDITIONAL_PHASES_WL='only|both' /CoreOS/usbguard/Sanity/config-sanity
 extra-nitrate: TC#0608867
-adjust:
--   enabled: false
-    when: arch == s390x
-    continue: false
+adjust+:
 -   enabled: false
     when: distro ~< rhel-7.6
     continue: false

@@ -11,7 +11,7 @@ tag:
 tier: '3'
 extra-summary: /CoreOS/usbguard/Sanity/legacy-file-path-in-unit-file
 extra-nitrate: TC#0611293
-adjust:
+adjust+:
 - enabled: false
   when: distro < rhel-7.9
 link:

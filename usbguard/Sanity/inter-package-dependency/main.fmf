@@ -14,7 +14,7 @@ tag:
 tier: '2'
 extra-summary: /CoreOS/usbguard/Sanity/inter-package-dependency
 extra-nitrate: TC#0611292
-adjust:
+adjust+:
 - enabled: false
   when: distro < rhel-8.6
   continue: false

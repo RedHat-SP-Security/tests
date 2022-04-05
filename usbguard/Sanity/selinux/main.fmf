@@ -23,13 +23,10 @@ tier: '2'
 extra-summary: /CoreOS/usbguard/Sanity/selinux
 extra-task: /CoreOS/usbguard/Sanity/selinux
 extra-nitrate: TC#0607358
-adjust:
+adjust+:
 -   enabled: false
     when: distro < rhel-8
     continue: false
 -   enabled: false
     when: distro ~< rhel-8.3
-    continue: false
--   enabled: false
-    when: arch == s390x
     continue: false

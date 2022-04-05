@@ -14,7 +14,7 @@ tag:
 extra-summary: /CoreOS/usbguard/Sanity/bz1772149-try-to-parse-match-all-rule
 extra-task: /CoreOS/usbguard/Sanity/bz1772149-try-to-parse-match-all-rule
 extra-nitrate: TC#0605037
-adjust:
+adjust+:
 -   enabled: false
     when: distro < rhel-8
     continue: false

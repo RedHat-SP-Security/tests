@@ -21,9 +21,5 @@ tier: '1'
 extra-summary: /CoreOS/usbguard/Sanity/service-sanity
 extra-task: /CoreOS/usbguard/Sanity/service-sanity
 extra-nitrate: TC#0559491
-adjust:
--   enabled: false
-    when: arch == s390x
-    continue: false
 link:
 -   verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1929364
