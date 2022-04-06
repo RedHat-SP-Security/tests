@@ -4,6 +4,7 @@ test: ./runtest.sh
 require+:
   - library(ControlFlow/Cleanup)
   - library(distribution/testUser)
+  - /usr/bin/readelf
 duration: 5m
 enabled: true
 tag:

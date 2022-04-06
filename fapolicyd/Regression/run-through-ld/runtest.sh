@@ -48,6 +48,12 @@ rlJournalStart
     rlRun "fapServiceStart"
   rlPhaseEnd; }
 
+  rlPhaseStartTest "check rules expansion" && {
+    rlRun "grep -R 'path= ' /usr/share/fapolicyd" 1-255
+    ld=$(readlink -f `readelf -e /usr/bin/bash | grep interpreter | grep -o ' /lib[^ ]*ld[^ ]*\.so[^] ]*'`)
+    rlRun "grep -R 'path=${ld}' /usr/share/fapolicyd"
+  rlPhaseEnd; }
+
   rlPhaseStartTest "direct execution" && {
     rlRun "su -c '/usr/bin/ls -la' - $testUser"
     rlRun "su -c '/usr/bin/ls2 -la' - $testUser" 126
