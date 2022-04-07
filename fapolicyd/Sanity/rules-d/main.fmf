@@ -11,11 +11,11 @@ require+:
   - /usr/bin/createrepo
   - /usr/bin/yum-builddep
 tag:
-  - CI-Tier-1
   - Tier1
   - rhel-8.6.0
   - rhel-9.0.0
   - buildroot
+  - rhel9-buildroot
 tier: '1'
 adjust:
   - enabled: false
