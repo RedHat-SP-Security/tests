@@ -50,8 +50,8 @@ rlJournalStart
 
   rlPhaseStartTest "check rules expansion" && {
     rlRun "grep -R 'path= ' /usr/share/fapolicyd" 1-255
-    ld=$(readelf -e /usr/bin/bash | grep interpreter | grep -o '\s\S*/lib[^ ]*ld[^ ]*\.so[^] ]*')
-    rlRun "grep -R 'path=${ld:1}' /usr/share/fapolicyd"
+    ld=$(realpath -e $(readelf -e /usr/bin/bash | grep interpreter | grep -o '\s\S*/lib[^ ]*ld[^ ]*\.so[^] ]*'))
+    rlRun "grep -R 'path=${ld}' /usr/share/fapolicyd"
     grep -R . /usr/share/fapolicyd/sample-rules/*.rules
   rlPhaseEnd; }
 
