@@ -10,8 +10,7 @@ duration: 5m
 tag:
 - CI-Tier-1
 - Tier2
-- rhel8-buildroot
-- rhel9-buildroot
+- rhel-buildroot
 tier: 2
 extra-nitrate: TC#0610373
 extra-task: /libfastjson/Sanity/bz1936807-API-function-calls

@@ -22,8 +22,7 @@ tag:
 - TIPpass_Security
 - Tier1
 - Tier1security
-- rhel8-buildroot
-- rhel9-buildroot
+- rhel-buildroot
 tier: '1'
 extra-summary: '/CoreOS/libcap-ng/Sanity/smoke-test '
 extra-task: /CoreOS/libcap-ng/Sanity/smoke-test

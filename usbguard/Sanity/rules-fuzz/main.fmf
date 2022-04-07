@@ -24,7 +24,7 @@ tag:
 - TIPpass
 - TIPpass_Security
 - fedora-wanted
-- rhel8-buildroot
+- rhel-buildroot
 extra-summary: /CoreOS/usbguard/Sanity/rules-fuzz
 extra-task: /CoreOS/usbguard/Sanity/rules-fuzz
 extra-nitrate: TC#0560406
