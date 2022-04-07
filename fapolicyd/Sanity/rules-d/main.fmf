@@ -14,8 +14,7 @@ tag:
   - Tier1
   - rhel-8.6.0
   - rhel-9.0.0
-  - buildroot
-  - rhel9-buildroot
+  - rhel-buildroot
 tier: '1'
 adjust:
   - enabled: false
