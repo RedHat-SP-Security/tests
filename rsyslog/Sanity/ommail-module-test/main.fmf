@@ -12,7 +12,7 @@ recommend:
 - rsyslog
 - util-linux-ng
 duration: 5m
-enabled: true
+enabled: false
 tag:
 - TIPpass_FIPS
 - TIPpass_Security
