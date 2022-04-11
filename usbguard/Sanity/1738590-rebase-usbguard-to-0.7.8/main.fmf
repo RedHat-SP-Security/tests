@@ -17,3 +17,4 @@ tag:
 - TIPfail
 - TIPfail_Security
 - rhel-8.3.0
+- rhel-buildroot
