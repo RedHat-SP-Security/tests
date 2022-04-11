@@ -141,6 +141,7 @@ rlJournalStart
         CleanupRegister 'rlRun "rlFileRestore"'
         rlRun "rlFileBackup --clean /etc/usbguard/"
         CleanupRegister 'rlRun "rlServiceRestore usbguard"'
+        rlRun "systemctl reset-failed usbguard" 0-255
         rlRun "rlServiceStart usbguard"
     rlPhaseEnd
 
