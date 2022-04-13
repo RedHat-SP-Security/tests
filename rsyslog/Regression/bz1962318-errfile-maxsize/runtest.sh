@@ -41,7 +41,7 @@ rlJournalStart
         rlRun "rsyslogSetup"
         rlLog "Updating /etc/rsyslog.conf"
         rsyslogConfigAppend "RULES" <<EOF
-action(type="omfwd" target="1.2.3.4" port="6514" Protocol="tcp" NetworkNamespace="doesNotExist"
+action(type="omfwd" target="1.2.3.4" port="1234" Protocol="tcp" NetworkNamespace="doesNotExist"
        action.errorfile="${RSYSLOG_ERRFILE}" action.errorfile.maxsize="${RSYSLOG_ERRFILE_MAXSIZE}")
 EOF
         rlRun "rsyslogPrintEffectiveConfig -n"
