@@ -1,0 +1,18 @@
+description: Test for BZ#2052403 imfile does not remove watch descriptor on inode change
+contact: Attila Lakatos <alakatos@redhat.com>
+test: ./runtest.sh
+duration: 10m
+require+:
+  - library(distribution/Log)
+  - library(ControlFlow/Cleanup)
+tag:
+  - Tier3
+  - CI-Tier-1
+  - rhel-8.7
+tier: '3'
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2052403
+extra-nitrate: TC#0613182
+adjust:
+  - enabled: false
+    when: distro < rhel-8.7
