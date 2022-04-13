@@ -30,7 +30,7 @@
 . /usr/share/beakerlib/beakerlib.sh || exit 1
 
 PACKAGE="rsyslog"
-RSYSLOG_ERRFILE=$(mktemp)
+RSYSLOG_ERRFILE=$(mktemp /var/log/tmp.XXXXXXXXXX)
 RSYSLOG_ERRFILE_MAXSIZE=1234
 NUM_LOGS=200
 
@@ -41,7 +41,7 @@ rlJournalStart
         rlRun "rsyslogSetup"
         rlLog "Updating /etc/rsyslog.conf"
         rsyslogConfigAppend "RULES" <<EOF
-action(type="omfwd" target="1.2.3.4" port="1234" Protocol="tcp" NetworkNamespace="doesNotExist"
+action(type="omfwd" target="1.2.3.4" port="1234" Protocol="tcp"
        action.errorfile="${RSYSLOG_ERRFILE}" action.errorfile.maxsize="${RSYSLOG_ERRFILE_MAXSIZE}")
 EOF
         rlRun "rsyslogPrintEffectiveConfig -n"
@@ -61,6 +61,7 @@ EOF
     rlPhaseEnd
 
     rlPhaseStartTest "Ensure non initially empty error file size limits to ${RSYSLOG_ERRFILE_MAXSIZE}"
+        rlSESetTimestamp
         rlServiceStop rsyslog
         # Dump some info to error file and check after rebooting it also does not write more than expected
         dd if=/dev/urandom of=${RSYSLOG_ERRFILE} bs=1 count=$((RSYSLOG_ERRFILE_MAXSIZE-100))
@@ -72,6 +73,7 @@ EOF
         rlAssertExists ${RSYSLOG_ERRFILE}
         size=$(ls -l ${RSYSLOG_ERRFILE} | awk {'print $5'})
         rlAssertEquals "Checking not initally empty error file:${RSYSLOG_ERRFILE} has size:${RSYSLOG_ERRFILE_MAXSIZE}" "${size}" "${RSYSLOG_ERRFILE_MAXSIZE}"
+        rlRun "rlSEAVCCheck --expect name_connect"
     rlPhaseEnd
 
     rlPhaseStartCleanup
