@@ -1,17 +1,40 @@
-summary: Test for bz672182 ([RFE] Provide multi-line message capability)?
-description: |
-    Bug summary: [RFE] Provide rate limiting support
-    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=672182
+description: Test for bz672182 ([RFE] Provide multi-line message capability)?
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=672182
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 path: /rsyslog/Sanity/bz672182-RFE-Provide-multi-line-message-capability
 require+:
-- library(distribution/dpcommon)
-- library(selinux-policy/common)
-recommend:
-- /usr/bin/nc
-- rsyslog
-- /usr/sbin/semanage
-duration: 30m
+  - library(distribution/dpcommon)
+  - library(selinux-policy/common)
+  - /usr/bin/nc
+  - rsyslog
+duration: 3m
 enabled: true
-extra-task: /CoreOS/rsyslog/Sanity/bz672182-RFE-Provide-multi-line-message-capability
+
+/old-syntax:
+    environment:
+        rsyslogSyntax: old
+    tag:
+      - CI-Tier-1
+      - Tier2
+      - Tier2security
+      - rhel-6.3
+      - rsyslogSyntaxOLD
+    tier: '2'
+    extra-nitrate: TC#0138205
+
+/new-syntax:
+    environment:
+        rsyslogSyntax: new
+    tag:
+      - fedora-wanted
+      - rsyslogSyntaxNEW
+    extra-nitrate: TC#0419218
+    adjust:
+      - enabled: false
+        when: distro < rhel-6
+        continue: false
+      - enabled: false
+        when: distro == rhel-6 and component == rsyslog
+        continue: false
