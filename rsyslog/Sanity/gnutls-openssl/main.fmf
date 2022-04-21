@@ -29,6 +29,9 @@ tier: '1'
             environment+:
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612983
+            link:
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077421
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077423
         /both_anon:
             environment+:
                 CLIENT_NO_CERT: 1
@@ -47,6 +50,9 @@ tier: '1'
             environment+:
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612980
+            link:
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077421
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077423
         /both_anon:
             environment+:
                 CLIENT_NO_CERT: 1
@@ -74,6 +80,9 @@ tier: '1'
             environment+:
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612997
+            link:
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077421
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077423
         /both_anon:
             environment+:
                 CLIENT_NO_CERT: 1
@@ -97,6 +106,9 @@ tier: '1'
             environment+:
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612994
+            link:
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077421
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077423
         /both_anon:
             environment+:
                 CLIENT_NO_CERT: 1
@@ -125,6 +137,9 @@ tier: '1'
             environment+:
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612990
+            link:
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077421
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077423
         /both_anon:
             environment+:
                 CLIENT_NO_CERT: 1
@@ -148,6 +163,9 @@ tier: '1'
             environment+:
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612987
+            link:
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077421
+              - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077423
         /both_anon:
             environment+:
                 CLIENT_NO_CERT: 1
