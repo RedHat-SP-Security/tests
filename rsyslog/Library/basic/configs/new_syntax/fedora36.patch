@@ -1,0 +1,77 @@
+--- /etc/rsyslog.conf	2022-04-22 12:36:29.000000000 +0200
++++ rsyslog.conf.orig	2022-04-22 13:00:29.000000000 +0200
+@@ -6,38 +6,68 @@
+ 
+ #### GLOBAL DIRECTIVES ####
+ 
++##################### RSYSLOG-LIB BEGIN GLOBALS ################################
++
++##################### RSYSLOG-LIB BEGIN WOKRDIRECTORY ##########################
+ # Where to place auxiliary files
+ global(workDirectory="/var/lib/rsyslog")
++##################### RSYSLOG-LIB END WOKRDIRECTORY ############################
++
++##################### RSYSLOG-LIB END GLOBALS ##################################
+ 
+ #### MODULES ####
+ 
++##################### RSYSLOG-LIB BEGIN MODULES ################################
++
++##################### RSYSLOG-LIB BEGIN MODLOAD OMFILE DEFAULT TEMPLATE ########
+ # Use default timestamp format
+ module(load="builtin:omfile")
++##################### RSYSLOG-LIB END OMFILE DEFAULT TEMPLATE ##################
+ 
++##################### RSYSLOG-LIB BEGIN MODLOAD IMUXSOCK #######################
+ module(load="imuxsock"    # provides support for local system logging (e.g. via logger command)
+        SysSock.Use="off") # Turn off message reception via local log socket;
+                           # local messages are retrieved through imjournal now.
++##################### RSYSLOG-LIB END MODLOAD IMUXSOCK #########################
++
++##################### RSYSLOG-LIB BEGIN MODLOAD IMJOURNAL ######################
+ module(load="imjournal"             # provides access to the systemd journal
+        StateFile="imjournal.state") # File to store the position in the journal
++##################### RSYSLOG-LIB END MODLOAD IMJOURNAL ########################
+ 
++##################### RSYSLOG-LIB BEGIN INCLUDECONFIG ##########################
+ # Include all config files in /etc/rsyslog.d/
+ include(file="/etc/rsyslog.d/*.conf" mode="optional")
++##################### RSYSLOG-LIB END INCLUDECONFIG ############################
+ 
++##################### RSYSLOG-LIB BEGIN MODLOAD IMKLOG #########################
+ #module(load="imklog") # reads kernel messages (the same are read from journald)
++##################### RSYSLOG-LIB END MODLOAD IMKLOG ###########################
++
++##################### RSYSLOG-LIB BEGIN MODLOAD IMMARK #########################
+ #module(load="immark") # provides --MARK-- message capability
++##################### RSYSLOG-LIB END MODLOAD IMMARK ###########################
+ 
++##################### RSYSLOG-LIB BEGIN MODLOAD IMUDP ##########################
+ # Provides UDP syslog reception
+ # for parameters see http://www.rsyslog.com/doc/imudp.html
+ #module(load="imudp") # needs to be done just once
+ #input(type="imudp" port="514")
++##################### RSYSLOG-LIB END MODLOAD IMUDP ############################
+ 
++##################### RSYSLOG-LIB BEGIN MODLOAD IMTCP ##########################
+ # Provides TCP syslog reception
+ # for parameters see http://www.rsyslog.com/doc/imtcp.html
+ #module(load="imtcp") # needs to be done just once
+ #input(type="imtcp" port="514")
++##################### RSYSLOG-LIB END MODLOAD IMTCP ############################
++
++##################### RSYSLOG-LIB END MODULES ##################################
+ 
+ #### RULES ####
+ 
++##################### RSYSLOG-LIB BEGIN RULES ##################################
++
+ # Log all kernel messages to the console.
+ # Logging much else clutters up the screen.
+ #kern.*                                                 /dev/console
+@@ -78,3 +108,5 @@
+ # # Remote Logging (we use TCP for reliable delivery)
+ # # remote_host is: name/ip, e.g. 192.168.0.1, port optional e.g. 10514
+ #Target="remote_host" Port="XXX" Protocol="tcp")
++
++##################### RSYSLOG-LIB END RULES #####################################
