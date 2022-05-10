@@ -294,6 +294,8 @@ EOF
         rlRun "logger 'test message'"
         rlRun "sleep 3s"
         rlAssertGrep 'test message' $rsyslogServerLogDir/messages
+        rlRun "rsyslogServerStatus"
+        rlRun "rsyslogServiceStatus"
         ps -p $TSHARK_PID &> /dev/null && kill $TSHARK_PID; sleep 3
         rlRun "cat tshark.stderr"
         rlRun "rm -f tshark.stderr"
@@ -319,6 +321,8 @@ EOF
         rlRun "logger 'test message'"
         rlRun "sleep 3s"
         rlAssertGrep 'test message' $rsyslogServerLogDir/messages
+        rlRun "rsyslogServerStatus"
+        rlRun "rsyslogServiceStatus"
         ps -p $TSHARK_PID &> /dev/null && kill $TSHARK_PID; sleep 3
         rlRun "cat tshark.stderr"
         rlRun "rm -f tshark.stderr"
@@ -344,6 +348,8 @@ EOF
         rlRun "logger 'test message'"
         rlRun "sleep 3s"
         rlAssertGrep 'test message' $rsyslogServerLogDir/messages
+        rlRun "rsyslogServerStatus"
+        rlRun "rsyslogServiceStatus"
         ps -p $TSHARK_PID &> /dev/null && kill $TSHARK_PID; sleep 3
         rlRun "cat tshark.stderr"
         rlRun "rm -f tshark.stderr"
@@ -369,6 +375,8 @@ EOF
         rlRun "logger 'test message'"
         rlRun "sleep 3s"
         rlAssertGrep 'test message' $rsyslogServerLogDir/messages
+        rlRun "rsyslogServerStatus"
+        rlRun "rsyslogServiceStatus"
         ps -p $TSHARK_PID &> /dev/null && kill $TSHARK_PID; sleep 3
         rlRun "cat tshark.stderr"
         rlRun "rm -f tshark.stderr"
