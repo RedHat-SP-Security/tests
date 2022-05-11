@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 56
+#   library-version = 57
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=56
+__INTERNAL_rsyslog_LIB_VERSION=57
 
 : <<'=cut'
 =pod
@@ -299,9 +299,15 @@ Patch or copy rsyslog.conf to /etc/rsyslog.conf according to set rsyslogSyntax a
 
 __INTERNAL_rsyslogConfigPatchSelection() {
   local distro ver p
-  distro="$(. /etc/os-release; echo "$ID")"
-  [[ "$distro" == "centos" ]] && distro="rhel"
-  ver=($(. /etc/os-release; echo "$VERSION_ID" | grep -o '[0-9]\+'))
+  if [[ -e /etc/os-release ]]; then
+    distro="$(. /etc/os-release; echo "$ID")"
+    [[ "$distro" == "centos" ]] && distro="rhel"
+    ver=($(. /etc/os-release; echo "$VERSION_ID" | grep -o '[0-9]\+'))
+  else
+    distro="fedora"
+    grep -q 'Red Hat Enterprise' /etc/redhat-release && distro="rhel"
+    ver=($(grep -o '[0-9]\+' /etc/redhat-release))
+  fi
   rlLogInfo "distro=$distro, ver=( ${ver[*]} )"
   [[ -z "${ver[1]}" ]] && ver[1]=12
   while :; do
