@@ -17,9 +17,6 @@ adjust+:
     require+:
       - /usr/sbin/tshark
     when: distro < rhel-8
-  - enabled: false
-    when: distro < rhel-7
-    continue: false
 /gtls:
     require+:
       - rsyslog-gnutls
