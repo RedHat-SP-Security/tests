@@ -187,7 +187,7 @@ EOF
 EOF
         fi
       fi
-      rsyslogConfigAddTo "MODULES" < <(rsyslogConfigCreateSection 'SSL')
+      rsyslogConfigAddTo --begin "RULES" < <(rsyslogConfigCreateSection 'SSL')
     tcfFin; }
 
     server_config() {
@@ -270,7 +270,7 @@ EOF
 EOF
         fi
       fi
-      rsyslogServerConfigAddTo "MODULES" < <(rsyslogConfigCreateSection 'SSL')
+      rsyslogServerConfigAddTo --begin "RULES" < <(rsyslogConfigCreateSection 'SSL')
     tcfFin; }
 
     rlRun "> $rsyslogServerLogDir/messages"
@@ -286,6 +286,7 @@ EOF
         client_config gtls
         rlRun "rsyslogServiceStart"
         rlRun "rsyslogServiceStatus"
+        rsyslogResetLogFilePointer /var/log/messages
       tcfFin; }
       tcfTry "test gtls" && {
         rlRun "tshark -i any -f 'tcp port 6514' -a 'filesize:100' -w wireshark.dump 2>tshark.stderr &" 0 "Running wireshark"
@@ -293,7 +294,10 @@ EOF
         sleep 1
         rlRun "logger 'test message'"
         rlRun "sleep 3s"
+        rlRun "cat $rsyslogServerLogDir/messages"
         rlAssertGrep 'test message' $rsyslogServerLogDir/messages
+        rlRun -s "rsyslogCatLogFileFromPointer /var/log/messages"
+        rlAssertGrep 'test message' $rlRun_LOG
         rlRun "rsyslogServerStatus"
         rlRun "rsyslogServiceStatus"
         ps -p $TSHARK_PID &> /dev/null && kill $TSHARK_PID; sleep 3
@@ -313,14 +317,18 @@ EOF
         client_config ossl
         rlRun "rsyslogServiceStart"
         rlRun "rsyslogServiceStatus"
+        rsyslogResetLogFilePointer /var/log/messages
       tcfFin; }
-      tcfTry "setup ossl" && {
+      tcfTry "test ossl" && {
         rlRun "tshark -i any -f 'tcp port 6514' -a 'filesize:100' -w wireshark.dump 2>tshark.stderr &" 0 "Running wireshark"
         TSHARK_PID=$!
         sleep 1
         rlRun "logger 'test message'"
         rlRun "sleep 3s"
+        rlRun "cat $rsyslogServerLogDir/messages"
         rlAssertGrep 'test message' $rsyslogServerLogDir/messages
+        rlRun -s "rsyslogCatLogFileFromPointer /var/log/messages"
+        rlAssertGrep 'test message' $rlRun_LOG
         rlRun "rsyslogServerStatus"
         rlRun "rsyslogServiceStatus"
         ps -p $TSHARK_PID &> /dev/null && kill $TSHARK_PID; sleep 3
@@ -340,14 +348,18 @@ EOF
         client_config gtls
         rlRun "rsyslogServiceStart"
         rlRun "rsyslogServiceStatus"
+        rsyslogResetLogFilePointer /var/log/messages
       tcfFin; }
-      tcfTry "setup gtls->ossl" && {
+      tcfTry "test gtls->ossl" && {
         rlRun "tshark -i any -f 'tcp port 6514' -a 'filesize:100' -w wireshark.dump 2>tshark.stderr &" 0 "Running wireshark"
         TSHARK_PID=$!
         sleep 1
         rlRun "logger 'test message'"
         rlRun "sleep 3s"
+        rlRun "cat $rsyslogServerLogDir/messages"
         rlAssertGrep 'test message' $rsyslogServerLogDir/messages
+        rlRun -s "rsyslogCatLogFileFromPointer /var/log/messages"
+        rlAssertGrep 'test message' $rlRun_LOG
         rlRun "rsyslogServerStatus"
         rlRun "rsyslogServiceStatus"
         ps -p $TSHARK_PID &> /dev/null && kill $TSHARK_PID; sleep 3
@@ -367,6 +379,7 @@ EOF
         client_config ossl
         rlRun "rsyslogServiceStart"
         rlRun "rsyslogServiceStatus"
+        rsyslogResetLogFilePointer /var/log/messages
       tcfFin; }
       tcfTry "test ossl->gtls" && {
         rlRun "tshark -i any -f 'tcp port 6514' -a 'filesize:100' -w wireshark.dump 2>tshark.stderr &" 0 "Running wireshark"
@@ -374,7 +387,10 @@ EOF
         sleep 1
         rlRun "logger 'test message'"
         rlRun "sleep 3s"
+        rlRun "cat $rsyslogServerLogDir/messages"
         rlAssertGrep 'test message' $rsyslogServerLogDir/messages
+        rlRun -s "rsyslogCatLogFileFromPointer /var/log/messages"
+        rlAssertGrep 'test message' $rlRun_LOG
         rlRun "rsyslogServerStatus"
         rlRun "rsyslogServiceStatus"
         ps -p $TSHARK_PID &> /dev/null && kill $TSHARK_PID; sleep 3
