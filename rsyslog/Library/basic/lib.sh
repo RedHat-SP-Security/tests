@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 57
+#   library-version = 58
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=57
+__INTERNAL_rsyslog_LIB_VERSION=58
 
 : <<'=cut'
 =pod
@@ -935,7 +935,9 @@ local7.*                                                action(type="omfile" fil
 EOF
   rlRun "rm -rf $rsyslogServerWorkDir $rsyslogServerLogDir $rsyslogServerPidFile"
   rlRun "mkdir -p $rsyslogServerWorkDir $rsyslogServerLogDir"
-  rlRun "semanage import <<< 'fcontext -a -e /etc/rsyslog.conf $rsyslogServerConf
+  local import_style='import'
+  rlIsRHEL '<7' && import_style='-i -'
+  rlRun "semanage $import_style <<< 'fcontext -a -e /etc/rsyslog.conf $rsyslogServerConf
 fcontext -a -e /var/lib/rsyslog $rsyslogServerWorkDir
 fcontext -a -e /var/log $rsyslogServerLogDir
 fcontext -a -e $rsyslogPidFile $rsyslogServerPidFile'" 0 "set selinux equivalence"
@@ -953,7 +955,9 @@ fcontext -a -e $rsyslogPidFile $rsyslogServerPidFile'" 0 "set selinux equivalenc
 
 rsyslogServerCleanup() {
   rsyslogServerStop
-  rlRun "semanage import <<< 'fcontext -d -e /etc/rsyslog.conf $rsyslogServerConf
+  local import_style='import'
+  rlIsRHEL '<7' && import_style='-i -'
+  rlRun "semanage $import_style <<< 'fcontext -d -e /etc/rsyslog.conf $rsyslogServerConf
 fcontext -d -e /var/lib/rsyslog $rsyslogServerWorkDir
 fcontext -d -e /var/log $rsyslogServerLogDir
 fcontext -d -e $rsyslogPidFile $rsyslogServerPidFile'" 0 "celanup selinux"
