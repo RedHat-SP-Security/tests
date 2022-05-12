@@ -1,0 +1,25 @@
+description: make sure that the statically linked apps are treated the same as
+    the dynamically linked ones
+contact: Dalibor Pospisil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+  - library(ControlFlow/Cleanup)
+  - library(distribution/testUser)
+  - /usr/bin/readelf
+  - /usr/bin/gcc
+  - glibc-static
+duration: 5m
+enabled: true
+tag:
+  - CI-Tier-1
+  - Tier1
+  - rhel-buildroot
+tier: '1'
+adjust:
+  - enabled: false
+    when: distro < rhel-8.4
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2084497
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2084549
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2084548
+extra-nitrate: TC#0613613
