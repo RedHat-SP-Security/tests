@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 58
+#   library-version = 59
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=58
+__INTERNAL_rsyslog_LIB_VERSION=59
 
 : <<'=cut'
 =pod
@@ -861,7 +861,8 @@ rsyslogServerSetup() {
   rsyslogServerLogDir='/var/log/server'
   rlRun "rlFileBackup --namespace rsyslog-lib-server --clean $rsyslogServerConf $rsyslogServerWorkDir $rsyslogServerLogDir $rsyslogServerPidFile"
   # prepare server side
-  cat > $rsyslogServerConf <<EOF
+  if rsyslogConfigIsNewSyntax; then
+    cat > $rsyslogServerConf <<EOF
 ################################ RSYSLOG-LIB ###################################
 #### MODULES ####
 
@@ -912,7 +913,7 @@ module(load="builtin:omfile" template="RSYSLOG_TraditionalFileFormat")
 # Logging much else clutters up the screen.
 
 # Log anything (except mail) of level info or higher.
-# Don\t log private authentication messages!
+# Don't log private authentication messages!
 *.info;mail.none;authpriv.none;cron.none                action(type="omfile" file="$rsyslogServerLogDir/messages")
 
 # The authpriv file has restricted access.
@@ -933,6 +934,80 @@ uucp,news.crit                                          action(type="omfile" fil
 local7.*                                                action(type="omfile" file="$rsyslogServerLogDir/boot.log")
 ##################### RSYSLOG-LIB END RULES #####################################
 EOF
+  else
+    cat > $rsyslogServerConf <<EOF
+################################ RSYSLOG-LIB ###################################
+#### MODULES ####
+
+##################### RSYSLOG-LIB BEGIN MODULES ################################
+
+##################### RSYSLOG-LIB BEGIN MODLOAD IMUXSOCK #######################
+##################### RSYSLOG-LIB END MODLOAD IMUXSOCK #########################
+
+##################### RSYSLOG-LIB BEGIN MODLOAD IMJOURNAL ######################
+##################### RSYSLOG-LIB END MODLOAD IMJOURNAL ########################
+
+##################### RSYSLOG-LIB BEGIN MODLOAD IMKLOG #########################
+##################### RSYSLOG-LIB END MODLOAD IMKLOG ###########################
+
+##################### RSYSLOG-LIB BEGIN MODLOAD IMMARK #########################
+##################### RSYSLOG-LIB END MODLOAD IMMARK ###########################
+
+##################### RSYSLOG-LIB BEGIN MODLOAD IMUDP ##########################
+##################### RSYSLOG-LIB END MODLOAD IMUDP ############################
+
+##################### RSYSLOG-LIB BEGIN MODLOAD IMTCP ##########################
+##################### RSYSLOG-LIB END MODLOAD IMTCP ############################
+
+##################### RSYSLOG-LIB END MODULES ##################################
+
+#### GLOBAL DIRECTIVES ####
+
+##################### RSYSLOG-LIB BEGIN GLOBALS ########
+
+##################### RSYSLOG-LIB BEGIN WOKRDIRECTORY ##########################
+\$WorkDirectory $rsyslogServerWorkDir
+##################### RSYSLOG-LIB END WOKRDIRECTORY ############################
+
+##################### RSYSLOG-LIB BEGIN MODLOAD OMFILE DEFAULT TEMPLATE ########
+\$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
+##################### RSYSLOG-LIB END OMFILE DEFAULT TEMPLATE ##################
+
+##################### RSYSLOG-LIB BEGIN INCLUDECONFIG ##########################
+##################### RSYSLOG-LIB END INCLUDECONFIG ############################
+
+##################### RSYSLOG-LIB END GLOBALS ########
+
+#### RULES ####
+
+##################### RSYSLOG-LIB BEGIN RULES ##################################
+
+# Log all kernel messages to the console.
+# Logging much else clutters up the screen.
+
+# Log anything (except mail) of level info or higher.
+# Don't log private authentication messages!
+*.info;mail.none;authpriv.none;cron.none                $rsyslogServerLogDir/messages
+
+# The authpriv file has restricted access.
+authpriv.*                                              $rsyslogServerLogDir/secure
+
+# Log all the mail messages in one place.
+mail.*                                                  -$rsyslogServerLogDir/maillog
+
+
+# Log cron stuff
+cron.*                                                  $rsyslogServerLogDir/cron
+
+# Save news errors of level crit and higher in a special file.
+uucp,news.crit                                          $rsyslogServerLogDir/spooler
+
+# Save boot messages also to boot.log
+
+local7.*                                                $rsyslogServerLogDir/boot.log
+##################### RSYSLOG-LIB END RULES #####################################
+EOF
+  fi
   rlRun "rm -rf $rsyslogServerWorkDir $rsyslogServerLogDir $rsyslogServerPidFile"
   rlRun "mkdir -p $rsyslogServerWorkDir $rsyslogServerLogDir"
   local import_style='import'
@@ -965,12 +1040,13 @@ fcontext -d -e $rsyslogPidFile $rsyslogServerPidFile'" 0 "celanup selinux"
 }
 
 rsyslogServerStart() {
-  local res=0
+  local res=0 SYSLOGD_OPTIONS=''
+  rlIsRHEL '<7' && SYSLOGD_OPTIONS=$(. /etc/sysconfig/rsyslog; echo "$SYSLOGD_OPTIONS")
   rsyslogServerStop || let res++
   if [[ "$1" == "--valgrind" ]]; then
     rsyslogServerOut=( $(mktemp) "${rsyslogServerOut[@]}" )
     __INTERNAL_PrintText "starting rsyslog server via valgrind" "LOG"
-    valgrind --leak-check=full rsyslogd -n -d -i $rsyslogServerPidFile -f $rsyslogServerConf > $rsyslogServerOut 2>&1 &
+    valgrind --leak-check=full rsyslogd $SYSLOGD_OPTIONS -n -d -i $rsyslogServerPidFile -f $rsyslogServerConf > $rsyslogServerOut 2>&1 &
     [[ -n "$DEBUG" ]] && tail -f $rsyslogServerOut &
     local i
     for ((i=180; i>0; i--)); do
@@ -987,7 +1063,7 @@ rsyslogServerStart() {
     return 1
   else
     __INTERNAL_PrintText "starting rsyslog server" "LOG"
-    rsyslogd -i $rsyslogServerPidFile -f $rsyslogServerConf || let res++
+    rsyslogd $SYSLOGD_OPTIONS -i $rsyslogServerPidFile -f $rsyslogServerConf || let res++
     sleep 1s
     return $res
   fi
@@ -1026,7 +1102,8 @@ rsyslogServerStop() {
 
 rsyslogServerStatus() {
   local res=0
-  rlRun "journalctl -n 10 --no-pager _PID=$(cat $rsyslogServerPidFile)"
+  rlIsRHEL '<7' || rlRun "journalctl -n 10 --no-pager _PID=$(cat $rsyslogServerPidFile)"
+  ps u -p $(cat $rsyslogServerPidFile)
   kill -0 $(cat $rsyslogServerPidFile)
   return $res
 }
