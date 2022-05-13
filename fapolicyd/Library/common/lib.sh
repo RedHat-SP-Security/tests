@@ -25,7 +25,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = fap
-#   library-version = 23
+#   library-version = 24
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 true <<'=cut'
@@ -128,6 +128,10 @@ fapServiceOut() {
   fi
 }
 
+fapResetServiceOutTimestamp() {
+  __INTERNAL_fapolicyd_start_timestamp=$(date +"%F %T")
+}
+
 fapStart() {
   local res fapolicyd_path tail_pid FADEBUG SYSTEMD_RELOAD
   res=0
@@ -168,7 +172,7 @@ EOF
   [[ -n "$SYSTEMD_RELOAD" ]] && systemctl daemon-reload
 
   rm -f /run/fapolicyd/fapolicyd.fifo
-  __INTERNAL_fapolicyd_start_timestamp=$(date +"%F %T")
+  fapResetServiceOutTimestamp
   rlServiceStart fapolicyd || let res++
 
   fapServiceOut -b -f
