@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 59
+#   library-version = 60
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=59
+__INTERNAL_rsyslog_LIB_VERSION=60
 
 : <<'=cut'
 =pod
@@ -1460,6 +1460,10 @@ rsyslogLibraryLoaded() {
   echo -n "initiating library $__INTERNAL_rsyslog_LIB_NAME v$__INTERNAL_rsyslog_LIB_VERSION... "
   local YUM=dnf
   local i=''
+  [[ -z "$rsyslogSuffix" ]] && {
+    # try to detect the suffix
+    rsyslogSuffix=$(rpm -qa 'rsyslog*' | tail -n1 | grep -Eo 'rsyslog[0-9]?')
+  }
   which $YUM &>/dev/null || YUM=yum
   which patch &>/dev/null || {
     rlLogInfo "patch not available, will try to install it"
