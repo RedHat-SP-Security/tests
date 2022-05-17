@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 60
+#   library-version = 61
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=60
+__INTERNAL_rsyslog_LIB_VERSION=61
 
 : <<'=cut'
 =pod
@@ -1462,7 +1462,7 @@ rsyslogLibraryLoaded() {
   local i=''
   [[ -z "$rsyslogSuffix" ]] && {
     # try to detect the suffix
-    rsyslogSuffix=$(rpm -qa 'rsyslog*' | tail -n1 | grep -Eo 'rsyslog[0-9]?')
+    rsyslogSuffix=$(rpm -qa 'rsyslog*' | tail -n1 | grep -Eo 'rsyslog[0-9]?' | grep -o '[0-9]*')
   }
   which $YUM &>/dev/null || YUM=yum
   which patch &>/dev/null || {
