@@ -4,5 +4,6 @@ require:
 - library(distribution/dpcommon)
 - library(distribution/Log)
 - /usr/sbin/semanage
-- rsyslog
 - patch
+recommend:
+- rsyslog
