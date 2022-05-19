@@ -5,7 +5,7 @@ description: "Bug summary: default fapolicyd policy prevents ansible from runnin
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
-- library(distribution/epel)
+- library(rhel-system-roles/basic)
 recommend:
 - fapolicyd
 - sed

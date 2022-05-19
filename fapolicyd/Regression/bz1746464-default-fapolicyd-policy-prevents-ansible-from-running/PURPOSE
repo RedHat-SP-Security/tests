@@ -1,5 +1,0 @@
-PURPOSE of /CoreOS/fapolicyd/Regression/bz1746464-default-fapolicyd-policy-prevents-ansible-from-running
-Description: Test for BZ#1746464 (default fapolicyd policy prevents ansible from running )
-Author: Radovan Sroka <rsroka@redhat.com>
-Bug summary: default fapolicyd policy prevents ansible from running 
-Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1746464
