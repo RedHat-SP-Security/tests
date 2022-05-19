@@ -50,14 +50,14 @@ rlJournalStart
 
     rlPhaseStartTest "running ansible without fapolicyd"
         pidof fapolicyd && rlRun "fapStop"
-	rlRun "ansible localhost -m ping"
+        rlRun "ansible localhost -m ping"
     rlPhaseEnd
 
     rlPhaseStartTest "running ansible with fapolicyd"
-    	rlRun "fapStart"
-	rlRun "sleep 3"
-	rlRun "ansible localhost -m ping"
-	rlRun "fapStop"
+        rlRun "fapStart"
+        rlRun "sleep 3"
+        rlRun "ansible localhost -m ping"
+        rlRun "fapStop"
     rlPhaseEnd
 
     rlPhaseStartCleanup
