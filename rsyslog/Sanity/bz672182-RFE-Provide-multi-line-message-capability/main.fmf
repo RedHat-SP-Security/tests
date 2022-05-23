@@ -8,7 +8,7 @@ require+:
   - library(distribution/dpcommon)
   - library(selinux-policy/common)
   - /usr/bin/nc
-  - rsyslog
+  - rsyslog7
   - /usr/bin/netstat
 duration: 3m
 enabled: true

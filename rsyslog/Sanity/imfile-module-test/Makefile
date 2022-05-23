@@ -56,7 +56,7 @@ $(METADATA): Makefile
 	@echo "RhtsRequires:    library(rsyslog/basic)" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/ConditionalPhases)" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/Cleanup)" >> $(METADATA)
-	@echo "Requires:        rsyslog" >> $(METADATA)
+	@echo "Requires:        rsyslog7" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2" >> $(METADATA)
 	@echo "Confidential:    no" >> $(METADATA)

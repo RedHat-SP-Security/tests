@@ -4,12 +4,12 @@ description: |
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1872546
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
-- rsyslog
+- rsyslog7
 test: ./runtest.sh
 require+:
 - library(distribution/dpcommon)
 recommend:
-- rsyslog
+- rsyslog7
 duration: 5m
 enabled: true
 tag:

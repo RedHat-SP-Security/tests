@@ -55,7 +55,7 @@ $(METADATA): Makefile
 	@echo "TestTime:        5m" >> $(METADATA)
 	@echo "RunFor:          rsyslog" >> $(METADATA)
 	@echo "Releases:        -RHEL4" >> $(METADATA)
-	@echo "Requires:        rsyslog /usr/bin/file /usr/bin/gunzip" >> $(METADATA)
+	@echo "Requires:        rsyslog7 /usr/bin/file /usr/bin/gunzip" >> $(METADATA)
 	@echo "RhtsRequires:    library(rsyslog/basic)" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2" >> $(METADATA)

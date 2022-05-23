@@ -2,7 +2,7 @@ summary: tests basic mmfields module functionality
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
-- rsyslog-mmfields
+- rsyslog7-mmfields
 - library(ControlFlow/Cleanup)
 duration: 5m
 enabled: true

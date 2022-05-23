@@ -16,15 +16,15 @@ description: |+
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - rsyslog7
-- rsyslog
-- rsyslog
+- rsyslog7
+- rsyslog7
 - rsyslog5
 test: ./runtest.sh
 require+:
 - library(distribution/ConditionalPhases)
 - library(distribution/Cleanup)
 recommend:
-- rsyslog
+- rsyslog7
 duration: 25m
 enabled: true
 tag:

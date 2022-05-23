@@ -5,9 +5,9 @@ test: ./runtest.sh
 require+:
 - library(distribution/dpcommon)
 recommend:
-- rsyslog
-- rsyslog-mmjsonparse
-- rsyslog-mmkubernetes
+- rsyslog7
+- rsyslog7-mmjsonparse
+- rsyslog7-mmkubernetes
 duration: 5m
 enabled: true
 tag:

@@ -5,8 +5,8 @@ require+:
 - library(distribution/dpcommon)
 - /usr/sbin/iptables
 - gnutls-utils
-- rsyslog-gnutls
-- rsyslog-relp
+- rsyslog7-gnutls
+- rsyslog7-relp
 - librelp
 duration: 15m
 enabled: true

@@ -54,7 +54,7 @@ $(METADATA): Makefile
 	@echo "Type:            Sanity" >> $(METADATA)
 	@echo "TestTime:        20m" >> $(METADATA)
 	@echo "RunFor:          rsyslog" >> $(METADATA)
-	@echo "Requires:        rsyslog" >> $(METADATA)
+	@echo "Requires:        rsyslog7" >> $(METADATA)
 	@echo "RhtsRequires:    library(rsyslog/basic)" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/dpcommon)" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)

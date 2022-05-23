@@ -2,7 +2,7 @@ summary: errfile maxsize
 contact: Sergio Arroutbi <sarroutb@redhat.com>
 test: ./runtest.sh
 require+:
-  - rsyslog
+  - rsyslog7
   - library(selinux-policy/common)
 environment:
   AVC_ERROR: +no_avc_check

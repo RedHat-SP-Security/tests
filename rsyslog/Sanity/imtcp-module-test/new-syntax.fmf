@@ -1,6 +1,6 @@
 component:
 - rsyslog7
-- rsyslog
+- rsyslog7
 - rsyslog5
 environment:
     rsyslogSyntax: new

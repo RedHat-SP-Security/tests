@@ -55,7 +55,7 @@ $(METADATA): Makefile
 	@echo "TestTime:        10m" >> $(METADATA)
 	@echo "RunFor:          rsyslog" >> $(METADATA)
 	@echo "Releases:        -RHEL4" >> $(METADATA)
-	@echo "Requires:        rsyslog gnutls gnutls-utils rsyslog-gnutls /usr/bin/host" >> $(METADATA)
+	@echo "Requires:        rsyslog7 gnutls gnutls-utils rsyslog7-gnutls /usr/bin/host" >> $(METADATA)
 	@echo "Requires:        lsof" >> $(METADATA)
 	@echo "Requires:        openssl" >> $(METADATA)
 	@echo "RhtsRequires:    library(rsyslog/basic)" >> $(METADATA)

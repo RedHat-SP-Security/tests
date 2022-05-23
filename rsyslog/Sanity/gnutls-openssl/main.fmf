@@ -19,7 +19,7 @@ adjust+:
     when: distro < rhel-8
 /gtls:
     require+:
-      - rsyslog-gnutls
+      - rsyslog7-gnutls
     environment+:
         CONDITIONAL_PHASES_BL: ossl
     /old-syntax:
@@ -78,7 +78,7 @@ adjust+:
             extra-nitrate: TC#0612978
 /ossl:
     require+:
-      - rsyslog-openssl
+      - rsyslog7-openssl
     environment+:
         CONDITIONAL_PHASES_BL: gtls
     adjust+:
@@ -134,8 +134,8 @@ adjust+:
             extra-nitrate: TC#0612992
 /interoperability:
     require+:
-      - rsyslog-gnutls
-      - rsyslog-openssl
+      - rsyslog7-gnutls
+      - rsyslog7-openssl
     environment+:
         CONDITIONAL_PHASES_WL: '-'
     adjust+:

@@ -54,7 +54,7 @@ $(METADATA): Makefile
 	@echo "Type:            Multihost" >> $(METADATA)
 	@echo "TestTime:        60m" >> $(METADATA)
 	@echo "RunFor:          rsyslog" >> $(METADATA)
-	@echo "Requires:        rsyslog ansible rhel-system-roles" >> $(METADATA)
+	@echo "Requires:        rsyslog7 ansible rhel-system-roles" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/dpcommon)" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/RpmSnapshot)" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/epel)" >> $(METADATA)

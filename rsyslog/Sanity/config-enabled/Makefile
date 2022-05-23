@@ -54,7 +54,7 @@ $(METADATA): Makefile
 	@echo "Type:            Sanity" >> $(METADATA)
 	@echo "TestTime:        5m" >> $(METADATA)
 	@echo "RunFor:          rsyslog" >> $(METADATA)
-	@echo "Requires:        rsyslog /usr/bin/netstat" >> $(METADATA)
+	@echo "Requires:        rsyslog7 /usr/bin/netstat" >> $(METADATA)
 	@echo "RhtsRequires:    library(rsyslog/basic)" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/ConditionalPhases)" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/Cleanup)" >> $(METADATA)

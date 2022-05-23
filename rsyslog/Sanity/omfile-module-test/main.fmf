@@ -10,12 +10,12 @@ description: |+
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - rsyslog7
-- rsyslog
-- rsyslog
+- rsyslog7
+- rsyslog7
 - rsyslog5
 test: ./runtest.sh
 require+:
-- rsyslog
+- rsyslog7
 - /usr/bin/file
 - /usr/bin/gunzip
 duration: 5m

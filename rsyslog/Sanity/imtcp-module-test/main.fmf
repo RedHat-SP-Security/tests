@@ -23,10 +23,10 @@ require+:
 - library(selinux-policy/common)
 - library(openssl/certgen)
 recommend:
-- rsyslog
+- rsyslog7
 - gnutls
 - gnutls-utils
-- rsyslog-gnutls
+- rsyslog7-gnutls
 - /usr/bin/host
 - lsof
 - openssl

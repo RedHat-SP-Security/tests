@@ -7,7 +7,7 @@ require+:
 - library(distribution/Cleanup)
 - library(distribution/tcf)
 recommend:
-- rsyslog
+- rsyslog7
 - /usr/bin/netstat
 duration: 5m
 enabled: true

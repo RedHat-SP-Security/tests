@@ -53,7 +53,7 @@ $(METADATA): Makefile
 	@echo "Type:            Sanity" >> $(METADATA)
 	@echo "TestTime:        5m" >> $(METADATA)
 	@echo "RunFor:          rsyslog" >> $(METADATA)
-	@echo "Requires:        rsyslog openssl rsyslog-gnutls" >> $(METADATA)
+	@echo "Requires:        rsyslog7 openssl rsyslog7-gnutls" >> $(METADATA)
 	@echo "Requires:        policycoreutils-python-utils" >> $(METADATA)
 	@echo "RhtsRequires:    library(openssl/certgen)" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)

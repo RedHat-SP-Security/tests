@@ -4,7 +4,7 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 path: /rsyslog/Sanity/basic-logging-facility
 require+:
-- rsyslog
+- rsyslog7
 duration: 30m
 enabled: true
 extra-task: /CoreOS/rsyslog/Sanity/basic-logging-facility

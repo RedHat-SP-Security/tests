@@ -53,7 +53,7 @@ $(METADATA): Makefile
 	@echo "Type:            Sanity" >> $(METADATA)
 	@echo "TestTime:        10m" >> $(METADATA)
 	@echo "RunFor:          rsyslog" >> $(METADATA)
-	@echo "Requires:        rsyslog" >> $(METADATA)
+	@echo "Requires:        rsyslog7" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/RpmSnapshot)" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2+" >> $(METADATA)

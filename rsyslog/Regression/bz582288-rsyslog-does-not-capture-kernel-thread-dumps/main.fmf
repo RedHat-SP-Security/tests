@@ -19,12 +19,12 @@ description: "Bug summary: rsyslog does not capture kernel thread dumps\nBugzill
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - rsyslog7
-- rsyslog
-- rsyslog
+- rsyslog7
+- rsyslog7
 - rsyslog5
 test: ./runtest.sh
 recommend:
-- rsyslog
+- rsyslog7
 duration: 5m
 enabled: true
 tag:

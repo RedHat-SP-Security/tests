@@ -3,10 +3,10 @@ contact: Attila Lakatos <alakatos@redhat.com>
 test: ./runtest.sh
 duration: 10m
 require+:
-- rsyslog
+- rsyslog7
 - gnutls-utils
-- rsyslog-gnutls
-- rsyslog-openssl
+- rsyslog7-gnutls
+- rsyslog7-openssl
 - gnutls
 - openssl
 tag:

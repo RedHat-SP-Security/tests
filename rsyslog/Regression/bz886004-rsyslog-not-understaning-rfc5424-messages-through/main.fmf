@@ -5,11 +5,11 @@ description: |
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - rsyslog7
-- rsyslog
+- rsyslog7
 - rsyslog5
 test: ./runtest.sh
 recommend:
-- rsyslog
+- rsyslog7
 - gcc
 duration: 5m
 enabled: true

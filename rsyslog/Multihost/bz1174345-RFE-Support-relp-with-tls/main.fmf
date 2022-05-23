@@ -4,15 +4,15 @@ description: |
     Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1174345
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
-- rsyslog
+- rsyslog7
 test: ./runtest.sh
 require+:
 - library(distribution/sync)
-- rsyslog
-- rsyslog-relp
+- rsyslog7
+- rsyslog7-relp
 - gnutls
 - gnutls-utils
-- rsyslog-gnutls
+- rsyslog7-gnutls
 - bind-utils
 - nc
 - lsof

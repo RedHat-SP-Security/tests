@@ -9,8 +9,8 @@ require+:
 - library(selinux-policy/common)
 - library(ControlFlow/Cleanup)
 recommend:
-- rsyslog
-- rsyslog-relp
+- rsyslog7
+- rsyslog7-relp
 - policycoreutils-python
 - psmisc
 duration: 30m

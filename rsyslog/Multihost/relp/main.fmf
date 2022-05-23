@@ -4,11 +4,11 @@ require+:
 - library(distribution/sync)
 - library(ControlFlow/Cleanup)
 - library(rpm/snapshot)
-- rsyslog
-- rsyslog-relp
+- rsyslog7
+- rsyslog7-relp
 - gnutls
 - gnutls-utils
-- rsyslog-gnutls
+- rsyslog7-gnutls
 - bind-utils
 - nc
 - lsof

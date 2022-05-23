@@ -1,7 +1,7 @@
 component:
 - rsyslog7
-- rsyslog
-- rsyslog
+- rsyslog7
+- rsyslog7
 - rsyslog5
 environment:
     rsyslogSyntax: old

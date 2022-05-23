@@ -4,13 +4,13 @@ description: |+
 
 contact: Attila Lakatos <alakatos@redhat.com>
 component:
-- rsyslog
+- rsyslog7
 test: ./runtest.sh
 require+:
 - library(distribution/ConditionalPhases)
 - library(distribution/Cleanup)
-- rsyslog
-- rsyslog-udpspoof
+- rsyslog7
+- rsyslog7-udpspoof
 duration: 5m
 enabled: true
 tag:

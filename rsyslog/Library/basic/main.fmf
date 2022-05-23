@@ -6,4 +6,4 @@ require:
 - /usr/sbin/semanage
 - patch
 recommend:
-- rsyslog
+- rsyslog7

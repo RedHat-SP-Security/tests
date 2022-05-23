@@ -7,11 +7,11 @@ require+:
 - /usr/bin/tshark
 - /usr/bin/certtool
 recommend:
-- rsyslog
-- rsyslog-relp
+- rsyslog7
+- rsyslog7-relp
 - gnutls
 - gnutls-utils
-- rsyslog-gnutls
+- rsyslog7-gnutls
 - openssl
 - librelp
 - rpmlint

@@ -9,10 +9,10 @@ require+:
 - library(distribution/ConditionalPhases)
 - library(distribution/Cleanup)
 recommend:
-- rsyslog
+- rsyslog7
 - lsof
 - /usr/bin/nc
-- rsyslog-mmjsonparse
+- rsyslog7-mmjsonparse
 duration: 5m
 enabled: true
 tier: '2'

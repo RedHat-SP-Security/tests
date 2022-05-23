@@ -54,7 +54,7 @@ $(METADATA): Makefile
 	@echo "Type:            Regression" >> $(METADATA)
 	@echo "TestTime:        45m" >> $(METADATA)
 	@echo "RunFor:          rsyslog" >> $(METADATA)
-	@echo "Requires:        rsyslog /usr/bin/nc gnutls gnutls-utils rsyslog-gnutls" >> $(METADATA)
+	@echo "Requires:        rsyslog7 /usr/bin/nc gnutls gnutls-utils rsyslog7-gnutls" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/dpcommon)" >> $(METADATA)
 	@echo "RhtsRequires:    library(rsyslog/basic)" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)

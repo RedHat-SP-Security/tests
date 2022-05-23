@@ -2,14 +2,14 @@ summary: Test for GnuTLS certificate revocation checking (stapled OCSP)
 description: ''
 contact: Anderson Toshiyuki Sasaki <ansasaki@redhat.com>
 component:
-- rsyslog
+- rsyslog7
 test: ./runtest.sh
 require:
 - library(openssl/certgen)
 recommend:
-- rsyslog
+- rsyslog7
 - openssl
-- rsyslog-gnutls
+- rsyslog7-gnutls
 - policycoreutils-python-utils
 duration: 5m
 enabled: true

@@ -8,7 +8,7 @@ path: /rsyslog/Sanity/bz672182-RFE-Provide-rate-limiting-support
 require+:
 - library(distribution/dpcommon)
 recommend:
-- rsyslog
+- rsyslog7
 duration: 20m
 enabled: true
 extra-task: /CoreOS/rsyslog/Sanity/bz672182-RFE-Provide-rate-limiting-support

@@ -6,8 +6,8 @@ require+:
 - library(ControlFlow/ConditionalPhases)
 - /usr/bin/certtool
 - /usr/bin/tshark
-- rsyslog-openssl
-- rsyslog-relp
+- rsyslog7-openssl
+- rsyslog7-relp
 - librelp
 duration: 15m
 enabled: true

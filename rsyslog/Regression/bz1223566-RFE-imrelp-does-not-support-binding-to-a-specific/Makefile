@@ -53,7 +53,7 @@ $(METADATA): Makefile
 	@echo "Type:            Regression" >> $(METADATA)
 	@echo "TestTime:        30m" >> $(METADATA)
 	@echo "RunFor:          rsyslog" >> $(METADATA)
-	@echo "Requires:        rsyslog rsyslog-relp policycoreutils-python psmisc" >> $(METADATA)
+	@echo "Requires:        rsyslog7 rsyslog7-relp policycoreutils-python psmisc" >> $(METADATA)
 	@echo "RhtsRequires:    library(rsyslog/basic)" >> $(METADATA)
 	@echo "RhtsRequires:    library(selinux-policy/common)" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/Cleanup)" >> $(METADATA)

@@ -4,14 +4,14 @@ description: |
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - rsyslog7
-- rsyslog
-- rsyslog
+- rsyslog7
+- rsyslog7
 - rsyslog5
 test: ./runtest.sh
 require+:
 - library(distribution/dpcommon)
 recommend:
-- rsyslog
+- rsyslog7
 environment:
     rsyslogSyntax: old
 duration: 5m

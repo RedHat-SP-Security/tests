@@ -7,11 +7,11 @@ test: ./runtest.sh
 require+:
 - library(distribution/dpcommon)
 recommend:
-- rsyslog
+- rsyslog7
 - /usr/bin/nc
 - gnutls
 - gnutls-utils
-- rsyslog-gnutls
+- rsyslog7-gnutls
 duration: 45m
 enabled: true
 hardware:

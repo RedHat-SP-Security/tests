@@ -7,7 +7,7 @@ test: ./runtest.sh
 require+:
 - library(distribution/dpcommon)
 recommend:
-- rsyslog
+- rsyslog7
 duration: 15m
 enabled: true
 tag:

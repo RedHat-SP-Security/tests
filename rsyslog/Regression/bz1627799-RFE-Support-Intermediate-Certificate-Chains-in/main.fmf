@@ -6,13 +6,13 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
   - library(distribution/dpcommon)
-  - rsyslog
+  - rsyslog7
   - /usr/bin/certtool
 duration: 5m
 enabled: true
 /gnutls:
     require+:
-      - rsyslog-gnutls
+      - rsyslog7-gnutls
     environment:
         driver: gtls
     extra-summary: driver=gtls /CoreOS/rsyslog/Regression/bz1627799-RFE-Support-Intermediate-Certificate-Chains-in
@@ -36,7 +36,7 @@ enabled: true
         continue: false
 /openssl:
     require+:
-      - rsyslog-openssl
+      - rsyslog7-openssl
     environment:
         driver: ossl
     extra-summary: driver=ossl /CoreOS/rsyslog/Regression/bz1627799-RFE-Support-Intermediate-Certificate-Chains-in

@@ -51,7 +51,7 @@ $(METADATA): Makefile
 	@echo "RhtsRequires:    library(distribution/dpcommon)" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/Log)" >> $(METADATA)
 	@echo "RhtsRequires:    patch /usr/sbin/semanage" >> $(METADATA)
-	@echo "Requires:        rsyslog patch /usr/sbin/semanage" >> $(METADATA)
+	@echo "Requires:        rsyslog7 patch /usr/sbin/semanage" >> $(METADATA)
 	@echo "License:         GPLv2" >> $(METADATA)
 
 	rhts-lint $(METADATA)

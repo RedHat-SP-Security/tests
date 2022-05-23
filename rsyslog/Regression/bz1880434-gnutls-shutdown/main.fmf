@@ -5,7 +5,7 @@ require+:
 - library(distribution/dpcommon)
 - /usr/sbin/iptables
 - gnutls-utils
-- rsyslog-gnutls
+- rsyslog7-gnutls
 duration: 15m
 enabled: true
 tag:

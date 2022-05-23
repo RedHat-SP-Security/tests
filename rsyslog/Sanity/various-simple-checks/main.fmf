@@ -5,7 +5,7 @@ test: ./runtest.sh
 require+:
 - library(distribution/RpmSnapshot)
 recommend:
-- rsyslog
+- rsyslog7
 duration: 10m
 enabled: true
 tag:

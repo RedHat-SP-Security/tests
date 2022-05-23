@@ -3,7 +3,7 @@ description: ''
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - rsyslog7
-- rsyslog
+- rsyslog7
 - rsyslog5
 test: ./runtest.sh
 path: /rsyslog/Multihost/rsyslog-send-messages-to-remote
@@ -13,7 +13,7 @@ require+:
 - library(distribution/epel)
 - library(distribution/sync)
 recommend:
-- rsyslog
+- rsyslog7
 - ansible
 - rhel-system-roles
 adjust:
