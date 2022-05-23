@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 61
+#   library-version = 62
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=61
+__INTERNAL_rsyslog_LIB_VERSION=62
 
 : <<'=cut'
 =pod
@@ -1460,7 +1460,7 @@ rsyslogLibraryLoaded() {
   echo -n "initiating library $__INTERNAL_rsyslog_LIB_NAME v$__INTERNAL_rsyslog_LIB_VERSION... "
   local YUM=dnf
   local i=''
-  [[ -z "$rsyslogSuffix" ]] && {
+  [[ -z "${rsyslogSuffix+x}" ]] && {
     # try to detect the suffix
     rsyslogSuffix=$(rpm -qa 'rsyslog*' | tail -n1 | grep -Eo 'rsyslog[0-9]?' | grep -o '[0-9]*')
   }
