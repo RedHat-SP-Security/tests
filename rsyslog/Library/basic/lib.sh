@@ -1474,14 +1474,14 @@ rsyslogLibraryLoaded() {
     i+=" /usr/sbin/semanage"
   }
   __INTERNAL_rsyslog_import
-  rpm -q rsyslog${rsyslogSuffix} &>/dev/null || {
-    rlLogInfo "rsyslog${rsyslogSuffix} not installed, will try to install it"
-    i+=" rsyslog"
-  }
-  local res=0
-  [[ -n "$i" ]] && {
-    rlRun "$YUM -y install$i"
-  }
+  #rpm -q rsyslog${rsyslogSuffix} &>/dev/null || {
+  #  rlLogInfo "rsyslog${rsyslogSuffix} not installed, will try to install it"
+  #  i+=" rsyslog${rsyslogSuffix}"
+  #}
+  #local res=0
+  #[[ -n "$i" ]] && {
+  #  rlRun "$YUM -y install$i"
+  #}
   which patch &>/dev/null || {
     let res++
     rlFail "tool patch not available"
