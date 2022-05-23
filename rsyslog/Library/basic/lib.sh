@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 62
+#   library-version = 63
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=62
+__INTERNAL_rsyslog_LIB_VERSION=63
 
 : <<'=cut'
 =pod
@@ -1486,10 +1486,10 @@ rsyslogLibraryLoaded() {
     let res++
     rlFail "tool patch not available"
   }
-  rpm -q rsyslog${rsyslogSuffix} &>/dev/null || {
-    let res++
-    rlFail "rsyslog package not installed"
-  }
+  #rpm -q rsyslog${rsyslogSuffix} &>/dev/null || {
+  #  let res++
+  #  rlFail "rsyslog package not installed"
+  #}
   echo "done."
   return $res
 }
