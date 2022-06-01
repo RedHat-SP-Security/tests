@@ -54,7 +54,7 @@ unit = "GSS"
 locality = "Brno"
 state = "Moravia"
 country = CZ
-cn = "rsyslog+gnutls"
+cn = "rsyslog+chain+caroot"
 serial = 001
 expiration_days = 365
 dns_name = "$(hostname)"
@@ -74,7 +74,7 @@ unit = "GSS"
 locality = "Brno"
 state = "Moravia"
 country = CZ
-cn = "rsyslog+gnutls"
+cn = "rsyslog+chain+ca"
 serial = 001
 expiration_days = 365
 dns_name = "$(hostname)"
@@ -95,7 +95,7 @@ unit = "GSS"
 locality = "Brno"
 state = "Moravia"
 country = CZ
-cn = "rsyslog+gnutls"
+cn = "rsyslog+chain+server"
 serial = 002
 expiration_days = 365
 dns_name = "$(hostname)"
@@ -114,13 +114,13 @@ unit = "GSS"
 locality = "Brno"
 state = "Moravia"
 country = CZ
-cn = "rsyslog+gnutls"
+cn = "rsyslog+chain+client"
 serial = 002
 expiration_days = 365
 dns_name = "$(hostname)"
 ip_address = "127.0.0.1"
 email = "root@$(hostname)"
-tls_www_server
+tls_www_client
 EOF
     cat client.tmpl
     rlRun "certtool --generate-privkey --outfile client-key.pem --bits 2048" 0 "Generate key for client"

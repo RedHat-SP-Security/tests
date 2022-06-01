@@ -96,7 +96,7 @@ expiration_days = 365
 dns_name = "$(hostname)"
 ip_address = "127.0.0.1"
 email = "root@$(hostname)"
-tls_www_server
+tls_www_client
 EOF
     cat client.tmpl
     rlRun "certtool --generate-privkey --outfile client-key.pem --bits 2048" 0 "Generate key for client"

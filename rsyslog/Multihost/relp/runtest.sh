@@ -125,7 +125,7 @@ expiration_days = 365
 dns_name = "$syncCLIENT_HOSTNAME"
 ip_address = "$syncCLIENT_IP"
 email = "root@$syncCLIENT_HOSTNAME"
-tls_www_server
+tls_www_client
 EOF
         cat client.tmpl
         rlRun "certtool --generate-privkey --outfile client-key.pem --bits 2048" 0 "Generate key for client"
