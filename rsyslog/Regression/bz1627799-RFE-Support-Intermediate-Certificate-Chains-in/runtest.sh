@@ -191,11 +191,14 @@ EOF
       rlAssertNotGrep 'test message' $rsyslogServerLogDir/messages
       rlRun "rsyslogServiceStop"
       rlRun "rsyslogServerStop"
+      # Enable the CAPath
+      rlRun "sed -i 's@DefaultNetstreamDriverCAFile=\"/etc/rsyslogd.d/ca-cert.pem\"@DefaultNetstreamDriverCAFile=\"/etc/rsyslogd.d/ca-cert.pem\"\n    DefaultNetstreamDriverCAPath=\"/etc/rsyslogd.d/ca-root-cert.pem\"@g' $rsyslogServerConf"
       rlRun "> $rsyslogServerLogDir/messages"
       rlRun "cat server-cert.pem ca-cert.pem > /etc/rsyslogd.d/server-cert.pem"
       rlRun "chmod 400 /etc/rsyslogd.d/* && restorecon -R /etc/rsyslogd.d"
       rlRun "rsyslogServerStart"
       rlRun "rsyslogServiceStart"
+      rlRun "rsyslogServerPrintEffectiveConfig -n"
       rlRun "logger 'test message'"
       rlRun "sleep 3s"
       rlAssertGrep 'test message' $rsyslogServerLogDir/messages
