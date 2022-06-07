@@ -684,11 +684,8 @@ rlJournalStart
 
     ############# KEY MANAGEMENT TESTS ############
     rlPhaseStartTest "Key Management Test"
-        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_clusterrole.yaml" 0 "Creating key management test clusterrole"
         rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_pv.yaml" 0 "Creating key management test pv"
         rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_tangserver.yaml" 0 "Creating key management test tangserver"
-        cat reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_clusterrolebinding.yaml \
-          | sed "s/{{OPERATOR_NAMESPACE}}/${OPERATOR_NAMESPACE}/g" | ${OC_CLIENT} apply -f -
         rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
         pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
         rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
@@ -709,18 +706,12 @@ rlJournalStart
         rlRun "checkHiddenKeysAmount 1 ${TO_HIDDEN_KEYS} ${TEST_NAMESPACE}" 0 "Checking Hidden Keys Amount is 1"
 
         # Delete all VIA API
-        rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve-deletehiddenkeys/daemons_v1alpha1_clusterrole.yaml" 0 "Deleting key management test clusterrole"
         rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve-deletehiddenkeys/daemons_v1alpha1_pv.yaml" 0 "Deleting key management test pv"
         rlRun "${OC_CLIENT} apply -f reg_test/key_management_test/minimal-keyretrieve-deletehiddenkeys/daemons_v1alpha1_tangserver.yaml" 0 "Deleting key management test tangserver"
-        cat reg_test/key_management_test/minimal-keyretrieve-deletehiddenkeys/daemons_v1alpha1_clusterrolebinding.yaml \
-          | sed "s/{{OPERATOR_NAMESPACE}}/${OPERATOR_NAMESPACE}/g" | ${OC_CLIENT} apply -f -
         rlRun "checkActiveKeysAmount 1 ${TO_ACTIVE_KEYS} ${TEST_NAMESPACE}" 0 "Checking Active Keys Amount is 1"
         rlRun "checkHiddenKeysAmount 0 ${TO_HIDDEN_KEYS} ${TEST_NAMESPACE}" 0 "Checking Hidden Keys Amount is 0"
-        rlRun "${OC_CLIENT} delete -f reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_clusterrole.yaml" 0 "Deleting key management test clusterrole"
         rlRun "${OC_CLIENT} delete -f reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_tangserver.yaml" 0 "Deleting key management test tangserver"
         rlRun "${OC_CLIENT} delete -f reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_pv.yaml" 0 "Deleting key management test pv"
-        cat reg_test/key_management_test/minimal-keyretrieve/daemons_v1alpha1_clusterrolebinding.yaml \
-          | sed "s/{{OPERATOR_NAMESPACE}}/${OPERATOR_NAMESPACE}/g" | ${OC_CLIENT} delete -f -
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
         rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
     rlPhaseEnd
