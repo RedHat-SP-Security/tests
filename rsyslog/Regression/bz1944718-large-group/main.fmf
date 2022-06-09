@@ -12,7 +12,7 @@ tag:
 tier: '2'
 adjust:
 - enabled: false
-  when: distro ~< rhel-8.4 || distro ~< rhel-7.9 || distro < rhel-7
+  when: distro ~< rhel-8.4 || distro < rhel-7.9
 link:
 - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1944718
 - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1944717
