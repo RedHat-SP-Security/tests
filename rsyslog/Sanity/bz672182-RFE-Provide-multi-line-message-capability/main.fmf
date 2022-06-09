@@ -9,7 +9,9 @@ require+:
   - library(selinux-policy/common)
   - /usr/bin/nc
   - rsyslog
+recommend+:
   - /usr/bin/netstat
+  - /bin/netstat
 duration: 3m
 enabled: true
 
