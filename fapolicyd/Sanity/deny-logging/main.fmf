@@ -1,4 +1,4 @@
-summary: Test for deny_syslog messages
+description: Test for deny_syslog messages
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 duration: 5m
