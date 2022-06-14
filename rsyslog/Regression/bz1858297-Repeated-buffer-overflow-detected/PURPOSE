@@ -1,5 +1,0 @@
-PURPOSE of /CoreOS/rsyslog/Regression/bz1858297-Repeated-buffer-overflow-detected
-Description: Test for BZ#1858297 (Repeated "buffer overflow detected")
-Author: Dalibor Pospisil <dapospis@redhat.com>
-Bug summary: Repeated "buffer overflow detected" [rhel-7.9.z]
-Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1858297

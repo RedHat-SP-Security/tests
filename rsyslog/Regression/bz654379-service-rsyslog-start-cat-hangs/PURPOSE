@@ -1,5 +1,0 @@
-PURPOSE of /CoreOS/rsyslog/Regression/bz654379-service-rsyslog-start-cat-hangs
-Description: Test for bz654379 (service rsyslog start | cat hangs)
-Author: Karel Srot <ksrot@redhat.com>
-Bug summary: service rsyslog start | cat hangs
-Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=654379

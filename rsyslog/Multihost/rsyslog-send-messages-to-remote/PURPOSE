@@ -1,3 +1,0 @@
-PURPOSE of /CoreOS/rsyslog/Multihost/rsyslog-send-messages-to-remote
-Description: Check that rsyslog send messages to remote if in forked debug mode
-Author: Dalibor Pospisil <dapospis@redhat.com>

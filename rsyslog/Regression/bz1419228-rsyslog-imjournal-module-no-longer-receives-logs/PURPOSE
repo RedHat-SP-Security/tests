@@ -1,5 +1,0 @@
-PURPOSE of /CoreOS/rsyslog/Regression/bz1419228-rsyslog-imjournal-module-no-longer-receives-logs
-Description: Test for BZ#1419228 (rsyslog imjournal module no longer receives logs)
-Author: Karel Srot <ksrot@redhat.com>
-Bug summary: rsyslog imjournal module no longer receives logs after switch to persistent journald configuration
-Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1419228

@@ -1,5 +1,0 @@
-PURPOSE of /CoreOS/rsyslog/Regression/bz1061322-systemd-doesn-t-automatically-restart-rsyslog
-Description: Test for BZ#1061322 (systemd doesn't automatically restart rsyslog)
-Author: Marek Marusic <mmarusic@redhat.com>
-Bug summary: systemd doesn't automatically restart rsyslog
-Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1061322

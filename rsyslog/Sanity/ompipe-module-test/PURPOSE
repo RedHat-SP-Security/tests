@@ -1,5 +1,0 @@
-PURPOSE of /CoreOS/rsyslog/Sanity/ompipe-module-test
-Description: Simple test of ompipe rsyslog module
-Author: Karel Srot <ksrot@redhat.com>
-
-Simple test if rsyslog is able to log into a pipe.
