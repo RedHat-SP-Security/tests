@@ -14,7 +14,7 @@ tag:
 - CI-Tier-1
 - TIPfail
 - rhel-8.2
-- rhel8-buildroot
+- rhel-buildroot
 extra-summary: /CoreOS/fapolicyd/Regression/bz1747494-suspicious-logs-on-service-start
 extra-task: /CoreOS/fapolicyd/Regression/bz1747494-suspicious-logs-on-service-start
 extra-nitrate: TC#0605063
