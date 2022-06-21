@@ -1,5 +1,0 @@
-PURPOSE of /CoreOS/fapolicyd/Regression/bz1721496-Stop-littering-STDOUT-output-for-dnf
-Description: Test for BZ#1721496 (Stop littering STDOUT output for dnf plugin in fapolicyd)
-Author: Radovan Sroka <rsroka@redhat.com>
-Bug summary: Stop littering STDOUT output for dnf plugin in fapolicyd
-Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1721496

@@ -1,5 +1,0 @@
-PURPOSE of /CoreOS/fapolicyd/Regression/bz1757736-fapolicyd-blocks-dracut-from-generating-initramfs
-Description: Test for BZ#1757736 (fapolicyd blocks dracut from generating initramfs )
-Author: Radovan Sroka <rsroka@redhat.com>
-Bug summary: fapolicyd blocks dracut from generating initramfs 
-Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1757736

@@ -1,5 +1,0 @@
-PURPOSE of /CoreOS/fapolicyd/Regression/bz1895467-fapolicyd-breaks-system-upgrade-leaving-system-in
-Description: Test for BZ#1895467 (fapolicyd breaks system upgrade, leaving system in)
-Author: Dalibor Pospisil <dapospis@redhat.com>
-Bug summary: fapolicyd breaks system upgrade, leaving system in dead state
-Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1895467
