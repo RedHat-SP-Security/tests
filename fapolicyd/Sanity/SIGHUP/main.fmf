@@ -1,0 +1,20 @@
+description: test SIGHUP handling
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 5m
+enabled: true
+require+:
+  - library(distribution/tcf)
+  - library(ControlFlow/Cleanup)
+tag:
+  - CI-Tier-1
+  - Tier1
+  - rhel-8.7.0
+tier: '1'
+adjust:
+  - enabled: false
+    when: distro < rhel-8.6
+    continue: false
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2070639
+extra-nitrate: TC#0614113
