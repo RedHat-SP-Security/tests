@@ -92,6 +92,7 @@ rlJournalStart
       rlRun "su -c '$exe2' - $testUser" 126 "check untrusted binary $exe2"
       rlRun "fapServiceOut"
       [[ -z "${IN_PLACE_UPGRADE}" ]] && {
+        rlRun "fapStop"
         rlRun "fapStart"
         rlRun "su -c '$exe1' - $testUser" 126 "the cached $exe1 is invalidated by the binary change"
         rlRun "su -c '$exe2' - $testUser" 126 "check untrusted binary $exe2"
@@ -99,6 +100,7 @@ rlJournalStart
       }
       CleanupDo --mark
     rlPhaseEnd; }
+
 
     rlPhaseStartCleanup
       CleanupDo
