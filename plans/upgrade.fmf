@@ -1,0 +1,44 @@
+# how to run: tmt run -a plans -n /plans/upgrade provision -h minute -i 1MT-RHEL-8.7.0-20220722.0
+
+discover:
+    how: fmf
+execute:
+    how: upgrade
+    url: https://gitlab.cee.redhat.com/oamg/rhel-major-upgrade
+    upgrade-path: /paths/el8toel9.supported
+
+/aide:
+    summary: aide upgrade plan
+    discover+:
+        test:
+          - /aide/Sanity/aide-check-sanity
+
+/tang:
+    summary: tang upgrade plan
+    discover+:
+        test:
+          - /tang/Sanity/simple-tang-server-start
+
+/rsyslog:
+    summary: rsyslog upgrade plan
+    discover+:
+        test:
+          - /rsyslog/Sanity/basic-logging-facility/new-syntax
+
+/sudo:
+    summary: sudo upgrade plan
+    discover+:
+        test:
+          - /sudo/Sanity/sudoers-sanity
+
+/usbguard:
+    summary: usbguard upgrade plan
+    discover+:
+        test:
+          - /usbguard/Sanity/IPCACL/basic
+
+/fapolicyd:
+    summary: fapolicyd upgrade plan
+    discover+:
+        test:
+          - /fapolicyd/Sanity/trusted-execution
