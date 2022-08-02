@@ -76,7 +76,10 @@ rlJournalStart
           CleanupRegisterCond 'rlRun "fapStop"'
           rlRun "fapStart"
         }
-        [[ "${IN_PLACE_UPGRADE,,}" == "old" ]] && declare -p exe1 exe2 testUser > /var/tmp/fapolicyd-trusted-execution-persistent-storage
+        [[ "${IN_PLACE_UPGRADE,,}" == "old" ]] && {
+          rlRun "rlServiceEnable fapolicyd"
+          declare -p exe1 exe2 testUser > /var/tmp/fapolicyd-trusted-execution-persistent-storage
+        }
         [[ "${IN_PLACE_UPGRADE,,}" == "new" ]] && . /var/tmp/fapolicyd-trusted-execution-persistent-storage
     rlPhaseEnd
 
