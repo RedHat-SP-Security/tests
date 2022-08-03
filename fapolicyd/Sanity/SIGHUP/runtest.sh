@@ -38,6 +38,8 @@ rlJournalStart && {
     CleanupRegister "rlRun 'rm -r $TmpDir' 0 'Removing tmp directory'"
     CleanupRegister 'rlRun "popd"'
     rlRun "pushd $TmpDir"
+    CleanupRegister 'rlRun "rlFileRestore"'
+    rlRun "rlFileBackup --clean /opt/testfile"
     CleanupRegister 'rlRun "fapCleanup"'
     rlRun "fapSetup"
   rlPhaseEnd; }
@@ -68,6 +70,21 @@ rlJournalStart && {
       rlAssertGrep 'Syncing DB' $rlRun_LOG
       rlAssertEquals "the reload was called three times" $lns 3
       rlRun "rlServiceStatus fapolicyd"
+      CleanupDo --mark
+    rlPhaseEnd; }
+
+    rlPhaseStartTest "TrustDB update on SIGHUP" && {
+      CleanupRegister --mark 'rlRun "fapServiceStop"'
+      rlRun "fapServiceStart"
+      rlRun "rlServiceStatus fapolicyd"
+      CleanupRegister 'rlRun "rm -f /opt/testfile"'
+      rlRun "touch /opt/testfile"
+      CleanupRegister 'rlRun "fapolicyd-cli -f delete /opt/testfile"'
+      rlRun "fapolicyd-cli -f add /opt/testfile"
+      rlRun "systemctl kill --signal SIGHUP fapolicyd"
+      rlRun "sleep 10"
+      rlRun -s "fapolicyd-cli -D | grep testfile"
+      rlAssertGrep '/opt/testfile' $rlRun_LOG
       CleanupDo --mark
     rlPhaseEnd; }
   tcfFin; }
