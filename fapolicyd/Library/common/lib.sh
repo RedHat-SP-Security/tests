@@ -25,7 +25,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = fap
-#   library-version = 24
+#   library-version = 25
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 true <<'=cut'
@@ -269,6 +269,8 @@ install -m 755 fapTestProgram %{buildroot}/usr/local/bin/fapTestProgram
 %files
 /usr/local/bin/fapTestProgram
 
+#scriptlet
+
 %changelog
 # let's skip this for now
 EOS
@@ -276,6 +278,10 @@ EOS
   rlRun "rpmbuild -ba ~/rpmbuild/SPECS/fapTestPackage.spec"
   rlRun "sed -i -r 's/(Version:).*/\1 2/' ~/rpmbuild/SPECS/fapTestPackage.spec"
   rlRun "sed -i -r 's/fapTestProgram/\02/' ~/rpmbuild/SOURCES/fapTestProgram.c"
+  rlRun "rpmbuild -ba ~/rpmbuild/SPECS/fapTestPackage.spec"
+  rlRun "sed -i -r 's/(Version:).*/\1 3/' ~/rpmbuild/SPECS/fapTestPackage.spec"
+  rlRun "sed -i -r 's/fapTestProgram/\03/' ~/rpmbuild/SOURCES/fapTestProgram.c"
+  rlRun "sed -i -r 's/#scriptlet/%pretrans\necho \"restart fapolicyd\"; systemctl restart fapolicyd; echo \"wait 30s\"; sleep 30; echo \"done\"/' ~/rpmbuild/SPECS/fapTestPackage.spec"
   rlRun "rpmbuild -ba ~/rpmbuild/SPECS/fapTestPackage.spec"
   rlRun "mv ~/rpmbuild/RPMS/*/fapTestPackage-* ./"
   rlRun "rm -rf ~/rpmbuild"
