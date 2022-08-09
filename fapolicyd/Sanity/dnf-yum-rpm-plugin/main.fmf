@@ -2,20 +2,25 @@ summary: a sanity for dnf/yum and rpm plugin
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
-- library(distribution/ConditionalPhases)
-- library(distribution/Cleanup)
-- library(distribution/tcf)
-- library(distribution/testUser)
-- fapolicyd
-- rpm-plugin-fapolicyd
+  - library(distribution/ConditionalPhases)
+  - library(distribution/Cleanup)
+  - library(distribution/tcf)
+  - library(distribution/testUser)
+  - fapolicyd
+  - rpm-plugin-fapolicyd
 duration: 25m
 enabled: true
 tag:
-- Tier1
-- rhel-8.4.0
+  - Tier1
+  - rhel-8.4.0
+  - CI-Tier-1
 tier: '1'
 adjust:
--   enabled: false
+  - enabled: false
     when: distro < rhel-8.4
     continue: false
 extra-nitrate: TC#0609436
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2111251
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2110787
+id: 070badc7-5b46-4d17-a7d2-b6419688b3f2

@@ -86,6 +86,16 @@ rlJournalStart
     rlRun "fapStart"
   rlPhaseEnd; }
 
+  rlPhaseStartTest "rpm-plugin restart during update" && {
+    #rlRun "rpm -ivh ${fapTestPackage[2]}"
+    rlRun "fapolicyd-cli -D | grep fapTestProgram" 1-255
+    rlRun "yum install -y ${fapTestPackage[2]}"
+    rlRun "fapolicyd-cli -D | grep fapTestProgram" 0
+    rlRun -s "fapServiceOut"
+    rlAssertGrep "/usr/local/bin/fapTestProgram" $rlRun_LOG
+    rlRun "rpm -evh fapTestPackage"
+  rlPhaseEnd; }
+
   rlPhaseStartCleanup
     CleanupDo
   rlPhaseEnd
