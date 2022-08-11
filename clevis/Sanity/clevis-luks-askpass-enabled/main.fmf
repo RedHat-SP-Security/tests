@@ -1,0 +1,19 @@
+summary: Ensure that clevis-luks-askpass.path is enabled after installation of clevis-systemd
+contact: Martin Zelený <mzeleny@redhat.com>
+test: ./test.sh
+recommend:
+  - clevis-systemd
+duration: 5m
+tag:
+  - Tier1
+tier: '1'
+link:
+  - relates: https://bugzilla.redhat.com/show_bug.cgi?id=2107078
+  - relates: https://bugzilla.redhat.com/show_bug.cgi?id=2107081
+adjust:
+  - enabled: false
+    when: distro < rhel-8.7
+    continue: false
+  - enabled: false
+    when: distro < rhel-9.1
+    continue: false
