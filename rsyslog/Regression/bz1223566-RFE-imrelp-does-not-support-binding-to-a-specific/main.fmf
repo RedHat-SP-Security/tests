@@ -6,15 +6,13 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 path: /rsyslog/Regression/bz1223566-RFE-imrelp-does-not-support-binding-to-a-specific
 require+:
-- library(selinux-policy/common)
-- library(ControlFlow/Cleanup)
+  - library(selinux-policy/common)
+  - library(ControlFlow/Cleanup)
 recommend:
-- rsyslog
-- rsyslog-relp
-- policycoreutils-python
-- psmisc
+  - rsyslog
+  - rsyslog-relp
+  - policycoreutils-python
+  - psmisc
 duration: 30m
 enabled: true
-relevancy: |
-    distro = rhel-4, rhel-5: False
 extra-task: /CoreOS/rsyslog/Regression/bz1223566-RFE-imrelp-does-not-support-binding-to-a-specific
