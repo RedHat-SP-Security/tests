@@ -56,13 +56,13 @@ rlJournalStart && {
       sleep 1s
       echo -n .
     done
-    fapServiceOut > fapolicyd_out
-    rlAssertGrep 'shutting down' fapolicyd_out
-    rlAssertGrep 'fapolicyd.service: (succeeded|Deactivated successfully)' fapolicyd_out -Eiq
+    sleep 3s
+    CleanupDo --mark
+    rlRun -s "fapServiceOut | tail -n +20"
+    rlAssertGrep 'shutting down' $rlRun_LOG
+    rlAssertGrep 'fapolicyd.service: (succeeded|Deactivated successfully)' $rlRun_LOG -Eiq
     rlRun -s "rlServiceStatus fapolicyd" 1-255
     rlAssertNotGrep 'SEGV' $rlRun_LOG
-    rm -f $rlRun_LOG
-    CleanupDo --mark
   }
 
   rlPhaseStartTest && {
