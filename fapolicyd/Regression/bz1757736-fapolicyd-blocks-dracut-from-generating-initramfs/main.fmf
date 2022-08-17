@@ -17,7 +17,7 @@ tier: 3
 adjust:
 - enabled: false
   when: distro < rhel-8.2
-links:
+link:
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2066300
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2068052
 

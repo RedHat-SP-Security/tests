@@ -11,12 +11,10 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 path: /aide/Sanity/aide-output-to-multiple-report_url-streams
 recommend:
-- aide
-- coreutils
-- rsyslog
+  - aide
+  - coreutils
+  - rsyslog
 duration: 5m
 enabled: true
 tier: '1'
-relevancy: |
-    distro = rhel-4, rhel-5: False
 extra-task: /CoreOS/aide/Sanity/aide-output-to-multiple-report_url-streams
