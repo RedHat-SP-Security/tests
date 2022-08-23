@@ -4,19 +4,19 @@ description: |
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
-- library(distribution/dpcommon)
-- library(distribution/testUser)
-- fapolicyd
-- file
+  - library(distribution/dpcommon)
+  - library(distribution/testUser)
+  - fapolicyd
+  - file
 recommend:
-- ipa-server
+  - ipa-server
 duration: 60m
 enabled: true
 tag:
-- Tier2
+  - Tier2
 tier: '2'
 adjust+:
-  enabled: false
-  when: distro < rhel-8.1
+  - enabled: false
+    when: distro < rhel-8.1
 extra-summary: /CoreOS/fapolicyd/Sanity/ipa-integration
 extra-nitrate: TC#0609043
