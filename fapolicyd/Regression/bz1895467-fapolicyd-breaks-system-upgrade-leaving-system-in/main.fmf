@@ -25,7 +25,7 @@ tag:
 - FedoraCI
 extra-nitrate: TC#0608926
 extra-summary: /CoreOS/fapolicyd/Regression/bz1895467-fapolicyd-breaks-system-upgrade-leaving-system-in
-adjust:
+adjust+:
 -   enabled: false
     when: distro < rhel-8
     continue: false

@@ -24,7 +24,7 @@ tag:
 - Tier1
 - rhel-8.3.0
 tier: '1'
-adjust:
+adjust+:
 -   enabled: false
     when: distro < rhel-8.3
     continue: false

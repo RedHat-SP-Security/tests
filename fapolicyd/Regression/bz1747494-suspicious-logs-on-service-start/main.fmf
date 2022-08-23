@@ -18,7 +18,7 @@ tag:
 extra-summary: /CoreOS/fapolicyd/Regression/bz1747494-suspicious-logs-on-service-start
 extra-task: /CoreOS/fapolicyd/Regression/bz1747494-suspicious-logs-on-service-start
 extra-nitrate: TC#0605063
-adjust:
+adjust+:
 -   enabled: false
     when: distro ~< rhel-8.2
     continue: false

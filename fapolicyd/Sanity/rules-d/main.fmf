@@ -16,7 +16,7 @@ tag:
   - rhel-9.0.0
   - rhel-buildroot
 tier: '1'
-adjust:
+adjust+:
   - enabled: false
     when: distro < rhel-8.6
     continue: false

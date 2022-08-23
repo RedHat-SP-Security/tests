@@ -1,14 +1,17 @@
-description: test ppid attribute of a rule
+description: a stress tests by loading a lot of python modules
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
-duration: 5m
+duration: 15m
 enabled: true
 require+:
   - library(distribution/tcf)
+  - library(distribution/Log)
   - library(ControlFlow/Cleanup)
+  - library(rpm/snapshot)
+  - /usr/bin/pydoc3
+  - /usr/bin/python3
 tag:
-  - CI-Tier-1
-  - Tier1
+  - Tier2
   - rhel-8.7.0
   - rhel-9.1.0
 tier: '1'
@@ -17,6 +20,4 @@ adjust+:
     when: distro < rhel-8.7 or distro < rhel-9.1
     continue: false
 link:
-  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2102558
-  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2102563
-extra-nitrate: TC#0614143
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2100087

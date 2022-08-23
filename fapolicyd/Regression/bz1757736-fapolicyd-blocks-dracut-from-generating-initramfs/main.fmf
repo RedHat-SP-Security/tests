@@ -14,7 +14,7 @@ tag:
 - Tier3
 - rhel-8.2
 tier: 3
-adjust:
+adjust+:
 - enabled: false
   when: distro < rhel-8.2
 link:
@@ -32,7 +32,7 @@ link:
   extra-nitrate: TC#0609921
   environment:
     FAINTEGRITY: size
-  adjust:
+  adjust+:
   - enabled: false
     when: distro < rhel-8.4
 
@@ -42,6 +42,6 @@ link:
   extra-nitrate: TC#0609920
   environment:
     FAINTEGRITY: sha256
-  adjust:
+  adjust+:
   - enabled: false
     when: distro < rhel-8.4

@@ -16,6 +16,6 @@ tag:
 tier: '2'
 duration: 5m
 extra-nitrate: TC#0609439
-adjust:
+adjust+:
   - enabled: false
     when: distro < rhel-8.4

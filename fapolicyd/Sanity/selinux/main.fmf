@@ -30,7 +30,7 @@ link:
 - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1714529
 - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1841518
 - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1932225
-adjust:
+adjust+:
 -   enabled: false
     when: distro < rhel-8.3
     continue: false

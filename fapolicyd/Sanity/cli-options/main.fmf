@@ -23,7 +23,7 @@ tier: '1'
 extra-summary: /CoreOS/fapolicyd/Sanity/cli-options
 extra-task: /CoreOS/fapolicyd/Sanity/cli-options
 extra-nitrate: TC#0607379
-adjust:
+adjust+:
 -   enabled: false
     when: distro < rhel-8
     continue: false

@@ -23,7 +23,7 @@ tier: '2'
 extra-summary: /CoreOS/fapolicyd/Sanity/trust-db
 extra-task: /CoreOS/fapolicyd/Sanity/trust-db
 extra-nitrate: TC#0607484
-adjust:
+adjust+:
 -   enabled: false
     when: distro < rhel-8
     continue: false

@@ -19,7 +19,7 @@ tag:
 extra-summary: /CoreOS/fapolicyd/Functional/SoftwareRestrictionPoliciesTest12
 extra-task: /CoreOS/fapolicyd/Functional/SoftwareRestrictionPoliciesTest12
 extra-nitrate: TC#0602860
-adjust:
+adjust+:
 -   enabled: false
     when: distro == rhel-4, rhel-5
     continue: false

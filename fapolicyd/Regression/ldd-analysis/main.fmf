@@ -10,7 +10,7 @@ tag:
   - CI-Tier-1
   - Tier1
 tier: '1'
-adjust:
+adjust+:
   - enabled: false
     when: distro < rhel-8.2
 extra-nitrate: TC#0613118

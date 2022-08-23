@@ -10,7 +10,7 @@ tag:
 - rhel-8.4.0
 - CI-Tier-1
 tier: '2'
-adjust:
+adjust+:
 -   enabled: false
     when: distro < rhel-8.4
     continue: false

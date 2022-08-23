@@ -25,7 +25,7 @@ tier: '2'
 extra-summary: /CoreOS/fapolicyd/Sanity/users-shell-script
 extra-task: /CoreOS/fapolicyd/Sanity/users-shell-script
 extra-nitrate: TC#0605875
-adjust:
+adjust+:
 -   enabled: false
     when: distro < rhel-8
     continue: false

@@ -16,7 +16,7 @@ tier: '2'
 extra-summary: /CoreOS/fapolicyd/Regression/bz1721496-Stop-littering-STDOUT-output-for-dnf
 extra-task: /CoreOS/fapolicyd/Regression/bz1721496-Stop-littering-STDOUT-output-for-dnf
 extra-nitrate: TC#0602522
-adjust:
+adjust+:
 -   enabled: false
     when: distro < rhel-8.1 or distro >= rhel-8.6
     because: |

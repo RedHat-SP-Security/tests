@@ -19,7 +19,7 @@ tag:
 extra-summary: /CoreOS/fapolicyd/Regression/bz1746464-default-fapolicyd-policy-prevents-ansible-from-running
 extra-task: /CoreOS/fapolicyd/Regression/bz1746464-default-fapolicyd-policy-prevents-ansible-from-running
 extra-nitrate: TC#0605038
-adjust:
+adjust+:
 -   enabled: false
     when: distro < rhel-8
     continue: false

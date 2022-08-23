@@ -12,7 +12,7 @@ tag:
   - rhel-8.7.0
   - rhel-9.1.0
 tier: '1'
-adjust:
+adjust+:
   - enabled: false
     when: distro < rhel-8.7 or distro < rhel-9.1
     continue: false

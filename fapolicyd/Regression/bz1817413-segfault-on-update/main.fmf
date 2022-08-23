@@ -21,7 +21,7 @@ tier: '3'
 extra-summary: /CoreOS/fapolicyd/Regression/bz1817413-segfault-on-update
 extra-task: /CoreOS/fapolicyd/Regression/bz1817413-segfault-on-update
 extra-nitrate: TC#0607380
-adjust:
+adjust+:
 -   enabled: false
     when: distro < rhel-8
     continue: false

@@ -16,7 +16,7 @@ tag:
 extra-summary: /CoreOS/fapolicyd/Regression/bz1765039-fapolicyd-fails-to-identify-perl-interpreter
 extra-task: /CoreOS/fapolicyd/Regression/bz1765039-fapolicyd-fails-to-identify-perl-interpreter
 extra-nitrate: TC#0605033
-adjust:
+adjust+:
 -   enabled: false
     when: distro ~< rhel-8.2
     continue: false

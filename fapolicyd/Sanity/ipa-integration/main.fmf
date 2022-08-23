@@ -15,7 +15,7 @@ enabled: true
 tag:
 - Tier2
 tier: '2'
-adjust:
+adjust+:
   enabled: false
   when: distro < rhel-8.1
 extra-summary: /CoreOS/fapolicyd/Sanity/ipa-integration

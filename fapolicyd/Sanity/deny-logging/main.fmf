@@ -10,7 +10,7 @@ require+:
 - audit
 - library(distribution/dpcommon)
 - library(distribution/testUser)
-adjust:
+adjust+:
 -   enabled: false
     when: distro < rhel-8.3
     continue: false

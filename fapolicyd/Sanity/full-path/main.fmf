@@ -9,7 +9,7 @@ tag:
   - Tier2
   - rhel-8.6
 tier: '2'
-adjust:
+adjust+:
   - enabled: false
     when: distro < rhel-8.6
     continue: false
