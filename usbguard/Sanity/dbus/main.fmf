@@ -1,0 +1,23 @@
+contact: Attila Lakatos <alakatos@redhat.com>
+enabled: true
+require+:
+  - library(ControlFlow/Cleanup)
+  - library(distribution/testUser)
+  - usbguard-dbus
+  - /usr/sbin/usbguard-dbus
+  - /usr/bin/pkaction
+  - /usr/bin/dbus-send
+tag:
+  - CI-Tier-1
+  - rhel-8.7.0
+  - Tier1
+tier: '1'
+duration: 5m
+test: ./runtest.sh
+summary: Sanity test for usbguard-dbus
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2059067
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2059068
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2058465
+extra-nitrate: TC#0614258
+id: d7f665c3-db49-4a69-9440-0801487b4dae
