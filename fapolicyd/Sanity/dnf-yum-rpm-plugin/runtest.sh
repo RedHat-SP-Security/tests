@@ -50,6 +50,7 @@ rlJournalStart
 
   for comm in dnf yum; do
     which $comm > /dev/null 2>&1 && rlPhaseStartTest "$comm" && {
+      CleanupRegister --mark "rlRun '$comm remove -y fapTestPackage'"
       rlRun "fapStop"
       rlRun "fapolicyd-cli -D | grep $fapTestProgram" 1-255
       rlRun "fapStart"
@@ -61,7 +62,7 @@ rlJournalStart
       rlRun "fapStop"
       rlRun "fapolicyd-cli -D | grep $fapTestProgram"
       rlRun "fapStart"
-      rlRun "$comm remove -y fapTestPackage"
+      CleanupDo --mark
       rlRun "fapStop"
       rlRun "fapolicyd-cli -D | grep $fapTestProgram" 1-255
       rlRun "fapStart"
@@ -69,6 +70,7 @@ rlJournalStart
   done
 
   rlPhaseStartTest "rpm" && {
+    CleanupRegister --mark "rlRun 'rpm -evh fapTestPackage'"
     rlRun "fapStop"
     rlRun "fapolicyd-cli -D | grep $fapTestProgram" 1-255
     rlRun "fapStart"
@@ -80,20 +82,40 @@ rlJournalStart
     rlRun "fapStop"
     rlRun "fapolicyd-cli -D | grep $fapTestProgram"
     rlRun "fapStart"
-    rlRun "rpm -evh fapTestPackage"
+    CleanupDo --mark
     rlRun "fapStop"
     rlRun "fapolicyd-cli -D | grep $fapTestProgram" 1-255
     rlRun "fapStart"
   rlPhaseEnd; }
 
   rlPhaseStartTest "rpm-plugin restart during update" && {
-    #rlRun "rpm -ivh ${fapTestPackage[2]}"
+    CleanupRegister --mark 'rlRun "rm -rf ~/rpmbuild"'
+
+    fapPrepareTestPackageContent
+    rlRun "sed -i -r 's/(Version:).*/\1 3/' ~/rpmbuild/SPECS/fapTestPackage.spec"
+    rlRun "sed -i -r 's/fapTestProgram/\03/' ~/rpmbuild/SOURCES/fapTestProgram.c"
+    rlRun "sed -i -r 's/#scriptlet/%pretrans\necho \"restart fapolicyd\"; systemctl restart fapolicyd; echo \"wait 30s\"; sleep 30; echo \"done\"/' ~/rpmbuild/SPECS/fapTestPackage.spec"
+    rlRun "rpmbuild -ba ~/rpmbuild/SPECS/fapTestPackage.spec"
+    pkg=$(ls -1 ~/rpmbuild/RPMS/*/fapTestPackage-*)
+
     rlRun "fapolicyd-cli -D | grep fapTestProgram" 1-255
-    rlRun "yum install -y ${fapTestPackage[2]}"
+    CleanupRegister "rlRun 'rpm -evh fapTestPackage'"
+    rlRun "yum install -y $pkg"
     rlRun "fapolicyd-cli -D | grep fapTestProgram" 0
     rlRun -s "fapServiceOut"
     rlAssertGrep "/usr/local/bin/fapTestProgram" $rlRun_LOG
-    rlRun "rpm -evh fapTestPackage"
+    CleanupDo --mark
+  rlPhaseEnd; }
+
+  rlPhaseStartTest "rpm-plugin pipe without the service" && {
+    CleanupRegister --mark 'rlRun "fapStart"'
+    rlRun "fapStop"
+    rlRun "mkfifo /run/fapolicyd/fapolicyd.fifo"
+    rlRun "chmod 660 /run/fapolicyd/fapolicyd.fifo"
+    rlRun "chown :fapolicyd /run/fapolicyd/fapolicyd.fifo"
+    CleanupRegister "rlRun 'rpm -evh fapTestPackage'"
+    rlRun "yum install -y ${fapTestPackage[0]}"
+    CleanupDo --mark
   rlPhaseEnd; }
 
   rlPhaseStartCleanup
