@@ -6,8 +6,10 @@ require+:
   - library(distribution/Cleanup)
   - library(distribution/tcf)
   - library(distribution/testUser)
+  - library(distribution/dpcommon)
   - fapolicyd
   - rpm-plugin-fapolicyd
+  - /usr/bin/time
 duration: 25m
 enabled: true
 tag:
