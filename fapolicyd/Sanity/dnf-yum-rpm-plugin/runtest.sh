@@ -94,16 +94,48 @@ rlJournalStart
     fapPrepareTestPackageContent
     rlRun "sed -i -r 's/(Version:).*/\1 3/' ~/rpmbuild/SPECS/fapTestPackage.spec"
     rlRun "sed -i -r 's/fapTestProgram/\03/' ~/rpmbuild/SOURCES/fapTestProgram.c"
-    rlRun "sed -i -r 's/#scriptlet/%pretrans\necho \"restart fapolicyd\"; systemctl restart fapolicyd; echo \"wait 30s\"; sleep 30; echo \"done\"/' ~/rpmbuild/SPECS/fapTestPackage.spec"
+    rlRun "sed -i -r 's/#scriptlet/%pretrans\necho \"restart fapolicyd\"; systemctl restart fapolicyd; echo \"wait 10s\"; sleep 10; echo \"done\"/' ~/rpmbuild/SPECS/fapTestPackage.spec"
     rlRun "rpmbuild -ba ~/rpmbuild/SPECS/fapTestPackage.spec"
     pkg=$(ls -1 ~/rpmbuild/RPMS/*/fapTestPackage-*)
 
     rlRun "fapolicyd-cli -D | grep fapTestProgram" 1-255
     CleanupRegister "rlRun 'rpm -evh fapTestPackage'"
-    rlRun "yum install -y $pkg"
+    rlRun -s "yum install -y $pkg"
     rlRun "fapolicyd-cli -D | grep fapTestProgram" 0
     rlRun -s "fapServiceOut"
     rlAssertGrep "/usr/local/bin/fapTestProgram" $rlRun_LOG
+    CleanupDo --mark
+  rlPhaseEnd; }
+
+  rlPhaseStartTest "rpm-plugin stop during update" && {
+    CleanupRegister --mark 'rlRun "rm -rf ~/rpmbuild"'
+    CleanupRegister 'rlRun "fapStart"'
+
+    fapPrepareTestPackageContent
+    rlRun "cp ~/rpmbuild/SPECS/fapTestPackage.spec ~/rpmbuild/SPECS/fapTestPackage2.spec"
+    rlRun "sed -i -r 's/(Name:).*/\1 fapTestPackage2/' ~/rpmbuild/SPECS/fapTestPackage2.spec"
+    rlRun "sed -i -r 's/(Version:).*/\1 1/' ~/rpmbuild/SPECS/fapTestPackage2.spec"
+    rlRun "sed -i -r 's|/fapTestProgram$|\02|' ~/rpmbuild/SPECS/fapTestPackage2.spec"
+    rlRun "sed -i -r 's/#scriptlet/%pretrans\necho \"stoping fapolicyd\"; systemctl stop fapolicyd; echo \"wait 10s\"; sleep 10; echo \"done\"/' ~/rpmbuild/SPECS/fapTestPackage2.spec"
+    rlRun "rpmbuild -ba ~/rpmbuild/SPECS/fapTestPackage2.spec"
+    pkg=$(ls -1 ~/rpmbuild/RPMS/*/fapTestPackage*)
+
+    rlRun "fapStart"
+
+    CleanupRegister --mark "rlRun 'rpm -evh fapTestPackage2'"
+    rlRun -s "/usr/bin/time -f 'time:%e' yum install -y $pkg"
+    t1=$(grep 'time:' $rlRun_LOG | sed -r 's/time://;s/\.[0-9]{2}//')
+    CleanupDo --mark
+
+    rlRun "fapStart"
+
+    CleanupRegister --mark "rlRun 'rpm -evh fapTestPackage fapTestPackage2'"
+    rlRun -s "/usr/bin/time -f 'time:%e' yum install -y $pkg ${fapTestPackage[1]}"
+    t2=$(grep 'time:' $rlRun_LOG | sed -r 's/time://;s/\.[0-9]{2}//')
+    CleanupDo --mark
+
+    rlRun "compare_with_tolerance $t1 $t2 10"
+
     CleanupDo --mark
   rlPhaseEnd; }
 
