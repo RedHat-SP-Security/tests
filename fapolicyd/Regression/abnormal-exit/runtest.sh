@@ -57,7 +57,7 @@ rlJournalStart
     rlRun -s "fapServiceOut -t"
     rlAssertGrep 'shutting down' $rlRun_LOG
     rlAssertGrep 'fapolicyd.service: (succeeded|Deactivated successfully)' $rlRun_LOG -Eiq
-    rlAssertGrep 'Stopped File Access Policy Daemon' $rlRun_LOG -Eiq
+    rlAssertGrep 'Stopped.*File Access Policy Daemon' $rlRun_LOG -Eiq
     rlAssertGrep 'Starting to listen for events' $rlRun_LOG
     rlAssertNotGrep 'Error receiving fanotify_event (Permission denied)' $rlRun_LOG
     rlAssertNotGrep 'Error reading (Permission denied)' $rlRun_LOG
