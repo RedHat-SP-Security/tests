@@ -14,7 +14,7 @@ tag:
 tier: '1'
 adjust+:
   - enabled: false
-    when: distro < rhel-8.7 or distro < rhel-9.1
+    when: distro < rhel-8.7 or distro ~< rhel-9.1
     continue: false
 link:
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2102558
