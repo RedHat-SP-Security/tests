@@ -6,6 +6,7 @@ enabled: true
 require+:
   - library(distribution/tcf)
   - library(ControlFlow/Cleanup)
+  - /usr/lib/systemd/system/atd.service
 tag:
   - CI-Tier-1
   - Tier1
