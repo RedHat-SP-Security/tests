@@ -86,6 +86,7 @@ rlJournalStart
                 -e '/etc/xinetd.conf' \
                 -e '/etc/xinetd.d' \
                 -e '/etc/securetty' \
+                -e '/etc/grub.d' \
             > aide_config_paths_2" \
             0 "Sanitaze aide config paths - remove paths that are not part of 'repoquery -al'"
 
