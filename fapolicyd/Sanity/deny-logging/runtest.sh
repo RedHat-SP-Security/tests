@@ -73,6 +73,18 @@ rlJournalStart && {
       CleanupDo --mark
     rlPhaseEnd; }
 
+    rlPhaseStartTest "debug-deny check" && {
+      CleanupRegister --mark 'rlRun "fapStop"'
+      rlRun "cat /etc/fapolicyd/fapolicyd.rules"
+      rlRun "fapStart"
+      rlRun "rlServiceStatus fapolicyd"
+      rlRun "su - $testUser -c '$PWD/ls'" 126
+      rlRun -s "fapServiceOut"
+      rlAssertGrep 'rule=[0-9]+ dec=deny_audit perm=execute auid=[-0-9]+ pid=[0-9]+ exe=/usr/bin/bash : path=/tmp/[^/]+/ls ftype=application/x-executable trust=0' $rlRun_LOG -Eq
+      rm -f $rlRun_LOG
+      CleanupDo --mark
+    rlPhaseEnd; }
+
     rlPhaseStartTest "deny_syslog check" && {
       rlRun "sed -r -i 's/deny_audit/deny_syslog/' /etc/fapolicyd/fapolicyd.rules"
       CleanupRegister --mark 'rlRun "fapServiceStop"'
