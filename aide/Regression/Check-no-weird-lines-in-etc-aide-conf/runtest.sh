@@ -89,6 +89,9 @@ rlJournalStart
             > aide_config_paths_2" \
             0 "Sanitaze aide config paths - remove paths that are not part of 'repoquery -al'"
 
+        [[ $(rlGetArch) =~ "s390" ]] && rlRun "sed -i '\|/etc/grub.d|d' aide_config_paths_2" 0 \
+            "Removing /etc/grub.d aide configured path: not present on s390x"
+
         rlRun "mv aide_config_paths_2 aide_config_paths"
         rlRun "wc -l aide_config_paths" 0 "Count of paths in aide config"
 
