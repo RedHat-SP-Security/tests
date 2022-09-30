@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 63
+#   library-version = 64
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=63
+__INTERNAL_rsyslog_LIB_VERSION=64
 
 : <<'=cut'
 =pod
@@ -1308,20 +1308,20 @@ rsyslogConfigCheck() {
 
 rsyslogResetLogFilePointer() {
   local file="$1"
-  local var_name="file_${file//[^[:alnum:]]/_}_bytes"
   local bytes=0
-  [[ -r "$1" ]] && bytes=$(stat -c '%s' $1)
-  let $var_name=bytes+1
-  export $var_name
+  local base="${BEAKERLIB_DIR:-/var/tmp}/rsyslog_lib"
+  bytes=$(($(stat -L -c '%s' "$file" 2> /dev/null) + 1)) || return
+  mkdir -p "$(dirname "$base/$file")"
+  echo "$bytes" > "$base/$file"
 }
 
 
 rsyslogCatLogFileFromPointer() {
   local file="$1"
-  local var_name="file_${file//[^[:alnum:]]/_}_bytes"
-  local bytes=${!var_name}
-  [[ -z "$bytes" ]] && bytes=0
-  tail -c +$bytes "$1"
+  local bytes=0
+  local base="${BEAKERLIB_DIR:-/var/tmp}/rsyslog_lib"
+  [[ -f "$base/$file" ]] && bytes=$(cat "$base/$file")
+  tail -c +$bytes "$file"
 }
 
 # wait until a file is growing or the pattern is found
