@@ -26,5 +26,5 @@ extra-task: /CoreOS/sudo/Regression/bz1788196-sudo-allows-privilege-escalation-w
 extra-nitrate: TC#0606159
 adjust:
 -   enabled: false
-    when: distro == rhel-4, rhel-5
+    when: distro < rhel-7
     continue: false
