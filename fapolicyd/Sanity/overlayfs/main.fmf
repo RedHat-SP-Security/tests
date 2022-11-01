@@ -19,3 +19,5 @@ link:
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2136802
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2137263
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2137264
+extra-nitrate: TC#0614420
+id: 0af452eb-619e-42ef-b07a-49f0dec0cc4e
