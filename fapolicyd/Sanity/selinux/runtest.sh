@@ -93,7 +93,14 @@ rlJournalStart && {
       rlSESearchRule "allow fapolicyd_t fapolicyd_log_t : file { create open read write } [ ]"
       rlSESearchRule "allow fapolicyd_t fapolicyd_var_run_t : file { create open read write } [ ]"
       rlSESearchRule "allow fapolicyd_t filesystem_type:filesystem watch [ ]"
+      rlSESearchRule "allow fapolicyd_t dosfs_t:filesystem watch [ ]"
+      rlSESearchRule "allow fapolicyd_t tmpfs_t:filesystem watch [ ]"
+      rlSESearchRule "allow fapolicyd_t fs_t:filesystem watch [ ]"
       rlSESearchRule "allow fapolicyd_t mountpoint:dir watch_sb [ ]"
+      rlSESearchRule "allow fapolicyd_t tmpfs_t:dir watch_sb [ ]"
+      rlSESearchRule "allow fapolicyd_t user_tmp_t:dir watch_sb [ ]"
+      rlSESearchRule "allow fapolicyd_t root_t:dir watch_sb [ ]"
+      rlSESearchRule "allow fapolicyd_t boot_t:dir watch_sb [ ]"
 
     rlPhaseEnd; }
 
