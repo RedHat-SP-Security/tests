@@ -105,9 +105,10 @@ rlJournalStart && {
     rlPhaseEnd; }
 
     rlPhaseStartTest "running daemon" && {
+      CleanupRegister --mark
       getenforce | grep -qi enforcing && {
-        CleanupRegister --mark 'rlRun "rlSESetEnforce 1"'
-        rlRun "rlSESetEnforce 0"
+        CleanupRegister 'rlRun "setenforce 1"'
+        rlRun "setenforce 0"
       }
       rlSESetTimestamp
       CleanupRegister 'rlRun "fapServiceStop"'
