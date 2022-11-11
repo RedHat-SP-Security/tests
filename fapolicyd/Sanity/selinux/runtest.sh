@@ -46,9 +46,18 @@ rlJournalStart && {
     rlRun "mkfs.ext4 ./disk.img"
     rlRun "mkdir ./mount_point"
     CleanupRegister 'rlRun "umount -fl ./mount_point"'
-    rlRun "mount -o loop ./disk.img ./mount_point"
-    rlRun "mount"
+    rlRun "mount -o loop,defcontext=system_u:object_r:var_t:s0 ./disk.img ./mount_point"
     rlRun "ls -ldZ ./mount_point"
+    CleanupRegister 'rlRun "rm -f ./disk2.img"'
+    rlRun "dd if=/dev/zero of=./disk2.img bs=1M count=1 skip=1024"
+    rlRun "mkfs.ext4 ./disk2.img"
+    CleanupRegister 'rlRun "rm -rf /mnt/mount_point"'
+    rlRun "mkdir -p /mnt/mount_point"
+    CleanupRegister 'rlRun "umount -fl /mnt/mount_point"'
+    rlRun "mount -o loop ./disk2.img /mnt/mount_point"
+    rlRun "restorecon -rvF /mnt/mount_point"
+    rlRun "ls -ldZ /mnt/mount_point"
+    rlRun "mount"
     CleanupRegister 'rlRun "rlFileRestore"'
     rlRun "rlFileBackup --clean /etc/usbguard"
     CleanupRegister 'rlRun "fapCleanup"'
@@ -60,6 +69,7 @@ rlJournalStart && {
       rlSEMatchPathCon "/etc/fapolicyd" "fapolicyd_config_t"
       rlSEMatchPathCon "/etc/fapolicyd/fapolicyd.conf" "fapolicyd_config_t"
       rlSEMatchPathCon "/etc/fapolicyd/fapolicyd.rules" "fapolicyd_config_t"
+      rlIsRHELLike '>8.5' && rlSEMatchPathCon "/etc/fapolicyd/compiled.conf" "fapolicyd_config_t"
       rlSEMatchPathCon "/etc/fapolicyd/fapolicyd.trust" "fapolicyd_config_t"
       rlSEMatchPathCon "/usr/sbin/fapolicyd" "fapolicyd_exec_t"
       rlSEMatchPathCon "/var/log/fapolicyd-access.log" "fapolicyd_log_t"
@@ -82,11 +92,18 @@ rlJournalStart && {
       rlSESearchRule "allow fapolicyd_t fapolicyd_var_lib_t : file { create open read write } [ ]"
       rlSESearchRule "allow fapolicyd_t fapolicyd_log_t : file { create open read write } [ ]"
       rlSESearchRule "allow fapolicyd_t fapolicyd_var_run_t : file { create open read write } [ ]"
+      rlSESearchRule "allow fapolicyd_t filesystem_type:filesystem watch [ ]"
+      rlSESearchRule "allow fapolicyd_t mountpoint:dir watch_sb [ ]"
+
     rlPhaseEnd; }
 
     rlPhaseStartTest "running daemon" && {
+      getenforce | grep -qi enforcing && {
+        CleanupRegister --mark 'rlRun "rlSESetEnforce 1"'
+        rlRun "rlSESetEnforce 0"
+      }
       rlSESetTimestamp
-      CleanupRegister --mark 'rlRun "fapServiceStop"'
+      CleanupRegister 'rlRun "fapServiceStop"'
       rlRun "fapServiceStart"
       rlRun "sleep 3s"
       rlRun -s "ps uaxZ | grep -v grep | grep fapolicyd"
