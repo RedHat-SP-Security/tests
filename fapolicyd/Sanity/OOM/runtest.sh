@@ -41,7 +41,7 @@ rlJournalStart && {
   rlPhaseEnd; }
 
   tcfTry "Tests" --no-assert && {
-    rlPhaseStartTest "do not exit on SIGHUP" && {
+    rlPhaseStartTest && {
       service_file=$(rpm -ql fapolicyd | grep 'fapolicyd\.service')
       rlAssertGrep 'OOMScoreAdjust=-1000' $service_file
     rlPhaseEnd; }
