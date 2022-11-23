@@ -40,16 +40,56 @@ rlJournalStart && {
     rlRun "pushd $TmpDir"
     CleanupRegister 'rlRun "fapCleanup"'
     rlRun "fapSetup"
-    CleanupRegister 'rlRun "fapServiceRestore"'
-    rlRun "fapServiceStart"
-    rlRun "rlServiceStatus fapolicyd"
     CleanupRegister 'rlRun "rlFileRestore"'
     rlRun "rlFileBackup --clean /usr/bin/id2"
     rlRun "cp /usr/bin/id /usr/bin/id2"
   rlPhaseEnd; }
 
+  expected_default_hardcoded=0
+  expected_default_config=0
+
   tcfTry "Tests" --no-assert && {
-    rlPhaseStartTest "DynamicUser" && {
+    rlPhaseStartTest "DynamicUser - filesystem_mark default setting" && {
+      CleanupRegister --mark 'rlRun "fapServiceStop"'
+      rlRun "fapServiceStart"
+      rlRun "rlServiceStatus fapolicyd"
+      if [[ $expected_default -eq 0 ]]; then
+        rlRun -s "systemd-run --pipe -p DynamicUser=yes bash -c 'id ; id2'" 0
+        rlAssertNotGrep "/usr/bin/id2: Operation not permitted" $rlRun_LOG -iq
+      else
+        rlRun -s "systemd-run --pipe -p DynamicUser=yes bash -c 'id ; id2'" 126
+        rlAssertGrep "/usr/bin/id2: Operation not permitted" $rlRun_LOG -iq
+      fi
+    rlPhaseEnd; }
+
+    rlPhaseStartTest "DynamicUser - filesystem_mark hardcoded default" && {
+      CleanupRegister --mark 'rlRun "fapServiceStop"'
+      fapSetConfigOption 'allow_filesystem_mark'
+      rlRun "fapServiceStart"
+      rlRun "rlServiceStatus fapolicyd"
+      if [[ $expected_default_hardcoded -eq 0 ]]; then
+        rlRun -s "systemd-run --pipe -p DynamicUser=yes bash -c 'id ; id2'" 0
+        rlAssertNotGrep "/usr/bin/id2: Operation not permitted" $rlRun_LOG -iq
+      else
+        rlRun -s "systemd-run --pipe -p DynamicUser=yes bash -c 'id ; id2'" 126
+        rlAssertGrep "/usr/bin/id2: Operation not permitted" $rlRun_LOG -iq
+      fi
+    rlPhaseEnd; }
+
+    rlPhaseStartTest "DynamicUser - filesystem_mark=0" && {
+      CleanupRegister --mark 'rlRun "fapServiceStop"'
+      fapSetConfigOption 'allow_filesystem_mark' '0'
+      rlRun "fapServiceStart"
+      rlRun "rlServiceStatus fapolicyd"
+      rlRun -s "systemd-run --pipe -p DynamicUser=yes bash -c 'id ; id2'" 0
+      rlAssertNotGrep "/usr/bin/id2: Operation not permitted" $rlRun_LOG -iq
+    rlPhaseEnd; }
+
+    rlPhaseStartTest "DynamicUser - filesystem_mark=1" && {
+      CleanupRegister --mark 'rlRun "fapServiceStop"'
+      fapSetConfigOption 'allow_filesystem_mark' '1'
+      rlRun "fapServiceStart"
+      rlRun "rlServiceStatus fapolicyd"
       rlRun -s "systemd-run --pipe -p DynamicUser=yes bash -c 'id ; id2'" 126
       rlAssertGrep "/usr/bin/id2: Operation not permitted" $rlRun_LOG -iq
     rlPhaseEnd; }
