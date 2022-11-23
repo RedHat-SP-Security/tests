@@ -288,6 +288,18 @@ fapPrepareTestPackages() {
   fapTestProgram=/usr/local/bin/fapTestProgram
 }
 
+fapSetConfigOption() {
+  local file=/etc/fapolicyd/fapolicyd.conf
+  sed -i -r "/^$1 =/d"   $file
+  [[ -n "$2" ]] && {
+    echo           >> $file
+    echo "$1 = $2" >> $file
+  }
+  echo "# grep -n -v -e '^\s*#' -e '^\s*$' \"$file\""
+  grep -n -v -e '^\s*#' -e '^\s*$' "$file"
+  echo "---"
+}
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   Verification
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
