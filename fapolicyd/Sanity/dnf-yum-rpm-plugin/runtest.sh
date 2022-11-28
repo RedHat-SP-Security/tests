@@ -136,6 +136,22 @@ rlJournalStart
 
     rlRun "compare_with_tolerance $t1 $t2 10"
 
+    rlRun "fapStart"
+
+    CleanupRegister --mark "rlRun 'rpm -evh fapTestPackage2'"
+    rlRun -s "/usr/bin/time -f 'time:%e' rpm -ivh $pkg"
+    t1=$(grep 'time:' $rlRun_LOG | sed -r 's/time://;s/\.[0-9]{2}//')
+    CleanupDo --mark
+
+    rlRun "fapStart"
+
+    CleanupRegister --mark "rlRun 'rpm -evh fapTestPackage fapTestPackage2'"
+    rlRun -s "/usr/bin/time -f 'time:%e' rpm -ivh $pkg ${fapTestPackage[1]}"
+    t2=$(grep 'time:' $rlRun_LOG | sed -r 's/time://;s/\.[0-9]{2}//')
+    CleanupDo --mark
+
+    rlRun "compare_with_tolerance $t1 $t2 10"
+
     CleanupDo --mark
   rlPhaseEnd; }
 
