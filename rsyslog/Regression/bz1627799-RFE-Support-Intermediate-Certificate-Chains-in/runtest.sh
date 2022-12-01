@@ -108,25 +108,6 @@ EOF
     rlRun "certtool --generate-request --template server.tmpl --load-privkey server-key.pem --outfile server-request.pem" 0 "Generate server cert request"
     rlRun "certtool --generate-certificate --template server.tmpl --load-request server-request.pem  --outfile server-cert.pem --load-ca-certificate ca-cert.pem --load-ca-privkey ca-key.pem" 0 "Generate server cert"
 
-    cat > client.tmpl <<EOF
-organization = "Red Hat"
-unit = "GSS"
-locality = "Brno"
-state = "Moravia"
-country = CZ
-cn = "rsyslog+chain+client"
-serial = 002
-expiration_days = 365
-dns_name = "$(hostname)"
-ip_address = "127.0.0.1"
-email = "root@$(hostname)"
-tls_www_client
-EOF
-    cat client.tmpl
-    rlRun "certtool --generate-privkey --outfile client-key.pem --bits 2048" 0 "Generate key for client"
-    rlRun "certtool --generate-request --template client.tmpl --load-privkey client-key.pem --outfile client-request.pem" 0 "Generate client cert request"
-    rlRun "certtool --generate-certificate --template client.tmpl --load-request client-request.pem  --outfile client-cert.pem --load-ca-certificate ca-cert.pem --load-ca-privkey ca-key.pem" 0 "Generate client cert"
-
     rlRun "mkdir -p /etc/rsyslogd.d && chmod 700 /etc/rsyslogd.d" 0 "Create /etc/rsyslogd.d"
     rlRun "cp *.pem /etc/rsyslogd.d/"
     rlRun "chmod 400 /etc/rsyslogd.d/* && restorecon -R /etc/rsyslogd.d"
@@ -138,8 +119,6 @@ EOF
 global(
     DefaultNetstreamDriver="$driver"
     DefaultNetstreamDriverCAFile="/etc/rsyslogd.d/ca-root-cert.pem"
-    DefaultNetstreamDriverCertFile="/etc/rsyslogd.d/client-cert.pem"
-    DefaultNetstreamDriverKeyFile="/etc/rsyslogd.d/client-key.pem"
 )
 EOF
 
@@ -161,8 +140,7 @@ EOF
       rsyslogServerConfigAppend "MODULES" <<EOF
 module(
     load="imtcp"
-    StreamDriver.AuthMode="x509/name"
-    PermittedPeer="$(hostname)"
+    StreamDriver.AuthMode="anon"
     StreamDriver.Mode="1"
     StreamDriver.Name="$driver"
 )
