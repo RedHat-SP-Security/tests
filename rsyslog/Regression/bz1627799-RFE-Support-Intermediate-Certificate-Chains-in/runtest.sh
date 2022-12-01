@@ -185,6 +185,7 @@ EOF
 
   tcfTry "Tests" --no-assert && {
     rlPhaseStartTest && {
+      rlRun "echo 'ahoj' | openssl s_client -CAfile ca-root-cert.pem -port 6514"
       rlRun "logger 'test message'"
       rlRun "sleep 3s"
       rlAssertNotGrep 'test message' $rsyslogServerLogDir/messages
@@ -195,6 +196,8 @@ EOF
       rlRun "chmod 400 /etc/rsyslogd.d/* && restorecon -R /etc/rsyslogd.d"
       rlRun "rsyslogServerStart"
       rlRun "rsyslogServiceStart"
+      rlRun "rsyslogServerPrintEffectiveConfig -n"
+      rlRun "echo 'ahoj' | openssl s_client -CAfile ca-root-cert.pem -port 6514"
       rlRun "logger 'test message'"
       rlRun "sleep 3s"
       rlAssertGrep 'test message' $rsyslogServerLogDir/messages
