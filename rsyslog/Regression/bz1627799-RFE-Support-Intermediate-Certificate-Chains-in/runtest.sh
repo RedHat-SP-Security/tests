@@ -68,6 +68,27 @@ EOF
     rlRun "certtool --generate-privkey --outfile ca-root-key.pem" 0 "Generate key for root CA"
     rlRun "certtool --generate-self-signed --load-privkey ca-root-key.pem --template ca-root.tmpl --outfile ca-root-cert.pem" 0 "Generate self-signed root CA cert"
 
+    cat > ca2.tmpl <<EOF
+organization = "Red Hat"
+unit = "GSS"
+locality = "Brno"
+state = "Moravia"
+country = CZ
+cn = "rsyslog+chain+ca2"
+serial = 001
+expiration_days = 365
+dns_name = "$(hostname)"
+ip_address = "127.0.0.1"
+email = "root@$(hostname)"
+crl_dist_points = "http://127.0.0.1/getcrl/"
+ca
+cert_signing_key
+crl_signing_key
+EOF
+    rlRun "certtool --generate-privkey --outfile ca2-key.pem" 0 "Generate key for CA2"
+    rlRun "certtool --generate-request --template ca2.tmpl --load-privkey ca2-key.pem --outfile ca2-request.pem" 0 "Generate CA2 cert request"
+    rlRun "certtool --generate-certificate --template ca2.tmpl --load-request ca2-request.pem  --outfile ca2-cert.pem --load-ca-certificate ca-root-cert.pem --load-ca-privkey ca-root-key.pem" 0 "Generate CA2 cert"
+
     cat > ca.tmpl <<EOF
 organization = "Red Hat"
 unit = "GSS"
@@ -87,7 +108,7 @@ crl_signing_key
 EOF
     rlRun "certtool --generate-privkey --outfile ca-key.pem" 0 "Generate key for CA"
     rlRun "certtool --generate-request --template ca.tmpl --load-privkey ca-key.pem --outfile ca-request.pem" 0 "Generate CA cert request"
-    rlRun "certtool --generate-certificate --template ca.tmpl --load-request ca-request.pem  --outfile ca-cert.pem --load-ca-certificate ca-root-cert.pem --load-ca-privkey ca-root-key.pem" 0 "Generate CA cert"
+    rlRun "certtool --generate-certificate --template ca.tmpl --load-request ca-request.pem  --outfile ca-cert.pem --load-ca-certificate ca2-cert.pem --load-ca-privkey ca2-key.pem" 0 "Generate CA cert"
 
     cat > server.tmpl <<EOF
 organization = "Red Hat"
@@ -170,7 +191,7 @@ EOF
       rlRun "rsyslogServiceStop"
       rlRun "rsyslogServerStop"
       rlRun "> $rsyslogServerLogDir/messages"
-      rlRun "cat server-cert.pem ca-cert.pem > /etc/rsyslogd.d/server-cert.pem"
+      rlRun "cat server-cert.pem ca-cert.pem ca2-cert.pem > /etc/rsyslogd.d/server-cert.pem"
       rlRun "chmod 400 /etc/rsyslogd.d/* && restorecon -R /etc/rsyslogd.d"
       rlRun "rsyslogServerStart"
       rlRun "rsyslogServiceStart"
