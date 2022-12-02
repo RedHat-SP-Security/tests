@@ -8,6 +8,7 @@ require+:
   - library(distribution/dpcommon)
   - rsyslog
   - /usr/bin/certtool
+  - openssl
 duration: 5m
 enabled: true
 /gnutls:
@@ -34,20 +35,38 @@ enabled: true
       - enabled: false
         when: distro ~< rhel-7.8
         continue: false
+    id: 16a60e3f-09ec-40ce-bc70-7803b21e0a74
 /openssl:
-    require+:
-      - rsyslog-openssl
-    environment:
-        driver: ossl
-    extra-summary: driver=ossl /CoreOS/rsyslog/Regression/bz1627799-RFE-Support-Intermediate-Certificate-Chains-in
+  require+:
+    - rsyslog-openssl
+  environment:
+      driver: ossl
+  tier: '2'
+  tag:
+    - Tier2
+  /concatenation:
     link:
       - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2026346
-    tag:
-      - Tier2
+    tag+:
       - rhel-8.5
-    tier: '2'
     adjust:
       - enabled: false
         when: distro < rhel-8.5
         continue: false
     extra-nitrate: TC#0613026
+    id: d270ef68-fd90-41e6-9e60-8d38b0386dc9
+  /extraCA:
+    environment+:
+        extraCA: true
+    link:
+      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2124934
+      - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2124849
+    tag+:
+      - rhel-9.2
+      - rhel-8.8
+    adjust:
+      - enabled: false
+        when: distro ~< rhel-8, rhel-8.8, rhel-9.2
+        continue: false
+    extra-nitrate: TC#0614622
+    id: 8fd38e04-0aae-48b9-b68c-dfb34e583ebf

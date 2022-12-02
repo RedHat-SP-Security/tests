@@ -173,6 +173,7 @@ global(
     DefaultNetstreamDriverCAFile="/etc/rsyslogd.d/ca-cert.pem"
     DefaultNetstreamDriverCertFile="/etc/rsyslogd.d/server-cert.pem"
     DefaultNetstreamDriverKeyFile="/etc/rsyslogd.d/server-key.pem"
+    #EXTRACA
 )
 EOF
       rlRun "rsyslogServerPrintEffectiveConfig -n"
@@ -192,8 +193,14 @@ EOF
       rlRun "rsyslogServiceStop"
       rlRun "rsyslogServerStop"
       rlRun "> $rsyslogServerLogDir/messages"
-      rlRun "cat server-cert.pem ca-cert.pem ca2-cert.pem > /etc/rsyslogd.d/server-cert.pem"
-      rlRun "chmod 400 /etc/rsyslogd.d/* && restorecon -R /etc/rsyslogd.d"
+      if [[ "${extraCA,,}" == "true" ]];
+      then
+        # Enable Extra CA Files (only for SSL)
+        rlRun "sed -i 's|#EXTRACA|NetstreamDriverCAExtraFiles=\"/etc/rsyslogd.d/ca2-cert.pem\"|' $rsyslogServerConf"
+      else
+        rlRun "cat server-cert.pem ca-cert.pem ca2-cert.pem > /etc/rsyslogd.d/server-cert.pem"
+        rlRun "chmod 400 /etc/rsyslogd.d/* && restorecon -R /etc/rsyslogd.d"
+      fi
       rlRun "rsyslogServerStart"
       rlRun "rsyslogServiceStart"
       rlRun "rsyslogServerPrintEffectiveConfig -n"
