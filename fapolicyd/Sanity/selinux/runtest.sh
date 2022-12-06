@@ -92,6 +92,10 @@ rlJournalStart && {
       rlSESearchRule "allow fapolicyd_t fapolicyd_var_lib_t : file { create open read write } [ ]"
       rlSESearchRule "allow fapolicyd_t fapolicyd_log_t : file { create open read write } [ ]"
       rlSESearchRule "allow fapolicyd_t fapolicyd_var_run_t : file { create open read write } [ ]"
+    rlPhaseEnd; }
+
+    ! rlIsRHEL '<9' && rlPhaseStartTest "policy rules for allow_filesystem_mark" && {
+      # this is implemented since RHEL 9 because of lack of kernel support on RHEL 8
       rlSESearchRule "allow fapolicyd_t filesystem_type:filesystem watch [ ]"
       rlSESearchRule "allow fapolicyd_t dosfs_t:filesystem watch [ ]"
       rlSESearchRule "allow fapolicyd_t tmpfs_t:filesystem watch [ ]"
@@ -101,7 +105,6 @@ rlJournalStart && {
       rlSESearchRule "allow fapolicyd_t user_tmp_t:dir watch_sb [ ]"
       rlSESearchRule "allow fapolicyd_t root_t:dir watch_sb [ ]"
       rlSESearchRule "allow fapolicyd_t boot_t:dir watch_sb [ ]"
-
     rlPhaseEnd; }
 
     rlPhaseStartTest "running daemon" && {
