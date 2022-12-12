@@ -9,9 +9,9 @@ duration: 5m
 enabled: true
 adjust:
   - enabled: false
-    when: distro < rhel-8.6
+    when: distro < rhel-9.2
 tag:
-  - rhel-8.6
+  - rhel-9.2
   - Tier1
   - CI-Tier-1
 tier: 1
