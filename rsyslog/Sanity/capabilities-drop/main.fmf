@@ -1,0 +1,21 @@
+summary: tests dropping of capabilities
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+  - /usr/bin/pscap
+  - library(ControlFlow/Cleanup)
+  - library(distribution/testUser)
+duration: 5m
+enabled: true
+adjust:
+  - enabled: false
+    when: distro < rhel-9.2
+tag:
+  - rhel-9.2
+  - Tier1
+  - CI-Tier-1
+tier: 1
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2127404
+extra-nitrate: TC#0614658
+id: fc9058fa-e673-494f-b5cf-0495d9885963
