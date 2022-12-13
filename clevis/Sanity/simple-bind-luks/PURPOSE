@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/clevis/Sanity/simple-bind-luks
+Description: Simple version of 'clevis luks bind' test
+Author: Martin Zeleny <mzeleny@redhat.com>
