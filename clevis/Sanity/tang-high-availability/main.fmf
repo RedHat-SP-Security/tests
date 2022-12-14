@@ -1,34 +1,32 @@
 summary: verifies sharing keys between tang servers
-description: ''
-contact: Martin Zelený <mzeleny@redhat.com>
 component:
-- tang
-- clevis
+  - tang
+  - clevis
 test: ./runtest.sh
 recommend:
-- clevis
-- tang
-- jose
-- socat
-- expect
-- psmisc
-- wget
+  - clevis
+  - tang
+  - jose
+  - socat
+  - expect
+  - psmisc
+  - wget
 duration: 5m
 enabled: true
 tag:
-- CI-Tier-1
-- NoRHEL4
-- NoRHEL5
-- NoRHEL6
-- TIPpass_Security
-- Tier1
-- Tier1security
-- TierCandidatesPASS
+  - CI-Tier-1
+  - NoRHEL4
+  - NoRHEL5
+  - NoRHEL6
+  - TIPpass_Security
+  - Tier1
+  - Tier1security
+  - TierCandidatesPASS
 tier: '1'
 extra-summary: /CoreOS/clevis/Sanity/tang-high-availability
 extra-task: /CoreOS/clevis/Sanity/tang-high-availability
 extra-nitrate: TC#0552033
 adjust:
--   enabled: false
+  - enabled: false
     when: distro == rhel-4, rhel-5, rhel-6
     continue: false

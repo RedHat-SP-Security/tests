@@ -1,8 +1,4 @@
 summary: Tests that the system unlocks a non-root device in early boot
-description: ''
-contact: Martin Zelený <mzeleny@redhat.com>
-component:
-  - clevis
 test: ./runtest.sh
 recommend:
   - awk
