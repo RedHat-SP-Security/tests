@@ -1,7 +1,7 @@
 summary: Test -e option
-description: Test clevis to check parameter that allows reading a LUKS2 token
-    id to avoid password prompt for existing LUKS2 password and read it from the
-    key description associated to that token id
+description: Test clevis to check parameter that allows reading a LUKS2 token id to
+    avoid password prompt for existing LUKS2 password and read it from the key description
+    associated to that token id
 enabled: true
 link:
   - relates: https://bugzilla.redhat.com/show_bug.cgi?id=2126533
@@ -16,7 +16,6 @@ adjust:
   - enabled: false
     when: distro ~< rhel-9.2
     continue: false
-contact: Martin Zelený <mzeleny@redhat.com>
 test: ./runtest.sh
 recommend:
   - clevis-luks
@@ -26,3 +25,4 @@ duration: 5m
 extra-nitrate: TC#0614663
 extra-summary: /CoreOS/clevis/Sanity/kernel-keyring-support
 extra-task: /CoreOS/clevis/Sanity/kernel-keyring-support
+id: 02bc9f47-12d6-4323-b8ea-2753a3a6f3fa

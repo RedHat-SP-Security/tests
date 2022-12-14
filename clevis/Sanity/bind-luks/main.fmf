@@ -5,36 +5,35 @@ description: |
     Instead, this test tries many combinations of interactive/batch and
     other features of bind-luks, and another test uses one of these methods
     to test the dracut-based decryption.
-contact: Martin Zelený <mzeleny@redhat.com>
 component:
-- tang
-- clevis
-- jose
+  - tang
+  - clevis
+  - jose
 test: ./runtest.sh
 recommend:
-- clevis
-- clevis-luks
-- luksmeta
-- tang
-- expect
-- socat
-- psmisc
-- wget
+  - clevis
+  - clevis-luks
+  - luksmeta
+  - tang
+  - expect
+  - socat
+  - psmisc
+  - wget
 duration: 5m
 enabled: true
 tag:
-- CI-Tier-1
-- NoRHEL4
-- NoRHEL5
-- NoRHEL6
-- TIPpass_Security
-- Tier1
-- Tier1security
+  - CI-Tier-1
+  - NoRHEL4
+  - NoRHEL5
+  - NoRHEL6
+  - TIPpass_Security
+  - Tier1
+  - Tier1security
 tier: '1'
 extra-summary: /CoreOS/clevis/Sanity/bind-luks
 extra-task: /CoreOS/clevis/Sanity/bind-luks
 extra-nitrate: TC#0554056
 adjust:
--   enabled: false
+  - enabled: false
     when: distro == rhel-4, rhel-5, rhel-6
     continue: false

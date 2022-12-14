@@ -1,32 +1,30 @@
 summary: Sanity check for listing PBD policies and check proper failing message
-description: ''
-contact: Martin Zelený <mzeleny@redhat.com>
 test: ./runtest.sh
 recommend:
-- clevis
-- clevis-luks
-- tang
-- wget
+  - clevis
+  - clevis-luks
+  - tang
+  - wget
 duration: 5m
 enabled: true
 tag:
-- CI-Tier-1
-- NoRHEL4
-- NoRHEL5
-- NoRHEL6
-- NoRHEL7
-- SP-TBU
-- TIPpass
-- TIPpass_Security
-- Tier1
+  - CI-Tier-1
+  - NoRHEL4
+  - NoRHEL5
+  - NoRHEL6
+  - NoRHEL7
+  - SP-TBU
+  - TIPpass
+  - TIPpass_Security
+  - Tier1
 tier: '1'
 extra-summary: /CoreOS/clevis/Sanity/luks-list
 extra-task: /CoreOS/clevis/Sanity/luks-list
 extra-nitrate: TC#0605260
 adjust:
--   enabled: false
+  - enabled: false
     when: distro < rhel-8
     continue: false
--   enabled: false
+  - enabled: false
     when: distro ~< rhel-8.2
     continue: false

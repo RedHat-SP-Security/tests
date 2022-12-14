@@ -1,35 +1,33 @@
 summary: Test the 'clevis luks pass' subcommand with the device and slot as a parameter
     and check the passphrase used to bind that particular slot.
-description: ''
-contact: Martin Zelený <mzeleny@redhat.com>
 test: ./runtest.sh
 recommend:
-- clevis
-- clevis-luks
-- tang
-- jose
-- cryptsetup
-- wget
+  - clevis
+  - clevis-luks
+  - tang
+  - jose
+  - cryptsetup
+  - wget
 duration: 5m
 enabled: true
 tag:
-- CI-Tier-1
-- NoRHEL4
-- NoRHEL5
-- NoRHEL6
-- NoRHEL7
-- SP-TBU
-- TIPpass
-- TIPpass_Security
-- Tier1
+  - CI-Tier-1
+  - NoRHEL4
+  - NoRHEL5
+  - NoRHEL6
+  - NoRHEL7
+  - SP-TBU
+  - TIPpass
+  - TIPpass_Security
+  - Tier1
 tier: '1'
 extra-summary: /CoreOS/clevis/Sanity/luks-pass
 extra-task: /CoreOS/clevis/Sanity/luks-pass
 extra-nitrate: TC#0605163
 adjust:
--   enabled: false
+  - enabled: false
     when: distro < rhel-8
     continue: false
--   enabled: false
+  - enabled: false
     when: distro ~< rhel-8.2
     continue: false

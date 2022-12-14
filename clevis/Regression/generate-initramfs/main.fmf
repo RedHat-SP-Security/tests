@@ -1,25 +1,23 @@
 summary: Do not break generating initramfs by 'dracut -f' when clevis-dracut is installed.
-description: ''
-contact: Martin Zelený <mzeleny@redhat.com>
 test: ./runtest.sh
 recommend:
-- clevis-dracut
+  - clevis-dracut
 duration: 5m
 enabled: true
 tag:
-- CI-Tier-1
-- NoRHEL4
-- NoRHEL5
-- NoRHEL6
-- SP-TBU
-- TIPfail_Security
-- Tier1
-- Tier1security
+  - CI-Tier-1
+  - NoRHEL4
+  - NoRHEL5
+  - NoRHEL6
+  - SP-TBU
+  - TIPfail_Security
+  - Tier1
+  - Tier1security
 tier: '1'
 extra-summary: /CoreOS/clevis/Regression/generate-initramfs
 extra-task: /CoreOS/clevis/Regression/generate-initramfs
 extra-nitrate: TC#0589758
 adjust:
--   enabled: false
+  - enabled: false
     when: distro == rhel-4, rhel-5, rhel-6
     continue: false

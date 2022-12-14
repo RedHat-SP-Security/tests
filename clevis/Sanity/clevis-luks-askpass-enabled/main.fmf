@@ -1,6 +1,5 @@
 summary: Run systemctl is-enabled clevis-luks-askpass.path
 description: Ensure that clevis-luks-askpass.path is enabled after installation of clevis-systemd
-contact: Martin Zelený <mzeleny@redhat.com>
 test: ./test.sh
 recommend:
   - clevis-systemd

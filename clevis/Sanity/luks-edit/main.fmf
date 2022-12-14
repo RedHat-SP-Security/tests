@@ -1,33 +1,31 @@
 summary: Tests for the clevis luks edit command
-description: ''
-contact: Martin Zelený <mzeleny@redhat.com>
 test: ./runtest.sh
 recommend:
-- clevis
-- clevis-luks
-- tang
+  - clevis
+  - clevis-luks
+  - tang
 duration: 10m
 enabled: true
 tag:
-- CI-Tier-1
-- NoRHEL4
-- NoRHEL5
-- NoRHEL6
-- NoRHEL7
-- SP-TBU
-- TIPpass
-- Tier1
+  - CI-Tier-1
+  - NoRHEL4
+  - NoRHEL5
+  - NoRHEL6
+  - NoRHEL7
+  - SP-TBU
+  - TIPpass
+  - Tier1
 tier: '1'
 extra-summary: /CoreOS/clevis/Sanity/luks-edit
 extra-task: /CoreOS/clevis/Sanity/luks-edit
 extra-nitrate: TC#0607353
 adjust:
--   enabled: false
+  - enabled: false
     when: distro < rhel-8
     continue: false
--   enabled: false
+  - enabled: false
     when: distro ~< rhel-8.2
     continue: false
--   enabled: false
+  - enabled: false
     when: distro == rhel-alt-7
     continue: false

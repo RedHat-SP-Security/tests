@@ -1,26 +1,24 @@
 summary: Simple way how to test 'clevis encrypt tang'
-description: ''
-contact: Martin Zelený <mzeleny@redhat.com>
 test: ./runtest.sh
 recommend:
-- clevis
-- tang
-- wget
+  - clevis
+  - tang
+  - wget
 duration: 5m
 enabled: true
 tag:
-- CI-Tier-1
-- NoRHEL4
-- NoRHEL5
-- SP-TBU
-- TIPfail_Security
-- Tier1
-- Tier1security
+  - CI-Tier-1
+  - NoRHEL4
+  - NoRHEL5
+  - SP-TBU
+  - TIPfail_Security
+  - Tier1
+  - Tier1security
 tier: '1'
 extra-summary: /CoreOS/clevis/Sanity/simple-encrypt-pin-tang
 extra-task: /CoreOS/clevis/Sanity/simple-encrypt-pin-tang
 extra-nitrate: TC#0587943
 adjust:
--   enabled: false
+  - enabled: false
     when: distro < rhel-7
     continue: false

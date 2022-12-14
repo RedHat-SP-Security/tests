@@ -1,27 +1,23 @@
 summary: Test clevis SHA-256 thumbprints
-description: ''
-contact: Martin Zelený <mzeleny@redhat.com>
-component:
-- clevis
 test: ./runtest.sh
 recommend:
-- clevis
-- tang
+  - clevis
+  - tang
 duration: 10m
 enabled: true
 tag:
-- NoRHEL6
-- NoRHEL7
-- NoRHEL8
-- Tier1
-- CI-Tier-1
+  - NoRHEL6
+  - NoRHEL7
+  - NoRHEL8
+  - Tier1
+  - CI-Tier-1
 link:
--   relates: https://bugzilla.redhat.com/show_bug.cgi?id=1956760
+  - relates: https://bugzilla.redhat.com/show_bug.cgi?id=1956760
 adjust:
--   enabled: false
+  - enabled: false
     when: distro < rhel-9
     continue: false
--   enabled: false
+  - enabled: false
     when: distro == rhel-alt-7
     continue: false
 extra-nitrate: TC#0610417
