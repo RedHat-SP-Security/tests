@@ -73,7 +73,7 @@ rlJournalStart
 
 
     rlPhaseStartTest "Clevis bind with -e option"
-        rlRun "clevis luks bind -d ${lodev} -e ${TOKEN_ID} tang '{\"url\": \"http://localhost\", \"adv\": \"adv.json\" }'" 0 "Test -e option (no password propt)"
+        rlRun "clevis luks bind -d ${lodev} -e ${TOKEN_ID} tang '{\"url\": \"http://localhost\", \"adv\": \"adv.json\" }'" 0 "Test -e option (no password prompt)"
         rlRun "clevis luks unlock -d ${lodev}" 0 "Test unlock"
     rlPhaseEnd
 
