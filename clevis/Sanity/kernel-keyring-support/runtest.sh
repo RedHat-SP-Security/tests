@@ -33,6 +33,7 @@
 
 PACKAGE="clevis"
 PACKAGES="${PACKAGE} clevis-luks tang"
+FMT="%{name}-%{version}-%{release}\n"
 
 PASSWORD="redhat123"
 KEY_DEST="testkey"
@@ -41,6 +42,18 @@ TOKEN_ID="5"
 rlJournalStart
     rlPhaseStartSetup
         rlAssertRpm --all
+        rlRun "clevisVersion=$(rpm -q ${PACKAGE} --qf ${FMT})"
+
+        if rlIsFedora; then
+            rlTestVersion "${clevisVersion}" '>=' 'clevis-18-14' \
+                || rlDie "Tested functionality is not in old version ${clevisVersion}"
+        elif rlIsRHEL; then
+            rlTestVersion "${clevisVersion}" '>=' 'clevis-18-107' \
+                || rlDie "Tested functionality is not in old version ${clevisVersion}"
+        fi
+        rlRun "cryptsetupVersion=$(rpm -q cryptsetup --qf ${FMT})"
+        rlTestVersion "${cryptsetupVersion}" '>=' 'cryptsetup-2.6' \
+            || rlDie "Tested functionality is not in old version ${cryptsetupVersion}"
 
         rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
         rlRun "pushd $TmpDir"
