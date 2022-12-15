@@ -1,4 +1,4 @@
-description: test execution of a binay on a newly mount FS
+description: test execution of a binary on a newly mount FS
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:

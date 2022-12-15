@@ -2,13 +2,11 @@
 # vim: dict+=/usr/share/beakerlib/dictionary.vim cpt=.,w,b,u,t,i,k
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#   runtest.sh of /CoreOS/fapolicyd/Sanity/trusted-execution
-#   Description: The evaluator will configure fapolicyd to allow execution of executable based on path, hash and directory. The evaluator will then attempt to execute executables. The evaluator will ensure that the executables that are allowed to run has been executed and the executables that are not allowed to run will be denied.
 #   Author: Dalibor Pospisil <dapospis@redhat.com>
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#   Copyright (c) 2021 Red Hat, Inc.
+#   Copyright (c) 2022 Red Hat, Inc.
 #
 #   This program is free software: you can redistribute it and/or
 #   modify it under the terms of the GNU General Public License as
@@ -39,11 +37,11 @@ rlJournalStart
         CleanupRegister "rlRun 'rm -r $TmpDir' 0 'Removing tmp directory'"
         CleanupRegister 'rlRun "popd"'
         rlRun "pushd $TmpDir"
-        CleanupRegisterCond 'rlRun "testUserCleanup"'
+        CleanupRegister 'rlRun "testUserCleanup"'
         rlRun "testUserSetup"
-        CleanupRegisterCond 'rlRun "fapCleanup"'
+        CleanupRegister 'rlRun "fapCleanup"'
         rlRun "fapSetup"
-        CleanupRegisterCond 'rlRun "fapStop"'
+        CleanupRegister 'rlRun "fapStop"'
         rlRun "fapStart"
         CleanupRegister 'rlRun "rm -f ./disk.img"'
         rlRun "dd if=/dev/zero of=./disk.img bs=1M count=1 skip=1024"
