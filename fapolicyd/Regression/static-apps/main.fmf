@@ -1,5 +1,5 @@
-description: make sure that the statically linked apps are treated the same as
-    the dynamically linked ones
+description: make sure that the statically linked apps are treated the same as the
+    dynamically linked ones
 contact: Dalibor Pospisil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
@@ -23,3 +23,4 @@ link:
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2084549
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2084548
 extra-nitrate: TC#0613613
+id: c86b650f-fecd-4d05-9f42-872ee68a1d91
