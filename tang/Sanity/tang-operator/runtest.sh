@@ -86,6 +86,7 @@ dumpInfo() {
     rlLog "OPERATOR NAMESPACE:${OPERATOR_NAMESPACE}"
     rlLog "DISABLE_BUNDLE_INSTALL_TESTS:${DISABLE_BUNDLE_INSTALL_TESTS}"
     rlLog "OC_CLIENT:${OC_CLIENT}"
+    rlLog "RUN_BUNDLE_PARAMS:${RUN_BUNDLE_PARAMS}"
     rlLog "EXECUTION_MODE:${EXECUTION_MODE}"
     rlLog "vvvvvvvvv IP vvvvvvvvvv"
     ip a | grep 'inet '
@@ -532,9 +533,9 @@ bundleStart() {
     fi
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
     then
-      operator-sdk run bundle --timeout ${TO_BUNDLE} quay.io/sec-eng-special/tang-operator-bundle:${VERSION}
+      operator-sdk run bundle --timeout ${TO_BUNDLE} quay.io/sec-eng-special/tang-operator-bundle:${VERSION} ${RUN_BUNDLE_PARAMS}
     else
-      operator-sdk run bundle --timeout ${TO_BUNDLE} quay.io/sec-eng-special/tang-operator-bundle:${VERSION} 2>/dev/null
+      operator-sdk run bundle --timeout ${TO_BUNDLE} quay.io/sec-eng-special/tang-operator-bundle:${VERSION} ${RUN_BUNDLE_PARAMS} 2>/dev/null
     fi
     return $?
 }
@@ -870,7 +871,7 @@ rlJournalStart
         rlRun "checkPodAmount 2 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1+1 PODs are started [Timeout=${TO_POD_START} secs.]"
         pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
         rlAssertNotEquals "Checking pod name not empty" "${pod2_name}" ""
-        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking aded POD in Running state [Timeout=${TO_POD_START} secs.]"
+        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod2_name}" 0 "Checking added POD in Running state [Timeout=${TO_POD_START} secs.]"
         rlRun "${OC_CLIENT} delete -f reg_test/scale_test/scale_out/scale_out0/" 0 "Deleting scale out test"
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
         rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
