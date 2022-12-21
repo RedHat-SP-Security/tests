@@ -1,6 +1,6 @@
 # Special Project Upstream Testing Repository
 
-## componnets
+## components
 * aide
 * clevis
 * fapolicyd
