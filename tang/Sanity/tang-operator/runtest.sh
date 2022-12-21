@@ -49,11 +49,12 @@ TO_POD_CONTROLLER_TERMINATE=180 #seconds (for controller to end must wait longer
 TO_SERVICE_START=60 #seconds
 TO_SERVICE_STOP=120 #seconds
 TO_EXTERNAL_IP=120 #seconds
-TO_WGET_CONNECTION=5 #seconds
+TO_WGET_CONNECTION=10 #seconds
 TO_ALL_POD_CONTROLLER_TERMINATE=120 #seconds
 TO_KEY_ROTATION=1 #seconds
 TO_ACTIVE_KEYS=60 #seconds
 TO_HIDDEN_KEYS=60 #seconds
+TO_SERVICE_UP=60 #seconds
 ADV_PATH="adv"
 QUAY_PATH="quay_secret"
 QUAY_FILE_NAME_TO_FILL="daemons_v1alpha1_tangserver_secret_registry_redhat_io.yaml"
@@ -223,6 +224,28 @@ checkServiceAmount() {
         SERVICE_AMOUNT=$("${OC_CLIENT}" -n "${namespace}" get services | grep -v "^NAME" -c)
         dumpVerbose "SERVICE AMOUNT:${SERVICE_AMOUNT} EXPECTED:${expected} COUNTER:${counter}"
         if [ ${SERVICE_AMOUNT} -eq ${expected} ]; then
+            return 0
+        fi
+        counter=$((counter+1))
+        sleep 1
+    done
+    return 1
+}
+
+checkServiceUp() {
+    local service_ip_host=$1
+    local service_ip_port=$2
+    local iterations=$3
+    local counter
+    counter=0
+    while [ ${counter} -lt ${iterations} ];
+    do
+        if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ]; then
+            wget -O /dev/null -o /dev/null http://${service_ip_host}:${service_ip_port}/adv
+        else
+            wget -O /dev/null -o /dev/null http://${service_ip_host}:${service_ip_port}/adv 2>/dev/null 1>/dev/null
+        fi
+        if [ $? -eq 0 ]; then
             return 0
         fi
         counter=$((counter+1))
@@ -812,6 +835,7 @@ rlJournalStart
         service_name=$(getServiceNameWithPrefix "service" "${TEST_NAMESPACE}" 5 1)
         service_ip=$(getServiceIp "${service_name}" "${TEST_NAMESPACE}" "${TO_EXTERNAL_IP}")
         service_port=$(getServicePort "${service_name}" "${TEST_NAMESPACE}")
+	rlRun "checkServiceUp ${service_ip} ${service_port} ${TO_SERVICE_UP}" 0 "Checking Service:[${service_ip}] UP"
         rlRun "serviceAdv ${service_ip} ${service_port}" 0 "Checking Service Advertisement [IP:${service_ip} PORT:${service_port}]"
         rlRun "${OC_CLIENT} delete -f reg_test/func_test/unique_deployment_test/" 0 "Deleting unique deployment"
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
@@ -834,6 +858,8 @@ rlJournalStart
         service2_name=$(getServiceNameWithPrefix "service" "${TEST_NAMESPACE}" 5 2)
         service2_ip=$(getServiceIp "${service2_name}" "${TEST_NAMESPACE}" "${TO_EXTERNAL_IP}")
         service2_port=$(getServicePort "${service2_name}" "${TEST_NAMESPACE}")
+	rlRun "checkServiceUp ${service1_ip} ${service1_port} ${TO_SERVICE_UP}" 0 "Checking Service:[${service1_ip}] UP"
+	rlRun "checkServiceUp ${service2_ip} ${service2_port} ${TO_SERVICE_UP}" 0 "Checking Service:[${service2_ip}] UP"
         rlRun "serviceAdvCompare ${service1_ip} ${service1_port} ${service2_ip} ${service2_port}" 0 \
               "Checking Services Advertisement [IP1:${service1_ip} PORT1:${service1_port}][IP2:${service2_ip} PORT2:${service2_port}]"
         rlRun "${OC_CLIENT} delete -f reg_test/func_test/multiple_deployment_test/" 0 "Deleting multiple deployment"
@@ -851,6 +877,7 @@ rlJournalStart
         service_name=$(getServiceNameWithPrefix "service" "${TEST_NAMESPACE}" 5 1)
         service_ip=$(getServiceIp "${service_name}" "${TEST_NAMESPACE}" "${TO_EXTERNAL_IP}")
         service_port=$(getServicePort "${service_name}" "${TEST_NAMESPACE}")
+	rlRun "checkServiceUp ${service_ip} ${service_port} ${TO_SERVICE_UP}" 0 "Checking Service:[${service_ip}] UP"
         rlRun "checkKeyRotation ${service_ip} ${service_port} ${TEST_NAMESPACE}" 0\
               "Checking Key Rotation [IP:${service_ip} PORT:${service_port}]"
         rlRun "${OC_CLIENT} delete -f reg_test/func_test/key_rotation/" 0 "Deleting key rotation deployment"
