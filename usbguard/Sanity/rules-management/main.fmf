@@ -1,0 +1,14 @@
+description: rules management in RuleFile and RuleFolder
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+- library(ControlFlow/Cleanup)
+- library(distribution/tcf)
+duration: 10m
+enabled: true
+tag:
+  - CI-Tier-1
+  - Tier2
+tier: '2'
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2122109
