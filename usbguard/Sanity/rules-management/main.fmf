@@ -12,3 +12,4 @@ tag:
 tier: '2'
 link:
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2122109
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2155910
