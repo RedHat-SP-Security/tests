@@ -1,0 +1,19 @@
+description: check that the logrotate script is posixly correct
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 5m
+enabled: true
+tag:
+  - Tier3
+tier: '3'
+adjust:
+  - enabled: false
+    when: distro < rhel-8.8
+    continue: false
+  - enabled: false
+    when: distro ~< rhel-9.2
+    continue: false
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2070496
+extra-nitrate: TC#0614690
+id: 5263db99-8445-440f-bc3f-e5ec22031684
