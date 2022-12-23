@@ -40,13 +40,13 @@ TEST_PV_FILE="${TEST_PVSC_PATH}/${TEST_PV_FILE_NAME}"
 TEST_SC_FILE_NAME="daemons_v1alpha1_storageclass.yaml"
 TEST_SC_FILE="${TEST_PVSC_PATH}/${TEST_SC_FILE_NAME}"
 EXECUTION_MODE=
-TO_POD_START=60 #seconds
-TO_POD_SCALEIN_WAIT=60 #seconds
-TO_LEGACY_POD_RUNNING=60 #seconds
+TO_POD_START=120 #seconds
+TO_POD_SCALEIN_WAIT=120 #seconds
+TO_LEGACY_POD_RUNNING=120 #seconds
 TO_POD_STOP=5 #seconds
-TO_POD_TERMINATE=60 #seconds
+TO_POD_TERMINATE=120 #seconds
 TO_POD_CONTROLLER_TERMINATE=180 #seconds (for controller to end must wait longer)
-TO_SERVICE_START=60 #seconds
+TO_SERVICE_START=120 #seconds
 TO_SERVICE_STOP=120 #seconds
 TO_EXTERNAL_IP=120 #seconds
 TO_WGET_CONNECTION=10 #seconds
@@ -54,7 +54,7 @@ TO_ALL_POD_CONTROLLER_TERMINATE=120 #seconds
 TO_KEY_ROTATION=1 #seconds
 TO_ACTIVE_KEYS=60 #seconds
 TO_HIDDEN_KEYS=60 #seconds
-TO_SERVICE_UP=60 #seconds
+TO_SERVICE_UP=180 #seconds
 ADV_PATH="adv"
 QUAY_PATH="quay_secret"
 QUAY_FILE_NAME_TO_FILL="daemons_v1alpha1_tangserver_secret_registry_redhat_io.yaml"
@@ -162,7 +162,7 @@ checkPodAmount() {
     while [ ${counter} -lt ${iterations} ];
     do
         POD_AMOUNT=$("${OC_CLIENT}" -n "${namespace}" get pods | grep -v "^NAME" -c)
-        dumpVerbose "POD AMOUNT:${POD_AMOUNT} EXPECTED:${expected} COUNTER:${counter}"
+        dumpVerbose "POD AMOUNT:${POD_AMOUNT} EXPECTED:${expected} COUNTER:${counter}/${iterations}"
         if [ ${POD_AMOUNT} -eq ${expected} ]; then
             return 0
         fi
@@ -204,7 +204,7 @@ checkPodState() {
     while [ ${counter} -lt ${iterations} ];
     do
       pod_status=$("${OC_CLIENT}" -n "${namespace}" get pod "${podname}" | grep -v "^NAME" | awk '{print $3}')
-      dumpVerbose "POD STATUS:${pod_status} EXPECTED:${expected} COUNTER:${counter}"
+      dumpVerbose "POD STATUS:${pod_status} EXPECTED:${expected} COUNTER:${counter}/${iterations}"
       if [ "${pod_status}" == "${expected}" ]; then
         return 0
       fi
@@ -223,7 +223,7 @@ checkServiceAmount() {
     while [ ${counter} -lt ${iterations} ];
     do
         SERVICE_AMOUNT=$("${OC_CLIENT}" -n "${namespace}" get services | grep -v "^NAME" -c)
-        dumpVerbose "SERVICE AMOUNT:${SERVICE_AMOUNT} EXPECTED:${expected} COUNTER:${counter}"
+        dumpVerbose "SERVICE AMOUNT:${SERVICE_AMOUNT} EXPECTED:${expected} COUNTER:${counter}/${iterations}"
         if [ ${SERVICE_AMOUNT} -eq ${expected} ]; then
             return 0
         fi
@@ -238,18 +238,20 @@ checkServiceUp() {
     local service_ip_port=$2
     local iterations=$3
     local counter
+    local http_service="http://${service_ip_host}:${service_ip_port}/adv"
     counter=0
     while [ ${counter} -lt ${iterations} ];
     do
         if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ]; then
-            wget -O /dev/null -o /dev/null http://${service_ip_host}:${service_ip_port}/adv
+            wget -O /dev/null -o /dev/null --timeout=${TO_WGET_CONNECTION} ${http_service}
         else
-            wget -O /dev/null -o /dev/null http://${service_ip_host}:${service_ip_port}/adv 2>/dev/null 1>/dev/null
+            wget -O /dev/null -o /dev/null --timeout=${TO_WGET_CONNECTION} ${http_service} 2>/dev/null 1>/dev/null
         fi
         if [ $? -eq 0 ]; then
             return 0
         fi
         counter=$((counter+1))
+        dumpVerbose "WAITING SERVICE:${http_service} UP, COUNTER:${counter}/${iterations}"
         sleep 1
     done
     return 1
@@ -264,7 +266,7 @@ checkActiveKeysAmount() {
     while [ ${counter} -lt ${iterations} ];
     do
         ACTIVE_KEYS_AMOUNT=$("${OC_CLIENT}" -n "${namespace}" get tangserver -o json | jq '.items[0].status.activeKeys | length')
-        dumpVerbose "ACTIVE KEYS AMOUNT:${ACTIVE_KEYS_AMOUNT} EXPECTED:${expected} COUNTER:${counter}"
+        dumpVerbose "ACTIVE KEYS AMOUNT:${ACTIVE_KEYS_AMOUNT} EXPECTED:${expected} COUNTER:${counter}/${iterations}"
         if [ ${ACTIVE_KEYS_AMOUNT} -eq ${expected} ];
         then
             return 0
@@ -285,7 +287,7 @@ checkHiddenKeysAmount() {
     while [ ${counter} -lt ${iterations} ];
     do
         HIDDEN_KEYS_AMOUNT=$("${OC_CLIENT}" -n "${namespace}" get tangserver -o json | jq '.items[0].status.hiddenKeys | length')
-        dumpVerbose "HIDDEN KEYS AMOUNT:${HIDDEN_KEYS_AMOUNT} EXPECTED:${expected} COUNTER:${counter}"
+        dumpVerbose "HIDDEN KEYS AMOUNT:${HIDDEN_KEYS_AMOUNT} EXPECTED:${expected} COUNTER:${counter}/${iterations}"
         if [ ${HIDDEN_KEYS_AMOUNT} -eq ${expected} ];
         then
             return 0
@@ -309,10 +311,10 @@ getPodNameWithPrefix() {
     do
       local pod_line
       pod_line=$("${OC_CLIENT}" -n "${namespace}" get pods | grep -v "^NAME" | grep "${prefix}" | tail -${tail_position} | head -1)
-      dumpVerbose "POD LINE:[${pod_line}] POD PREFIX:[${prefix}] COUNTER:[${counter}]"
+      dumpVerbose "POD LINE:[${pod_line}] POD PREFIX:[${prefix}] COUNTER:[${counter}/${iterations}]"
       if [ "${pod_line}" != "" ]; then
           echo "${pod_line}" | awk '{print $1}'
-          dumpVerbose "FOUND POD name:[$(echo ${pod_line} | awk '{print $1}')] POD PREFIX:[${prefix}] COUNTER:[${counter}]"
+          dumpVerbose "FOUND POD name:[$(echo ${pod_line} | awk '{print $1}')] POD PREFIX:[${prefix}] COUNTER:[${counter}/${iterations}]"
           return 0
       else
           counter=$((counter+1))
@@ -334,9 +336,9 @@ getServiceNameWithPrefix() {
     do
       local service_name
       service_name=$("${OC_CLIENT}" -n "${namespace}" get services | grep -v "^NAME" | grep "${prefix}" | tail -${tail_position} | head -1)
-      dumpVerbose "SERVICE NAME:[${service_name}] COUNTER:[${counter}]"
+      dumpVerbose "SERVICE NAME:[${service_name}] COUNTER:[${counter}/${iterations}]"
       if [ "${service_name}" != "" ]; then
-          dumpVerbose "FOUND SERVICE name:[$(echo ${service_name} | awk '{print $1}')] POD PREFIX:[${prefix}] COUNTER:[${counter}]"
+          dumpVerbose "FOUND SERVICE name:[$(echo ${service_name} | awk '{print $1}')] POD PREFIX:[${prefix}] COUNTER:[${counter}/${iterations}]"
           echo "${service_name}" | awk '{print $1}'
           return 0
       else
@@ -777,7 +779,7 @@ rlJournalStart
         rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
         rlRun "${OC_CLIENT} delete -f reg_test/conf_test/minimal/" 0 "Deleting minimal configuration"
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no POD continues running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
     rlPhaseEnd
 
     rlPhaseStartTest "Main Configuration"
@@ -795,7 +797,7 @@ rlJournalStart
         rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod3_name}" 0 "Checking POD:[$pod3_name] in Running state [Timeout=${TO_POD_START} secs.]"
         rlRun "${OC_CLIENT} delete -f reg_test/conf_test/main/" 0 "Deleting main configuration"
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
     rlPhaseEnd
 
     rlPhaseStartTest "Multiple Deployment Configuration"
@@ -821,7 +823,7 @@ rlJournalStart
         rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod5_name}" 0 "Checking POD:[$pod3_name] in Running state [Timeout=${TO_POD_START} secs.]"
         rlRun "${OC_CLIENT} delete -f reg_test/conf_test/multi_deployment/" 0 "Deleting multiple deployment configuration"
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
     rlPhaseEnd
     ######### /CONFIGURATION TESTS ########
 
@@ -840,7 +842,7 @@ rlJournalStart
         rlRun "serviceAdv ${service_ip} ${service_port}" 0 "Checking Service Advertisement [IP:${service_ip} PORT:${service_port}]"
         rlRun "${OC_CLIENT} delete -f reg_test/func_test/unique_deployment_test/" 0 "Deleting unique deployment"
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
     rlPhaseEnd
 
     rlPhaseStartTest "Multiple deployment functional test"
@@ -865,7 +867,7 @@ rlJournalStart
               "Checking Services Advertisement [IP1:${service1_ip} PORT1:${service1_port}][IP2:${service2_ip} PORT2:${service2_port}]"
         rlRun "${OC_CLIENT} delete -f reg_test/func_test/multiple_deployment_test/" 0 "Deleting multiple deployment"
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
     rlPhaseEnd
 
     rlPhaseStartTest "Key rotation functional test"
@@ -883,7 +885,7 @@ rlJournalStart
               "Checking Key Rotation [IP:${service_ip} PORT:${service_port}]"
         rlRun "${OC_CLIENT} delete -f reg_test/func_test/key_rotation/" 0 "Deleting key rotation deployment"
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
-        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Service continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
     rlPhaseEnd
     ########### /FUNCTIONAL TESTS #########
 
@@ -936,7 +938,6 @@ rlJournalStart
         mem1=$(getPodMemRequest "${pod1_name}" "${TEST_NAMESPACE}")
         rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_up/scale_up1/" 0 "Creating scale up test [1]"
         rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking only 1 POD continues running [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodState Terminating ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] in Terminating state [Timeout=${TO_POD_START} secs.]"
         rlRun "checkPodKilled ${pod1_name} ${TEST_NAMESPACE} ${TO_POD_TERMINATE}" 0 "Checking POD:[${pod1_name}] not available any more [Timeout=${TO_POD_TERMINATE} secs.]"
         rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 new POD is running [Timeout=${TO_POD_START} secs.]"
         pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
@@ -963,7 +964,6 @@ rlJournalStart
         mem1=$(getPodMemRequest "${pod1_name}" "${TEST_NAMESPACE}")
         rlRun "${OC_CLIENT} apply -f reg_test/scale_test/scale_down/scale_down1/" 0 "Creating scale down test [1]"
         rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking only 1 POD continues running [Timeout=${TO_POD_START} secs.]"
-        rlRun "checkPodState Terminating ${TO_POD_START} ${TEST_NAMESPACE} ${pod1_name}" 0 "Checking POD:[$pod1_name}] in Terminating state [Timeout=${TO_POD_START} secs.]"
         rlRun "checkPodKilled ${pod1_name} ${TEST_NAMESPACE} ${TO_POD_TERMINATE}" 0 "Checking POD:[${pod1_name}] not available any more [Timeout=${TO_POD_TERMINATE} secs.]"
         rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 new POD is running [Timeout=${TO_POD_START} secs.]"
         pod2_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
