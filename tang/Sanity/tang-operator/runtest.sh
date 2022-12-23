@@ -65,6 +65,7 @@ OC_DEFAULT_CLIENT="kubectl"
 test -z "${VERSION}" && VERSION="latest"
 test -z "${OPERATOR_NAMESPACE}" && OPERATOR_NAMESPACE="default"
 test -z "${DISABLE_BUNDLE_INSTALL_TESTS}" && DISABLE_BUNDLE_INSTALL_TESTS=0
+test -z "${IMAGE_VERSION}" && IMAGE_VERSION="quay.io/sec-eng-special/tang-operator-bundle:${VERSION}"
 
 ## UNCOMMENT TO FORCE VERBOSITY
 # VERBOSE=1
@@ -83,7 +84,7 @@ dumpDate() {
 dumpInfo() {
     rlLog "HOSTNAME:$(hostname)"
     rlLog "RELEASE:$(cat /etc/redhat-release)"
-    rlLog "IMAGE:quay.io/sec-eng-special/tang-operator-bundle:${VERSION}"
+    rlLog "IMAGE_VERSION:${IMAGE_VERSION}"
     rlLog "OPERATOR NAMESPACE:${OPERATOR_NAMESPACE}"
     rlLog "DISABLE_BUNDLE_INSTALL_TESTS:${DISABLE_BUNDLE_INSTALL_TESTS}"
     rlLog "OC_CLIENT:${OC_CLIENT}"
@@ -556,9 +557,9 @@ bundleStart() {
     fi
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
     then
-      operator-sdk run bundle --timeout ${TO_BUNDLE} quay.io/sec-eng-special/tang-operator-bundle:${VERSION} ${RUN_BUNDLE_PARAMS}
+      operator-sdk run bundle --timeout ${TO_BUNDLE} ${IMAGE_VERSION} ${RUN_BUNDLE_PARAMS} --namespace ${OPERATOR_NAMESPACE}
     else
-      operator-sdk run bundle --timeout ${TO_BUNDLE} quay.io/sec-eng-special/tang-operator-bundle:${VERSION} ${RUN_BUNDLE_PARAMS} 2>/dev/null
+      operator-sdk run bundle --timeout ${TO_BUNDLE} ${IMAGE_VERSION} ${RUN_BUNDLE_PARAMS} --namespace ${OPERATOR_NAMESPACE} 2>/dev/null
     fi
     return $?
 }
@@ -570,9 +571,9 @@ bundleStop() {
     fi
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
     then
-        operator-sdk cleanup tang-operator
+        operator-sdk cleanup tang-operator --namespace ${OPERATOR_NAMESPACE}
     else
-        operator-sdk cleanup tang-operator 2>/dev/null
+        operator-sdk cleanup tang-operator --namespace ${OPERATOR_NAMESPACE} 2>/dev/null
     fi
     if [ $? -eq 0 ];
     then
