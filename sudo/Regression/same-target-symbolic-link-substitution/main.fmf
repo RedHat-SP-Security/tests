@@ -1,0 +1,12 @@
+description: More symlinks with the same targets get command substitued
+contact: Daalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 2m
+enabled: true
+tag:
+  - Tier1
+  - CI-Tier-1
+links:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2157814
+id: 1748133e-81ce-4073-9084-e4ac7c7fe55f
+extra-nitrate: TC#0614704
