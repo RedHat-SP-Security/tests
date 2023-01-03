@@ -2,8 +2,8 @@ description: rules management in RuleFile and RuleFolder
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
-- library(ControlFlow/Cleanup)
-- library(distribution/tcf)
+  - library(ControlFlow/Cleanup)
+  - library(distribution/tcf)
 duration: 10m
 enabled: true
 tag:
@@ -13,3 +13,5 @@ tier: '2'
 link:
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2122109
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2155910
+extra-nitrate: TC#0614692
+id: 7c881d2c-cedc-4b5a-92b9-3088aa7d5e6c
