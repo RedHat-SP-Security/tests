@@ -1,0 +1,24 @@
+description: allow kernel module to open files
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 5m
+enabled: true
+require+:
+  - library(distribution/tcf)
+  - library(distribution/testUser)
+  - library(ControlFlow/Cleanup)
+  - kernel-debuginfo
+  - systemtap
+tag:
+  - Tier3
+  - rhel-8.8.0
+  - rhel-9.2.0
+tier: '3'
+adjust+:
+  - enabled: false
+    when: distro < rhel-8.8 or distro ~< rhel-9.2
+    continue: false
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2087040
+extra-nitrate: TC#0614719
+id: 0cc6311f-24ce-42e9-838a-88a124f50a51
