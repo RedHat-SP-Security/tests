@@ -1,0 +1,22 @@
+description: test OOM settings
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 5m
+enabled: true
+require+:
+  - library(distribution/tcf)
+  - library(ControlFlow/Cleanup)
+tag:
+  - CI-Tier-1
+  - Tier1
+  - rhel-8.8.0
+  - rhel-9.2.0
+tier: '1'
+adjust+:
+  - enabled: false
+    when: distro < rhel-8.8 or distro ~< rhel-9.2
+    continue: false
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2097419
+extra-nitrate: TC#0614720
+id: ef572f64-79e5-4338-b8db-16f531f110d4
