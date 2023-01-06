@@ -53,7 +53,7 @@ rlJournalStart && {
       rlRun "systemctl reset-failed usbguard" 0-255
       timestamp=$(date +"%F %T")
       rlRun "rlServiceStart usbguard"
-      rlRun -s "journalctl --since '$timestamp' -u usbguard"
+      rlRun -s "journalctl -l --no-pager --since '$timestamp' -u usbguard"
       rlAssertLesserOrEqual "there's only one warning message" $(grep permanent policy $rlRun_LOG | wc -l) 1
       rlRun "usbguard append-rule 'allow with-interface { 08:00:00 07:06:00 }'"
       rlAssertNotExists /etc/usbguard/usbguard.rules
@@ -71,7 +71,7 @@ rlJournalStart && {
       rlRun "systemctl reset-failed usbguard" 0-255
       timestamp=$(date +"%F %T")
       rlRun "rlServiceStart usbguard"
-      rlRun "journalctl --since '$timestamp' -u usbguard"
+      rlRun "journalctl -l --no-pager --since '$timestamp' -u usbguard"
       rlRun "usbguard append-rule 'allow with-interface { 08:00:00 07:06:00 }'"
       rlAssertExists /etc/usbguard/rules.conf
       rlAssertGrep 'allow with-interface { 08:00:00 07:06:00 }' /etc/usbguard/rules.conf
@@ -89,7 +89,7 @@ rlJournalStart && {
       rlRun "systemctl reset-failed usbguard" 0-255
       timestamp=$(date +"%F %T")
       rlRun "rlServiceStart usbguard"
-      rlRun "journalctl --since '$timestamp' -u usbguard"
+      rlRun "journalctl -l --no-pager --since '$timestamp' -u usbguard"
       rlRun "usbguard append-rule 'allow with-interface { 08:00:00 07:07:00 }'"
       rlAssertNotExists /etc/usbguard/rules.conf
       rlAssertGrep 'allow with-interface { 08:00:00 07:07:00 }' /etc/usbguard/rules.d/rules.conf
@@ -110,7 +110,7 @@ rlJournalStart && {
       rlRun "systemctl reset-failed usbguard" 0-255
       timestamp=$(date +"%F %T")
       rlRun "rlServiceStart usbguard"
-      rlRun "journalctl --since '$timestamp' -u usbguard"
+      rlRun "journalctl -l --no-pager --since '$timestamp' -u usbguard"
       rlRun "usbguard append-rule --after 1 'allow with-interface { 08:00:00 08:06:00 }'"
       rlRun "usbguard append-rule --after 2 'allow with-interface { 08:00:00 08:07:00 }'"
       rlAssertExists /etc/usbguard/rules.conf
