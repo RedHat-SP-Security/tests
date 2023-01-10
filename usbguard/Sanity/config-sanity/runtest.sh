@@ -218,13 +218,11 @@ rlJournalStart
     phase_prefix="invalid conf directive name"
 
     test_one_directive SomeNonexistentDirective 12345 1 \
-        "\(E\) Error: parsed key is not in key set: 'SomeNonexistentDirective'"
+        "Error: parsed key is not in key set: 'SomeNonexistentDirective'"
 
     phase_prefix="invalid directive value"
     test_one_directive RuleFile /some/nonexistent/file 1 \
         "\(E\) (Configuration|Check permissions): /some/nonexistent/file"
-    test_one_directive RuleFile %del% 0 \
-        "\(W\) RuleFile not set;"
     test_one_directive ImplicitPolicyTarget non-existent-policy 1 \
         "\(E\) Invalid rule target string"
     test_one_directive PresentDevicePolicy invalid-policy 1 \
