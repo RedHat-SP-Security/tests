@@ -120,7 +120,7 @@ rlJournalStart
         t=$(date +"%F %T")
         rlRun "rlServiceStart usbguard" 1-255
         rlRun "sleep 1s"
-        rlRun -s "journalctl -u usbguard -a --no-pager -S \"$t\""
+        rlRun -s "journalctl -a --no-pager -S \"$t\""
         rlAssertGrep "Permissions for.*should be 0600" $rlRun_LOG
         rm -f $rlRun_LOG
         rlRun "systemctl reset-failed usbguard"
@@ -129,7 +129,7 @@ rlJournalStart
         t=$(date +"%F %T")
         rlRun "rlServiceStart usbguard"
         rlRun "sleep 10s"
-        rlRun -s "journalctl -u usbguard -a --no-pager -S \"$t\""
+        rlRun -s "journalctl -a --no-pager -S \"$t\""
 #        rlAssertGrep "Permissions for.*should be 0600" $rlRun_LOG
         rm -f $rlRun_LOG
         rlRun -s "usbguard list-rules"
@@ -153,7 +153,7 @@ rlJournalStart
         rlRun "sleep 2s"
         rlRun "systemctl -l --no-pager status usbguard"
         rlRun "usbguard list-devices"
-        rlRun -s "journalctl -u usbguard -l --since '$since' --no-pager"
+        rlRun -s "journalctl -l --since '$since' --no-pager"
         rlAssertNotGrep "code=dumped" $rlRun_LOG
         rlAssertNotGrep "code=killed" $rlRun_LOG
         rm -f $rlRun_LOG
@@ -164,7 +164,7 @@ rlJournalStart
         rlRun "sleep 2s"
         rlRun "systemctl -l --no-pager status usbguard"
         rlRun "usbguard list-devices"
-        rlRun -s "journalctl -u usbguard -l --since '$since' --no-pager"
+        rlRun -s "journalctl -l --since '$since' --no-pager"
         rlAssertNotGrep "code=dumped" $rlRun_LOG
         rlAssertNotGrep "code=killed" $rlRun_LOG
         rm -f $rlRun_LOG
@@ -175,7 +175,7 @@ rlJournalStart
         rlRun "sleep 2s"
         rlRun "systemctl -l --no-pager status usbguard"
         rlRun "usbguard list-devices"
-        rlRun -s "journalctl -u usbguard -l --since '$since' --no-pager"
+        rlRun -s "journalctl -l --since '$since' --no-pager"
         rlAssertNotGrep "code=dumped" $rlRun_LOG
         rlAssertNotGrep "code=killed" $rlRun_LOG
         rm -f $rlRun_LOG
@@ -186,7 +186,7 @@ rlJournalStart
         rlRun "sleep 2s"
         rlRun "systemctl -l --no-pager status usbguard"
         rlRun "usbguard list-devices"
-        rlRun -s "journalctl -u usbguard -l --since '$since' --no-pager"
+        rlRun -s "journalctl -l --since '$since' --no-pager"
         rlAssertNotGrep "code=dumped" $rlRun_LOG
         rlAssertNotGrep "code=killed" $rlRun_LOG
         rm -f $rlRun_LOG
