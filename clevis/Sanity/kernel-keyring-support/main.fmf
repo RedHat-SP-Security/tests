@@ -4,7 +4,7 @@ description: Test clevis to check parameter that allows reading a LUKS2 token id
     associated to that token id
 enabled: true
 link:
-  - relates: https://bugzilla.redhat.com/show_bug.cgi?id=2126533
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2126533
 tag:
   - CI-Tier-1
   - Tier1

@@ -15,8 +15,8 @@ tag:
 - Tier2
 tier: '2'
 link:
--   relates: https://bugzilla.redhat.com/show_bug.cgi?id=1957654
--   relates: https://bugzilla.redhat.com/show_bug.cgi?id=1957656
+-   verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1957654
+-   verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1957656
 adjust:
 -   enabled: false
     when: distro < rhel-9
