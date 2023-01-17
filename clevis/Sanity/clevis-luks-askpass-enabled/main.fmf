@@ -8,8 +8,8 @@ tag:
   - Tier1
 tier: '1'
 link:
-  - relates: https://bugzilla.redhat.com/show_bug.cgi?id=2107078
-  - relates: https://bugzilla.redhat.com/show_bug.cgi?id=2107081
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2107078
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2107081
 adjust:
   - enabled: false
     when: distro < rhel-8.6

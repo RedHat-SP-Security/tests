@@ -12,7 +12,7 @@ tag:
   - Tier1
   - CI-Tier-1
 link:
-  - relates: https://bugzilla.redhat.com/show_bug.cgi?id=1956760
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1956760
 adjust:
   - enabled: false
     when: distro < rhel-9
