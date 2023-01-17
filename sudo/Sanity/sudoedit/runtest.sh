@@ -40,7 +40,7 @@ rlJournalStart && {
     rlRun "pushd $TmpDir"
     CleanupRegister 'rlRun "rlFileRestore"'
     rlRun "rlFileBackup --clean /etc/sudoers"
-    CleanupRegister "rlRun 'sessionClose'"
+    CleanupRegister "rlRun 'sessionRun reset'; rlRun 'sessionClose'"
     rlRun "sessionOpen"
     rlRun "echo 'Defaults !authenticate' >> /etc/sudoers"
     export sessionExpectTIMEOUT=5 sessionRunTIMEOUT=5
@@ -50,7 +50,7 @@ rlJournalStart && {
 
   while IFS=';' read -r title options edit ec; do
     rlPhaseStartTest "$title" && {
-      rlRun "sessionRun --timeout 1 'EDITOR=vi sudoedit $options ./test_file'" 254
+      rlRun "sessionRun --timeout 5 'EDITOR=vi sudoedit $options ./test_file'" 254
       [[ "$?" == "254" ]] && {
         rlRun "sessionExpect 'test_file_content'" 0 "wait for the fiel content to show up"
         [[ $edit -eq 1 ]] && rlRun "sessionSend 'iX'\$'\\033'" 0 "insert X and press ESC"
