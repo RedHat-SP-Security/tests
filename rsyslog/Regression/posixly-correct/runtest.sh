@@ -32,7 +32,7 @@ rlJournalStart && {
   rlPhaseEnd; }
 
   rlPhaseStartTest && {
-    rlAssertGrep 'systemctl -s HUP kill rsyslog' /etc/logrotate.d/syslog
+    rlAssertGrep 'systemctl -s HUP kill rsyslog' $(rpm -qal rsyslog\* | grep 'logrotate\.d')
   rlPhaseEnd; }; :
 
   rlJournalPrintText

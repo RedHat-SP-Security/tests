@@ -3,6 +3,8 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 duration: 5m
 enabled: true
+require+:
+  - rsyslog-logrotate
 tag:
   - Tier3
 tier: '3'
@@ -15,5 +17,6 @@ adjust:
     continue: false
 link:
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2070496
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2124488
 extra-nitrate: TC#0614690
 id: 5263db99-8445-440f-bc3f-e5ec22031684
