@@ -50,7 +50,10 @@ rlJournalStart
         rlRun "luksmeta show -d ${lodev} -s 1" "1-100" "Check if there is no luksmeta data in slot 1"
         rlRun "wget -nv -O adv.json \"http://localhost/adv\"" 0 "Get advertisement from tang server"
 
-        rlRun  "echo -n redhat123 | clevis luks bind -f -k - -d ${lodev} tang '{ \"url\": \"http://localhost\", \"adv\": \"adv.json\" }'" 0 "clevis luks bind"
+        rlRun -s "echo -n redhat123 | clevis luks bind -f -k - -d ${lodev} tang '{ \"url\": \"http://localhost\", \"adv\": \"adv.json\" }'" 0 "clevis luks bind"
+
+        rlIsRHEL '>=8.8' && rlIsRHEL '<9' && rlAssertNotGrep "Warning" $rlRun_LOG
+        rlIsRHEL '<9.2' || rlAssertNotGrep "Warning" $rlRun_LOG
 
         if rlIsRHEL '<8'; then
             rlRun "luksmeta show -d ${lodev} -s 1" 0 "Check if there are luksmeta data in slot 1"
