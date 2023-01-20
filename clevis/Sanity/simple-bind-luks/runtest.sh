@@ -53,7 +53,7 @@ rlJournalStart
         rlRun -s "echo -n redhat123 | clevis luks bind -f -k - -d ${lodev} tang '{ \"url\": \"http://localhost\", \"adv\": \"adv.json\" }'" 0 "clevis luks bind"
 
         rlIsRHEL '>=8.8' && rlIsRHEL '<9' && rlAssertNotGrep "Warning" $rlRun_LOG
-        rlIsRHEL '>=9.2' && rlAssertNotGrep "Warning" $rlRun_LOG
+        rlIsRHEL '<9.2' || rlAssertNotGrep "Warning" $rlRun_LOG
 
         if rlIsRHEL '<8'; then
             rlRun "luksmeta show -d ${lodev} -s 1" 0 "Check if there are luksmeta data in slot 1"
