@@ -125,7 +125,7 @@ EOF
  - */05*
 EOF
       rlAssertGrep '/usr/libexec/os-probes/' trustdb
-      rlAssertNotGrep '/usr/libexec/os-probes/mounted/05efi' trustdb
+      rlAssertNotGrep '/usr/libexec/os-probes/mounted(/.*)?/05efi' trustdb -qE
     rlPhaseEnd; }
 
     rlPhaseStartTest "a file pattern can be included in the explicitly excluded directory anywhere in the sub-tree" && {
@@ -133,7 +133,7 @@ EOF
 - /usr/libexec/
  + */05*
 EOF
-      rlAssertGrep '/usr/libexec/os-probes/mounted/05efi' trustdb
+      rlAssertGrep '/usr/libexec/os-probes/mounted(/.*)?/05efi' trustdb -qE
        tmp=$(cat trustdb | grep -v -e '.*/05.*')
        rlAssert0 'check no other than /usr/libexec/.../05* files are imported' ${#tmp}
     rlPhaseEnd; }
