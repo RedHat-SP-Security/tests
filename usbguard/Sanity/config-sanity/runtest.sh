@@ -222,30 +222,30 @@ rlJournalStart
 
     phase_prefix="invalid directive value"
     test_one_directive RuleFile /some/nonexistent/file 1 \
-        "\(E\) (Configuration|Check permissions): /some/nonexistent/file"
+        "(Configuration|Check permissions): /some/nonexistent/file"
     test_one_directive ImplicitPolicyTarget non-existent-policy 1 \
-        "\(E\) Invalid rule target string"
+        "Invalid rule target string"
     test_one_directive PresentDevicePolicy invalid-policy 1 \
-        "\(E\) DevicePolicyMethod: invalid-policy: invalid policy method string"
+        "DevicePolicyMethod: invalid-policy: invalid policy method string"
     test_one_directive PresentControllerPolicy invalid-policy 1 \
-        "\(E\) DevicePolicyMethod: invalid-policy: invalid policy method string"
+        "DevicePolicyMethod: invalid-policy: invalid policy method string"
     test_one_directive InsertedDevicePolicy invalid-policy 1 \
-        "\(E\) DevicePolicyMethod: invalid-policy: invalid policy method string"
+        "DevicePolicyMethod: invalid-policy: invalid policy method string"
     test_one_directive RestoreControllerDeviceState invalidbool 1 \
-        "\(E\) Configuration: RestoreControllerDeviceState: Invalid value"
+        "Configuration: RestoreControllerDeviceState: Invalid value"
     test_one_directive DeviceManagerBackend invalidend 1 \
-        "\(E\) DeviceManager: backend: requested backend is not available"
+        "DeviceManager: backend: requested backend is not available"
     test_one_directive IPCAllowedUsers nonexistentusr 0
     test_one_directive IPCAllowedGroups nonexistentgrp 0
     test_one_directive IPCAccessControlFiles /some/nonexistent/dir 1 \
-        "\(E\) (loadFiles|getConfigsFromDir: opendir): /some/nonexistent/dir: No such file or directory"
+        "(loadFiles|getConfigsFromDir: opendir): /some/nonexistent/dir: No such file or directory"
     test_one_directive DeviceRulesWithPort invalidbool 1 \
-        "\(E\) Configuration: DeviceRulesWithPort: Invalid value"
+        "Configuration: DeviceRulesWithPort: Invalid value"
     test_one_directive AuditFilePath /some/inaccessible/path/for/new/file 1 \
-        "\(E\) AuditFileSink: /some/inaccessible/path/for/new/file: failed to open"
+        "AuditFileSink: /some/inaccessible/path/for/new/file: failed to open"
     usbguardVersion ">=0.7.8-7" && \
       test_one_directive AuthorizedDefault wired 1 \
-        "\(E\) AuthorizedDefaultType: wired: invalid authorized default type string"
+        "AuthorizedDefaultType: wired: invalid authorized default type string"
 
 
     usbguardVersion ">=1.0.0" && {
