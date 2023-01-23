@@ -40,10 +40,10 @@ rlJournalStart && {
     rlRun "pushd $TmpDir"
     CleanupRegister 'rlRun "rlFileRestore"'
     rlRun "rlFileBackup --clean /root/rpmbuild"
-    CleanupRegister --mark "rlRun 'RpmSnapshotRevert'; rlRun 'RpmSnapshotDiscard'"
-    rlRun "RpmSnapshotCreate"
     CleanupRegister 'rlRun "fapCleanup"'
     rlRun "fapSetup"
+    CleanupRegister --mark "rlRun 'RpmSnapshotRevert'; rlRun 'RpmSnapshotDiscard'"
+    rlRun "RpmSnapshotCreate"
     rlRun "rlFetchSrcForInstalled fapolicyd"
     rlRun "rpm -ivh ./fapolicyd*.src.rpm"
     rlRun "yum-builddep -y ~/rpmbuild/SPECS/fapolicyd.spec"
