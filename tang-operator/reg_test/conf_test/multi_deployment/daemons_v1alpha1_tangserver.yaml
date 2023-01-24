@@ -8,7 +8,7 @@ metadata:
 spec:
   # Add fields here
   replicas: 2
-  image: "registry.redhat.io/rhel8/tang"
+  image: "registry.redhat.io/rhel9/tang"
   version: "latest"
   persistentVolumeClaim: "tangserver-pvc-multi1"
   serviceListenPort: 9998
@@ -23,7 +23,7 @@ metadata:
 spec:
   # Add fields here
   replicas: 3
-  image: "registry.redhat.io/rhel8/tang"
+  image: "registry.redhat.io/rhel9/tang"
   version: "latest"
   persistentVolumeClaim: "tangserver-pvc-multi2"
   serviceListenPort: 9999
