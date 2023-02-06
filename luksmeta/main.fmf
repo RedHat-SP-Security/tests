@@ -1,1 +1,3 @@
-component: luksmeta
+component:
+  - luksmeta
+contact: Martin Zelený <mzeleny@redhat.com>

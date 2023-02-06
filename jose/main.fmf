@@ -1,1 +1,3 @@
-component: jose
+component:
+  - jose
+contact: Martin Zelený <mzeleny@redhat.com>

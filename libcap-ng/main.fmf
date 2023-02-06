@@ -1,1 +1,3 @@
-component: libcap-ng
+component:
+  - libcap-ng
+contact: Martin Zelený <mzeleny@redhat.com>
