@@ -1,1 +1,3 @@
-component: tang
+component:
+  - tang
+contact: Martin Zelený <mzeleny@redhat.com>
