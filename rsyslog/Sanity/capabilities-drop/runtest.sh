@@ -66,10 +66,14 @@ EOF
       rlAssertNotGrep 'rsyslogd.*full' $rlRun_LOG
       caps=$(grep 'rsyslogd' $rlRun_LOG | sed -r 's/^.*rsyslogd\s*(.*)$/\1/' | tr -d ',' | tr ' ' '\n' | grep -v + | sort | tr '\n' ' ' | sed -r 's/^\s*//;s/\s*$//')
       rlLog "gathered capabilities: $caps"
-      rlAssertEquals "check the actual list of capabilities" "$caps" "$exp_caps"
-      rlRun -s "ps -C rsyslogd -o user=WIDE-USER-COLUMN,group=WIDE-GROUP-COLUMN,uid,gid --no-headers"
       [[ -z "$USER" && -z "$USER_ID" ]]   && { USER='root';  USER_ID='0';  }
       [[ -z "$GROUP" && -z "$GROUP_ID" ]] && { GROUP='root'; GROUP_ID='0'; }
+      if [[ "$USER" == "root" || "$GROUP" == "root" ]]; then
+        rlAssertEquals "check the actual list of capabilities" "$caps" "$exp_caps"
+      else
+        rlAssertEquals "check the actual list of capabilities" "$caps" ""
+      fi
+      rlRun -s "ps -C rsyslogd -o user=WIDE-USER-COLUMN,group=WIDE-GROUP-COLUMN,uid,gid --no-headers"
       [[ -n "$USER" ]]     && rlAssertGrep "^(\S+\s+){0}$USER\>" $rlRun_LOG -Eq
       [[ -n "$GROUP" ]]    && rlAssertGrep "^(\S+\s+){1}$GROUP\>" $rlRun_LOG -Eq
       [[ -n "$USER_ID" ]]  && rlAssertGrep "^(\S+\s+){2}$USER_ID\>" $rlRun_LOG -Eq
