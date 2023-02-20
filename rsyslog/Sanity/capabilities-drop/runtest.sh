@@ -62,7 +62,7 @@ ${GROUP_ID:+"\$PrivDropToGroupID $GROUP_ID"}
 EOF
       rlRun "rsyslogPrintEffectiveConfig -n"
       rlRun "rsyslogServiceStart"
-      rlRun -s 'pscap -a | grep rsyslogd'
+      rlRun -s 'pscap -a | grep rsyslogd' 0,1
       rlAssertNotGrep 'rsyslogd.*full' $rlRun_LOG
       caps=$(grep 'rsyslogd' $rlRun_LOG | sed -r 's/^.*rsyslogd\s*(.*)$/\1/' | tr -d ',' | tr ' ' '\n' | grep -v + | sort | tr '\n' ' ' | sed -r 's/^\s*//;s/\s*$//')
       rlLog "gathered capabilities: $caps"
