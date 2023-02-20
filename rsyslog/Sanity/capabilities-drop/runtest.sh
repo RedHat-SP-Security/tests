@@ -46,7 +46,7 @@ rlJournalStart && {
     rsyslogConfigAddTo "GLOBALS" < <(rsyslogConfigCreateSection 'CAP')
   rlPhaseEnd; }
 
-  exp_caps="block_suspend chown ipc_lock lease net_admin net_bind_service perfmon setgid setuid sys_admin sys_chroot syslog sys_resource"
+  exp_caps="block_suspend chown dac_override ipc_lock lease net_admin net_bind_service setgid setuid sys_admin sys_chroot syslog sys_resource"
 
   while read -r USER GROUP USER_ID GROUP_ID; do
     [[ "$USER" == '-' ]] && USER=''
@@ -62,14 +62,18 @@ ${GROUP_ID:+"\$PrivDropToGroupID $GROUP_ID"}
 EOF
       rlRun "rsyslogPrintEffectiveConfig -n"
       rlRun "rsyslogServiceStart"
-      rlRun -s 'pscap -a | grep rsyslogd'
+      rlRun -s 'pscap -a | grep rsyslogd' 0,1
       rlAssertNotGrep 'rsyslogd.*full' $rlRun_LOG
       caps=$(grep 'rsyslogd' $rlRun_LOG | sed -r 's/^.*rsyslogd\s*(.*)$/\1/' | tr -d ',' | tr ' ' '\n' | grep -v + | sort | tr '\n' ' ' | sed -r 's/^\s*//;s/\s*$//')
       rlLog "gathered capabilities: $caps"
-      rlAssertEquals "check the actual list of capabilities" "$caps" "$exp_caps"
-      rlRun -s "ps -C rsyslogd -o user=WIDE-USER-COLUMN,group=WIDE-GROUP-COLUMN,uid,gid --no-headers"
       [[ -z "$USER" && -z "$USER_ID" ]]   && { USER='root';  USER_ID='0';  }
       [[ -z "$GROUP" && -z "$GROUP_ID" ]] && { GROUP='root'; GROUP_ID='0'; }
+      if [[ "$USER" == "root" ]]; then
+        rlAssertEquals "check the actual list of capabilities" "$caps" "$exp_caps"
+      else
+        rlAssertEquals "check the actual list of capabilities" "$caps" ""
+      fi
+      rlRun -s "ps -C rsyslogd -o user=WIDE-USER-COLUMN,group=WIDE-GROUP-COLUMN,uid,gid --no-headers"
       [[ -n "$USER" ]]     && rlAssertGrep "^(\S+\s+){0}$USER\>" $rlRun_LOG -Eq
       [[ -n "$GROUP" ]]    && rlAssertGrep "^(\S+\s+){1}$GROUP\>" $rlRun_LOG -Eq
       [[ -n "$USER_ID" ]]  && rlAssertGrep "^(\S+\s+){2}$USER_ID\>" $rlRun_LOG -Eq
