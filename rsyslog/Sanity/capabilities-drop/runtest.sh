@@ -68,7 +68,7 @@ EOF
       rlLog "gathered capabilities: $caps"
       [[ -z "$USER" && -z "$USER_ID" ]]   && { USER='root';  USER_ID='0';  }
       [[ -z "$GROUP" && -z "$GROUP_ID" ]] && { GROUP='root'; GROUP_ID='0'; }
-      if [[ "$USER" == "root" || "$GROUP" == "root" ]]; then
+      if [[ "$USER" == "root" ]]; then
         rlAssertEquals "check the actual list of capabilities" "$caps" "$exp_caps"
       else
         rlAssertEquals "check the actual list of capabilities" "$caps" ""
