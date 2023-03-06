@@ -14,8 +14,8 @@ require+:
 duration: 5m
 enabled: true
 tag:
-- NoRHEL6
-- NoRHEL7
+- CI-Tier-1
+- Tier1
 extra-nitrate: TC#0608974
 extra-summary: /CoreOS/rsyslog/Sanity/omudpspoof-module-test
 extra-task: /CoreOS/rsyslog/Sanity/omudpspoof-module-test
