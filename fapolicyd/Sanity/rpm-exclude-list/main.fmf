@@ -17,7 +17,7 @@ tag:
 tier: '1'
 adjust+:
   - enabled: false
-    when: distro < rhel-8.8 or distro ~< rhel-9.2
+    when: distro < rhel-8.8 or distro ~< rhel-9.2 or arch = s390x
     continue: false
 link:
   - verifies: https://issues.redhat.com/browse/SECENGSP-4416
