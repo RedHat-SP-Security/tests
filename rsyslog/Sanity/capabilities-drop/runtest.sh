@@ -46,7 +46,7 @@ rlJournalStart && {
     rsyslogConfigAddTo "GLOBALS" < <(rsyslogConfigCreateSection 'CAP')
   rlPhaseEnd; }
 
-  exp_caps="block_suspend chown dac_override ipc_lock lease net_admin net_bind_service setgid setuid sys_admin sys_chroot syslog sys_resource"
+  exp_caps="block_suspend chown dac_override ipc_lock lease net_admin net_bind_service net_raw setgid setuid sys_admin sys_chroot syslog sys_resource"
 
   while read -r USER GROUP USER_ID GROUP_ID; do
     [[ "$USER" == '-' ]] && USER=''
