@@ -104,6 +104,21 @@ rlJournalStart
       CleanupDo --mark
     rlPhaseEnd; }
 
+    [[ -z "${IN_PLACE_UPGRADE}" ]] && {
+    rlPhaseStartTest "live-update of trustdb" && {
+      CleanupRegister --mark "rlRun 'fapolicyd-cli -f add $exe1'; rlRun 'fapolicyd-cli --update'"
+      rlRun "fapolicyd-cli -f delete $exe1"
+      rlRun "fapStart"
+      rlRun "su -c '$exe1' - $testUser" 126 "untrusted binary $exe1"
+      rlRun "fapolicyd-cli -f add $exe1"
+      rlRun 'fapolicyd-cli --update'
+      rlRun "su -c '$exe1' - $testUser" 0 "trusted binary $exe1"
+      rlRun "fapolicyd-cli -f delete $exe1"
+      rlRun 'fapolicyd-cli --update'
+      rlRun "su -c '$exe1' - $testUser" 126 "utrusted binary $exe1"
+      CleanupDo --mark
+    rlPhaseEnd; }
+    }
 
     rlPhaseStartCleanup
       CleanupDo

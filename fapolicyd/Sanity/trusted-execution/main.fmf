@@ -17,3 +17,5 @@ adjust+:
 extra-nitrate: TC#0612715
 extra-summary: tests/fapolicyd/Sanity/trusted-execution - test execution of trusted objects
 extra-task: /CoreOS/fapolicyd/Sanity/trusted-execution
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2181472
