@@ -112,9 +112,13 @@ rlJournalStart
       rlRun "su -c '$exe1' - $testUser" 126 "untrusted binary $exe1"
       rlRun "fapolicyd-cli -f add $exe1"
       rlRun 'fapolicyd-cli --update'
+      rlRun "sleep 20s"
+      rlRun "fapServiceOut -t"
       rlRun "su -c '$exe1' - $testUser" 0 "trusted binary $exe1"
       rlRun "fapolicyd-cli -f delete $exe1"
       rlRun 'fapolicyd-cli --update'
+      rlRun "sleep 20s"
+      rlRun "fapServiceOut -t"
       rlRun "su -c '$exe1' - $testUser" 126 "utrusted binary $exe1"
       CleanupDo --mark
     rlPhaseEnd; }
