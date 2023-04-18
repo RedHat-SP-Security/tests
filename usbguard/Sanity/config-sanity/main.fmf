@@ -5,5 +5,4 @@ test: ./runtest.sh
 require:
 - library(ControlFlow/Cleanup)
 - library(ControlFlow/ConditionalPhases)
-recommend:
 - usbguard

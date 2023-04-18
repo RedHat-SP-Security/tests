@@ -49,12 +49,12 @@ set_time_since() {
 }
 journal_find_since() {
     sl 2  # unfortunately, journalctl --since has only 1-sec resolution
-    rlRun "journalctl --flush"
-    sl 1
+    #rlRun "journalctl --flush"
+    #sl 1
     # use system log so the test works both on rhel7 and rhel8
     # please update it if/once the destination is changed in rhel8
     #journalctl -u usbguard -o cat --since "$since" | grep "$@"
-    rlRun -s "journalctl -u usbguard -l --since '$since' --no-pager"
+    rlRun -s "journalctl -l --since '$since' --no-pager"
     [[ -n "$1" ]] && rlAssertGrep "$1" $rlRun_LOG -Eq
     [[ -n "$2" ]] && rlAssertNotGrep "$2" $rlRun_LOG -Eq
     rlAssertNotGrep "code=dumped" $rlRun_LOG
