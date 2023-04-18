@@ -4,25 +4,26 @@ description: |+
 
 contact: Attila Lakatos <alakatos@redhat.com>
 component:
-- rsyslog
+  - rsyslog
 test: ./runtest.sh
 require+:
-- library(distribution/ConditionalPhases)
-- library(distribution/Cleanup)
-- rsyslog
-- rsyslog-udpspoof
+  - library(distribution/ConditionalPhases)
+  - library(distribution/Cleanup)
+  - rsyslog
+  - rsyslog-udpspoof
 duration: 5m
 enabled: true
 tag:
-- CI-Tier-1
-- Tier1
+  - CI-Tier-1
+  - Tier1
 extra-nitrate: TC#0608974
 extra-summary: /CoreOS/rsyslog/Sanity/omudpspoof-module-test
 extra-task: /CoreOS/rsyslog/Sanity/omudpspoof-module-test
 adjust:
--   enabled: false
+  - enabled: false
     when: distro == rhel-6, rhel-7
     continue: false
--   enabled: false
+  - enabled: false
     when: distro == rhel-alt-7
     continue: false
+id: e824a614-3d1a-4353-b0a5-0021d556a224
