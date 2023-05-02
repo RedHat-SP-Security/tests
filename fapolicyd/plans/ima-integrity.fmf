@@ -1,0 +1,21 @@
+summary: run fapolicyd with IMA integrity check
+
+
+prepare:
+  - how: shell
+    script:
+    - rpm -Uv https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm https://dl.fedoraproject.org/pub/epel/epel-next-release-latest-9.noarch.rpm || true
+    when: distro == rhel-9 or distro == centos-stream-9
+
+discover:
+  - name: Configure_simple_IMA_policy
+    how: fmf
+    test:
+      - /Setup/configure_kernel_ima_module
+  - name: Run_fapolicyd_IMA_integrity_check
+    how: fmf
+    test:
+      - /fapolicyd/Sanity/integrity-advanced
+
+execute:
+    how: tmt

@@ -11,7 +11,7 @@ require+:
 - fapolicyd
 - library(ControlFlow/Cleanup)
 - library(distribution/testUser)
-enabled: false
+- attr
 duration: 5m
 extra-summary: /CoreOS/fapolicyd/Sanity/integrity
 extra-task: /CoreOS/fapolicyd/Sanity/integrity
