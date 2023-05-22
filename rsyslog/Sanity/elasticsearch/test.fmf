@@ -1,0 +1,21 @@
+description: Smoke test for elastic search feature
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+  - library(distribution/dpcommon)
+  - library(selinux-policy/common)
+  - rsyslog-elasticsearch
+  - elasticsearch
+  - net-tools
+  - java-openjdk
+duration: 5m
+enabled: false
+adjust:
+  - enabled: false
+    when: arch == s390x,ppc64,ia64
+    continue: false
+  - enabled: true
+    when: EStest == 1
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2209017
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2192955
