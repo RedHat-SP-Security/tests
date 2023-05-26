@@ -8,14 +8,17 @@ enabled: true
 tag:
   - NoRHEL6
   - NoRHEL7
-  - NoRHEL8
   - Tier1
   - CI-Tier-1
 link:
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1956760
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2209058
 adjust:
   - enabled: false
-    when: distro < rhel-9
+    when: distro < rhel-8
+    continue: false
+  - enabled: false
+    when: distro < rhel-8.9
     continue: false
   - enabled: false
     when: distro == rhel-alt-7

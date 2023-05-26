@@ -50,8 +50,13 @@ rlJournalStart
 
         # Check if we have the expected minimum version.
         rlRun "packageVersion=$(rpm -q ${PACKAGE} --qf '%{name}-%{version}-%{release}\n')"
-        rlTestVersion "${packageVersion}" '>=' 'clevis-18-1' \
-            || rlDie "Tested functionality is not in old version ${packageVersion}. Minimum expected version is clevis-18"
+        if rlIsRHEL '<9'; then
+            rlTestVersion "${packageVersion}" '>=' 'clevis-15-15' \
+                || rlDie "Tested functionality is not in old version ${packageVersion}. Minimum expected version is clevis-15-15"
+        else
+            rlTestVersion "${packageVersion}" '>=' 'clevis-18-1' \
+                || rlDie "Tested functionality is not in old version ${packageVersion}. Minimum expected version is clevis-18"
+        fi
 
         # Backup any possibly existing keys then remove them.
         rlRun "rlFileBackup --clean /var/db/tang/"
@@ -85,7 +90,6 @@ rlJournalStart
             rlRun "enc=\$(printf '%s' '${DATA}' | clevis encrypt tang '${cfg}')"
             rlRun "dec=\$(printf '%s' '${enc}' | clevis decrypt)"
             rlAssertEquals "Check that decoded data matches" "${dec}" "${DATA}"
-            break
         done
     rlPhaseEnd
 
@@ -95,7 +99,12 @@ rlJournalStart
         rlRun "hdr64=\$(echo "${enc}" | cut -d'.' -f1)"
         rlRun "hdr=\$(echo "${hdr64}" | jose b64 dec --base64=-)"
         rlRun "kid=\$(jose fmt --json='${hdr}' --object --get kid --string --unquote=-)"
-        rlAssertEquals "Check that kid matches exc SHA-256 thumbprint" "${kid}" "${EXC_S256_THP}"
+
+        if rlIsRHEL '<9'; then
+            rlAssertEquals "Check that kid matches exc SHA-1 thumbprint" "${kid}" "${EXC_S1_THP}"
+        else
+            rlAssertEquals "Check that kid matches exc SHA-256 thumbprint" "${kid}" "${EXC_S256_THP}"
+        fi
     rlPhaseEnd
 
     rlPhaseStartCleanup
