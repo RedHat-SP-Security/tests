@@ -1,10 +1,11 @@
 component: fapolicyd
 require:
-- url: https://github.com/RedHat-SP-Security/tests.git
-  name: /fapolicyd/Library/common
-- fapolicyd
+  - type: library
+    url: https://github.com/RedHat-SP-Security/tests.git
+    name: /fapolicyd/Library/common
+  - fapolicyd
 recommend:
-- fapolicyd-selinux
+  - fapolicyd-selinux
 adjust+:
   - enabled: false
     when: distro < rhel-8.1
