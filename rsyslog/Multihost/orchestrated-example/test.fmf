@@ -1,0 +1,21 @@
+description: Orchestrated test example
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+duration: 5m
+enabled: false
+adjust:
+  - when: orchestrated==1
+    enabled: true
+/controller:
+    require:
+      - library(ControlFlow/Cleanup)
+      - library(ControlFlow/SessionControl)
+    test: ./runtest.sh
+/role:
+    framework: shell
+    test: "true"
+    /server:
+        require:
+          - rsyslog
+    /client:
+        require:
+          - rsyslog
