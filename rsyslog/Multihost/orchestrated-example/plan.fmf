@@ -1,0 +1,41 @@
+context:
+    orchestrated: 1
+provision:
+  - how: minute
+    image: fedora
+    role: controller
+  - how: minute
+    image: fedora
+    role: server
+  - how: minute
+    image: fedora
+    role: client
+prepare:
+  - how: shell
+    where:
+      - server
+      - client
+      - controller
+    script:
+      - sed -r -i 's/.*PermitRootLogin.*/PermitRootLogin yes/;s/.*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+      - systemctl restart sshd
+      - echo 'redhat' | passwd --stdin root
+discover:
+  - how: fmf
+    where:
+      - client
+    test:
+      - /rsyslog/Multihost/orchestrated-example/test/role/client
+  - how: fmf
+    where:
+      - server
+    test:
+      - /rsyslog/Multihost/orchestrated-example/test/role/server
+  - how: fmf
+    # removed as a workaround for getting all TMT_ROLE_* variables set
+    # where:
+    #   - controller
+    test:
+      - /rsyslog/Multihost/orchestrated-example/test/controller
+execute:
+  - how: tmt
