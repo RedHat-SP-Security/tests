@@ -53,6 +53,13 @@ rlJournalStart && {
     rlRun "curl -XGET 'http://127.0.0.1:9200/_all/_search?q=testMSG&pretty'"
     ESv=${ESv:+esVersion.major=\"$ESv\"}
     SearchIndex=${SearchIndex:+searchindex=\"$SearchIndex\" searchtype=\"\"}
+    if [[ "$elasticBulkmode" == "on" ]]; then
+      elasticBulkmode='bulkmode="on"'
+    elif [[ "$elasticBulkmode" == "off" ]]; then
+      elasticBulkmode='bulkmode="off"'
+    else
+      elasticBulkmode=''
+    fi
     rsyslogConfigAddTo "RULES" /etc/rsyslog.conf <<EOF
 module(load="omelasticsearch") #for indexing to Elasticsearch
 
@@ -66,7 +73,7 @@ template(name="plain-syslog-tpl" type="list") {
     constant(value="\",\"message\":\"")    property(name="msg" format="json")
     constant(value="\"}")
 }
-action(type="omelasticsearch" server="127.0.0.1" $SearchIndex template="plain-syslog-tpl" $ESv)
+action(type="omelasticsearch" server="127.0.0.1" $SearchIndex template="plain-syslog-tpl" $ESv $elasticBulkmode)
 EOF
     CleanupRegister 'rlRun "rlServiceStop rsyslog"'
     rlRun "rsyslogPrintEffectiveConfig -n"

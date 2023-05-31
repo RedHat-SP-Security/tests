@@ -19,3 +19,10 @@ adjust:
 link:
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2209017
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2192955
+/bulk_on:
+    environment:
+        elasticBulkmode: on
+/bulk_off:
+    environment:
+        elasticBulkmode: off
+/no_bulk:
