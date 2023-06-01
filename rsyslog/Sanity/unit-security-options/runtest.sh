@@ -43,7 +43,7 @@ rlJournalStart && {
     CleanupRegister 'rlRun "popd"'
     rlRun "pushd $TmpDir"
     CleanupRegister 'rlRun "rlFileRestore"'
-	  rlRun "rlFileBackup /etc/rsyslog.conf"
+    rlRun "rlFileBackup /etc/rsyslog.conf"
     rsyslogPrepareConf
     rsyslogServiceStart
     rsyslogConfigAddTo "RULES" /etc/rsyslog.conf < <(rsyslogConfigCreateSection TEST1)
@@ -59,12 +59,12 @@ rlJournalStart && {
       Delegate
       NotifyAccess
       UMask
-      RestrictAddressFamilies_AF_UNIX
-      RestrictAddressFamilies_AF_INET_INET6
-      RestrictNamespaces_net
+      RestrictAddressFamilies_AF_UNIX=no
+      RestrictAddressFamilies_AF_INET_INET6=no
+      RestrictNamespaces_net=no
       NoNewPrivileges
       ProtectControlGroups
-      ProtectHome
+      ProtectHome=no
       ProtectKernelModules
       ProtectKernelTunables
       RestrictSUIDSGID
@@ -82,12 +82,19 @@ rlJournalStart && {
     )
     for option in "${options[@]}"; do
       echo "option $option"
-      [[ "$option" =~ \ *([^\ ]+) ]] && {
+      [[ "$option" =~ \ *([^=]+)(=(.*))? ]] && {
         option=${BASH_REMATCH[1]}
+        value=${BASH_REMATCH[3]}
+        [[ -z "$value" ]] && value=true
+        [[ "$value" == "no" ]] && value=false
         # "set":true,"name":"UMask=","json_field":"UMask"
         tmp="$(cat $rlRun_LOG | grep -Eo "\{[^{]+$option[^}]+\}")"
         rlLog "$tmp"
-        echo "$tmp" | grep -q '"set":true'
+        if [[ "$value" == "true" ]]; then
+          echo "$tmp" | grep -q '"set":true'
+        else
+          echo "$tmp" | grep -q '"set":false'
+        fi
         rlAssert0 "check $option" $?
       }
     done    
