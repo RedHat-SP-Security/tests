@@ -1,0 +1,21 @@
+description: check that the logrotate script is posixly correct
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+duration: 5m
+enabled: true
+require+:
+  - library(ControlFlow/Cleanup)
+  - library(distribution/testUser)
+tag:
+  - Tier2
+  - CI-Tier-1
+tier: '2'
+adjust:
+  - enabled: false
+    when: distro < rhel-8
+    continue: false
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2176397
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2176398
+extra-nitrate: TC#0615354
+id: 41dd3710-2805-47a7-997e-cc6b903a318d
