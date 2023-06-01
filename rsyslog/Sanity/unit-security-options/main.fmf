@@ -1,0 +1,25 @@
+description: check systemd-analyze setting for rsyslog
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+  - library(distribution/Cleanup)
+duration: 5m
+enabled: true
+tag:
+  - rhel-8.9
+  - rhel-9.3
+  - Tier1
+  - CI-Tier-1
+tier: '1'
+adjust:
+  - enabled: false
+    when: distro ~< rhel-9.3
+    continue: false
+  - enabled: false
+    when: distro < rhel-8.9
+    continue: false
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2176403
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2176404
+extra-nitrate: TC#0615315
+id: a1bc866a-103c-4e8b-a5f3-6cecd191449b
