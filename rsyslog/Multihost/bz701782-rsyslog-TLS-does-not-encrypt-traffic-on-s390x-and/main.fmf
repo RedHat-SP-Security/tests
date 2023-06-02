@@ -1,0 +1,36 @@
+summary: Test for bz701782 (rsyslog TLS does not encrypt traffic on s390x and)
+description: |+
+    Bug summary: rsyslog TLS does not encrypt traffic on s390x and ppc64 systems
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=701782
+    Automated multihost test for
+    Bug 701782 - rsyslog TLS does not encrypt traffic on s390x and ppc64 systems
+    Bug 713139 - rsyslog TLS does not encrypt traffic on s390x and ppc64 systems
+
+    CVS link:
+    http://cvs.devel.redhat.com/cgi-bin/cvsweb.cgi/tests/rsyslog/Multihost/bz701782-rsyslog-TLS-does-not-encrypt-traffic-on-s390x-and/
+
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog7
+- rsyslog5
+- rsyslog
+- rsyslog
+test: ./runtest.sh
+require+:
+- library(rsyslog/basic)
+- library(distribution/dpcommon)
+- library(distribution/epel)
+recommend:
+- rsyslog
+- gnutls
+- gnutls-utils
+- rsyslog-gnutls
+- bind-utils
+- /usr/sbin/rngd
+- /sbin/rngd
+- lsof
+- wireshark
+- ansible
+- rhel-system-roles
+duration: 2h
+enabled: true

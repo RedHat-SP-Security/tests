@@ -1,0 +1,12 @@
+summary: Test for bz701782 (rsyslog TLS does not encrypt traffic on s390x and), with new syntax
+environment:
+    rsyslogSyntax: new
+tag+:
+- Tier2
+tier: '2'
+adjust:
+-   enabled: false
+    when: distro ~< rhel-6.3
+    continue: false
+extra-nitrate: TC#0419228
+extra-summary: rsyslogSyntax=new /CoreOS/rsyslog/Multihost/bz701782-rsyslog-TLS-does-not-encrypt-traffic-on-s390x-and

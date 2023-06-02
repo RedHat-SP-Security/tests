@@ -1,0 +1,26 @@
+summary: Test for bz701782 (rsyslog TLS does not encrypt traffic on s390x and)
+environment:
+    rsyslogSyntax: old
+tag+:
+- FedoraBroken
+- NSS_testing_HIGH
+- NoRHEL4
+- TIPpass_Security
+- Tier2
+- Tier2security
+- rhel-6.2
+- rhel-6.3
+- rsyslogSyntaxOLD
+tier: '2'
+adjust:
+-   enabled: false
+    when: distro == rhel-4
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-5.8
+    continue: false
+-   enabled: false
+    when: distro ~< rhel-6.3
+    continue: false
+extra-nitrate: TC#0098170
+extra-summary: rsyslogSyntax=old /CoreOS/rsyslog/Multihost/bz701782-rsyslog-TLS-does-not-encrypt-traffic-on-s390x-and

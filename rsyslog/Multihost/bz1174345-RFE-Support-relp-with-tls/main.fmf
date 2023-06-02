@@ -7,7 +7,6 @@ component:
 - rsyslog
 test: ./runtest.sh
 require+:
-- library(distribution/sync)
 - rsyslog
 - rsyslog-relp
 - gnutls

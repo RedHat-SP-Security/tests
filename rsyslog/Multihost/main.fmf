@@ -1,2 +1,6 @@
 tag:
-- multihost
+  - multihost
+require+:
+  - type: library
+    url: https://github.com/beakerlib/ControlFlow.git
+    name: /sync

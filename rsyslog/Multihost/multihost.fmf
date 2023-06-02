@@ -1,0 +1,19 @@
+provision:
+  - how: connect
+    guest: sopos-rhel9-brq.usersys.redhat.com
+    role: server
+  - how: connect
+    guest: sopos-rhel92-brq.usersys.redhat.com
+    role: client
+#  - how: minute
+#    image: fedora
+#    role: server
+#  - how: minute
+#    image: fedora
+#    role: client
+discover:
+  - how: fmf
+    test:
+      - /rsyslog/Multihost/.*
+execute:
+  - how: tmt

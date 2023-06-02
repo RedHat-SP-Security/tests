@@ -1,0 +1,27 @@
+summary: the test can be used for testing several scenarios of rsyslog gssapi communication
+description: "The test is testing gssapi communication between rsyslog client and\
+    \ server.\nCan be used for various scenarios. The set up can be configured using\
+    \ two\nglobal variables:\n\nCLIENT_SETUP - messages to be send by rsyslog client,\
+    \ can be \"gssapi\", \"plain\" (for tcp/plain)\n or \"both\" (default)\n\nSERVER_SETUP\
+    \ - messages accepted by rsyslog server, can be \"gssapi\" (only) or \"both\"\
+    \ (for gssapi and\n tcp/plain, uses InputGSSServerPermitPlainTCP on in rsyslog.conf)\n\
+    \nFor delivering tcp/plain messages both rsyslog client and netcat is used (to\
+    \ simulate two independent\nsources of logs)\n\nExamples:\nCLIENT_SETUP=gssapi\
+    \ SERVER_SETUP=gssapi - gssapi only communication, can be used \n to reproduce\
+    \ bug 867001\n\nCLIENT_SETUP=plain SERVER_SETUP=both - can be used to reproduce\
+    \ bug 862517\n\nRelated bugs: 867001, 862517, 867016\n\n"
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog
+test: ./runtest.sh
+require+:
+- library(rsyslog/basic)
+recommend:
+- rsyslog
+- rsyslog-gssapi
+- krb5-server
+- krb5-workstation
+- nc
+- authconfig
+- rng-tools
+duration: 720m
