@@ -1,0 +1,34 @@
+diff --git a/rsyslog/Multihost/orchestrated-example/plan.fmf b/rsyslog/Multihost/orchestrated-example/plan.fmf
+index 341662a..dd09cbe 100644
+--- a/rsyslog/Multihost/orchestrated-example/plan.fmf
++++ b/rsyslog/Multihost/orchestrated-example/plan.fmf
+@@ -1,14 +1,23 @@
+ context:
+     orchestrated: 1
+ provision:
+-  - how: minute
+-    image: fedora
++#  - how: minute
++#    image: fedora
++#    role: controller
++#  - how: minute
++#    image: fedora
++#    role: server
++#  - how: minute
++#    image: fedora
++#    role: client
++  - how: connect
++    guest: sopos-rhel9-brq.usersys.redhat.com
+     role: controller
+-  - how: minute
+-    image: fedora
++  - how: connect
++    guest: sopos-rhel92-brq.usersys.redhat.com
+     role: server
+-  - how: minute
+-    image: fedora
++  - how: connect
++    guest: sopos-rhel91-brq.usersys.redhat.com
+     role: client
+ prepare:
+   - how: shell

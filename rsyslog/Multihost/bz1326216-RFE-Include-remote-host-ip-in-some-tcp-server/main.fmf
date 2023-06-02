@@ -1,0 +1,27 @@
+summary: Test for BZ#1326216 ([RFE] Include remote host ip in some tcp server)
+description: |
+    Bug summary: [RFE] Include remote host ip in some tcp server error messages
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1326216
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog
+test: ./runtest.sh
+require+:
+- library(rsyslog/basic)
+recommend:
+- rsyslog
+- rsyslog
+- gnutls
+- gnutls-utils
+- rsyslog-gnutls
+- bind-utils
+- rng-utils
+- rng-tools
+- lsof
+- wireshark
+duration: 30m
+enabled: true
+tag+:
+- NoRHEL4
+- NoRHEL5
+- fedora-wanted

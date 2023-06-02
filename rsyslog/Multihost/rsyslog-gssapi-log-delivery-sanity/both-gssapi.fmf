@@ -1,0 +1,17 @@
+component:
+- rsyslog7
+- rsyslog
+- rsyslog5
+environment:
+    CLIENT_SETUP: both
+    SERVER_SETUP: gssapi
+enabled: false
+extra-summary: CLIENT_SETUP=both SERVER_SETUP=gssapi /CoreOS/rsyslog/Multihost/rsyslog-gssapi-log-delivery-sanity
+extra-nitrate: TC#0422944
+adjust:
+-   enabled: false
+    when: distro < rhel-6
+    continue: false
+-   enabled: false
+    when: distro >= rhel-8
+    continue: false

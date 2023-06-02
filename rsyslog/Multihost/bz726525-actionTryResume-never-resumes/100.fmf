@@ -1,0 +1,16 @@
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog7
+- rsyslog
+- rsyslog5
+environment:
+    MESSAGESSENT: '100'
+enabled: true
+tag+:
+- TIPfail_Security
+- fedora-wanted
+- notip
+- rhel-5.8
+- rsyslogSyntaxOLD
+extra-summary: MESSAGESSENT=100 /CoreOS/rsyslog/Multihost/bz726525-actionTryResume-never-resumes
+extra-nitrate: TC#0607917

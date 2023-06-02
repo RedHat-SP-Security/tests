@@ -1,0 +1,12 @@
+component:
+- rsyslog7
+- rsyslog
+- rsyslog5
+environment:
+    ACTIONQUEUEMAXFILESIZE: 20g
+    MESSAGESSENT: '10000'
+    SHUTDOWNDURATION: '300'
+enabled: false
+extra-summary: test for Bug 963942 - rsyslog doesn't clear $WorkDirectory for disk-assisted
+    queue...
+extra-nitrate: TC#0295261

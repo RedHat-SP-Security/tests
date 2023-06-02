@@ -1,0 +1,30 @@
+summary: Test for bz726525 (actionTryResume never resumes)
+description: |
+    Bug summary: actionTryResume never resumes
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=726525
+
+    Tests that client is able to resume delivering messages to server (log collector) once
+    the server becomes available again.
+
+    # Global variables that can be passed to the test:
+    # ACTIONQUEUEMAXFILESIZE - the value of $ActionQueueMaxFileSize in rsyslog.conf (1g default)
+    # ACTIONQUEUESIZE - the value of $ActionQueueSix in rsyslog.conf, default 10000
+    # MESSAGESSENT - the number of log messages sent during the test, default 5000
+    # MAXQUEUEFILES - the maximum number of queue files that can be created by rsyslog during the test
+    #                 we will that that rsyslog didn't create more, default 3
+    # SHUTDOWNDURATION - number of seconds when the rsyslog server is down, default 60
+    # RESENDTIMELIMIT - maximum time to wait on server for client resending his logs, default 120
+contact:
+- Karel Srot <ksrot@redhat.com>
+component:
+- rsyslog
+test: ./runtest.sh
+require+:
+- library(distribution/dpcommon)
+- library(distribution/Cleanup)
+- library(selinux-policy/common)
+- library(rsyslog/basic)
+recommend:
+- rsyslog
+- psmisc
+duration: 60m

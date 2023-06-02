@@ -1,0 +1,19 @@
+component:
+- rsyslog7
+- rsyslog
+- rsyslog5
+environment:
+    CLIENT_SETUP: plain
+    SERVER_SETUP: gssapi
+enabled: true
+tag+:
+- fedora-wanted
+extra-summary: CLIENT_SETUP=plain SERVER_SETUP=gssapi /CoreOS/rsyslog/Multihost/rsyslog-gssapi-log-delivery-sanity
+extra-nitrate: TC#0422941
+adjust:
+-   enabled: false
+    when: distro < rhel-6
+    continue: false
+-   enabled: false
+    when: distro >= rhel-8
+    continue: false

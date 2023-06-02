@@ -1,0 +1,24 @@
+summary: basic ipv6 sanity testing
+description: ''
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog7
+- rsyslog
+- rsyslog
+- rsyslog5
+test: ./runtest.sh
+recommend:
+- rsyslog
+- nc
+duration: 2h
+enabled: true
+tag+:
+- RHEL6
+- fedora-wanted
+- rsyslogSyntaxOLD
+extra-summary: /CoreOS/rsyslog/Multihost/ipv6-sanity-test
+extra-nitrate: TC#0098169
+adjust:
+-   enabled: false
+    when: distro != rhel-6
+    continue: false

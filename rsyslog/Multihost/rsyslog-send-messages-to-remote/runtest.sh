@@ -76,16 +76,16 @@ start_syslog() {
   "
   case $MODE in
     normal)
-      rlRun "/sbin/rsyslogd &> rsyslogd.out &" 0 "Starting rsyslogd in debug mode"
+      rlRun "/sbin/rsyslogd &> rsyslogd.out &" 0 "Starting rsyslogd in normal mode"
     ;;
     debug)
       rlRun "/sbin/rsyslogd -d &> rsyslogd.out &" 0 "Starting rsyslogd in debug mode"
     ;;
     nonforked_normal)
-      rlRun "/sbin/rsyslogd -n &> rsyslogd.out &" 0 "Starting rsyslogd in debug mode"
+      rlRun "/sbin/rsyslogd -n &> rsyslogd.out &" 0 "Starting rsyslogd in non-forked normal mode"
     ;;
     nonforked_debug)
-      rlRun "/sbin/rsyslogd -dn &> rsyslogd.out &" 0 "Starting rsyslogd in debug mode"
+      rlRun "/sbin/rsyslogd -dn &> rsyslogd.out &" 0 "Starting rsyslogd in non-forked debug mode"
     ;;
   esac
   rlRun "sleep 5s"
@@ -103,9 +103,9 @@ Server() {
   rlPhaseStartTest "Server, $MODE"
     # server setup goes here
     start_syslog
-    rlRun "syncSet SERVER_READY"
+    rlRun "syncSet SERVER_READY_$MODE"
 
-    rlRun "syncExp CLIENT_DONE"
+    rlRun "syncExp CLIENT_DONE_$MODE"
     rlRun "sleep 5s"
     # check that the test message has been delivered => communication works fine
     rlRun "check_messages"
@@ -117,7 +117,7 @@ Client() {
   rlPhaseStartTest "Client, $MODE"
     # client action goes here
     start_syslog
-    rlRun "syncExp SERVER_READY"
+    rlRun "syncExp SERVER_READY_$MODE"
 
     tcfChk "Send $ii messages" && {
       local res=0
@@ -132,7 +132,7 @@ Client() {
       progressFooter
       (exit $res)
     tcfFin; }
-    rlRun "syncSet CLIENT_DONE"
+    rlRun "syncSet CLIENT_DONE_$MODE"
     rlRun "sleep 5s"
     rlRun "check_messages"
 
@@ -262,6 +262,7 @@ EOF
 EOF
       rlRun "cat -n /etc/rsyslog.conf"
       rlRun "cat -n /etc/rsyslog.d/*"
+      rsyslogPrintEffectiveConfig
     rlPhaseEnd; }
 
     syncIsClient && rlPhaseStartSetup "Client setup" && {
@@ -287,8 +288,7 @@ EOF
   rlPhaseEnd
 
   rlPhaseStartTest "the other side result"
-    rlRun "syncSet SYNC_RESULT $(rlGetTestState; echo $?)"
-    rlAssert0 'check ther the other site finished successfuly' $(syncExp SYNC_RESULT)
+    rlRun "syncResults"
   rlPhaseEnd
 rlJournalPrintText
 rlJournalEnd

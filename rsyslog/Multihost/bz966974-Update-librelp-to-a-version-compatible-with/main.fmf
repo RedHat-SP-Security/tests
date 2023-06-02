@@ -1,0 +1,34 @@
+summary: Test for BZ#966974 (Update librelp to a version compatible with)
+description: |
+    Bug summary: Update librelp to a version compatible with rsyslog 7.x
+    Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=966974
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+component:
+- rsyslog7
+- rsyslog
+- rsyslog5
+test: ./runtest.sh
+require+:
+- library(distribution/dpcommon)
+- library(selinux-policy/common)
+- library(rsyslog/basic)
+recommend:
+- librelp
+- rsyslog
+- rsyslog-relp
+duration: 120m
+enabled: true
+tag+:
+- fedora-wanted
+- notip
+- rhel-6.6
+- rsyslogSyntaxOLD
+extra-summary: /CoreOS/rsyslog/Multihost/bz966974-Update-librelp-to-a-version-compatible-with
+extra-nitrate: TC#0400452
+adjust:
+-   enabled: false
+    when: distro < rhel-6
+    continue: false
+-   enabled: false
+    when: distro == rhel-6 and component == rsyslog
+    continue: false
