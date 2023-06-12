@@ -8,9 +8,6 @@ link:
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2207488
 adjust:
   - enabled: false
-    when: distro < rhel-9
-    continue: false
-  - enabled: false
     when: distro < rhel-9.3
     continue: false
   - enabled: false
