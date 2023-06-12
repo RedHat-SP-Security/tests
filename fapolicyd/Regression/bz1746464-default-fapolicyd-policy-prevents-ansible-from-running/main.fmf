@@ -5,24 +5,23 @@ description: "Bug summary: default fapolicyd policy prevents ansible from runnin
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
-- library(rhel-system-roles/basic)
+  - library(rhel-system-roles/basic)
 recommend:
-- fapolicyd
-- sed
-- dnf
+  - fapolicyd
+  - sed
+  - dnf
 duration: 15m
 enabled: true
 tag:
-- CI-Tier-1
-- TIPpass
-- rhel-8.2
+  - TIPpass
+  - rhel-8.2
 extra-summary: /CoreOS/fapolicyd/Regression/bz1746464-default-fapolicyd-policy-prevents-ansible-from-running
 extra-task: /CoreOS/fapolicyd/Regression/bz1746464-default-fapolicyd-policy-prevents-ansible-from-running
 extra-nitrate: TC#0605038
 adjust+:
--   enabled: false
+  - enabled: false
     when: distro < rhel-8
     continue: false
--   enabled: false
+  - enabled: false
     when: distro ~< rhel-8.2
     continue: false
