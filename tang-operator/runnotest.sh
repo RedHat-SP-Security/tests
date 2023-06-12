@@ -28,7 +28,8 @@
 # Include Beaker environment
 . /usr/share/beakerlib/beakerlib.sh || exit 1
 
-UNSUPPORTED_RELEASE=$(cat /etc/redhat-release  | awk -F "release" {'print $2'} | sed -e 's/^[ /t]*//g' | awk {'print $1'} | awk -F '.' {'print $1'})
+UNSUPPORTED_RELEASE=$(awk -F "release" '{print $2}' < /etc/redhat-release\
+	| sed -e 's/^[ /t]*//g' | awk '{print $1}' | awk -F '.' '{print $1}')
 
 rlJournalStart
     rlPhaseStartTest "Check tang-operator controller is running"
