@@ -13,7 +13,7 @@ tag:
 tier: '1'
 adjust+:
   - enabled: false
-    when: distro < rhel-9
+    when: distro < rhel-9 or distro < centos-stream-9
     continue: false
 link:
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2136802
