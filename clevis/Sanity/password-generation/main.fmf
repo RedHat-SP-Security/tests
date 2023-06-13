@@ -4,6 +4,9 @@ recommend:
   - clevis
   - clevis-luks
   - tang
+duration: 10m
+tag:
+  - Tier3
 link:
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2207488
 adjust:
@@ -13,3 +16,5 @@ adjust:
   - enabled: false
     when: distro == rhel-alt-7
     continue: false
+extra-nitrate: TC#0615375
+id: 7e3d7ca9-ff70-4eac-b392-10441a9ad56d
