@@ -1,0 +1,15 @@
+summary: Generating password during clevis binding does not fail on low entropy
+test: ./test.sh
+recommend:
+  - clevis
+  - clevis-luks
+  - tang
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2207488
+adjust:
+  - enabled: false
+    when: distro < rhel-9.3
+    continue: false
+  - enabled: false
+    when: distro == rhel-alt-7
+    continue: false
