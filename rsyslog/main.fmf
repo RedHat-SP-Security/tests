@@ -1,6 +1,5 @@
 component: rsyslog
 require:
-  - type: library
-    url: https://github.com/RedHat-SP-Security/tests.git
-    name: /rsyslog/Library/basic
-  - rsyslog
+- url: https://github.com/RedHat-SP-Security/tests.git
+  name: /rsyslog/Library/basic
+- rsyslog
