@@ -1,0 +1,20 @@
+description: check that max open files limit is big enough
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+  - library(distribution/Cleanup)
+duration: 5m
+enabled: true
+tag:
+  - CI-Tier-1
+  - Tier2
+  - rhel-8.9.0
+  - rhel-9.3.0
+tier: '2'
+adjust+:
+  - enabled: false
+    when: distro < rhel-8.9 or distro ~< rhel-9.3
+    continue: false
+link:
+  - verifies: https://issues.redhat.com/browse/RHEL-623
+  - verifies: https://issues.redhat.com/browse/RHEL-631
