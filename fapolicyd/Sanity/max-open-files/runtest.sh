@@ -45,8 +45,9 @@ rlJournalStart
         soft=${BASH_REMATCH[1]}
         hard=${BASH_REMATCH[2]}
       }
-      rlAssertGreaterOrEqual 'soft limit is big enought' $soft 16384
-      rlAssertGreaterOrEqual 'soft limit is big enought' $hard 524288
+      hard_limit=$(ulimit -n -H)
+      rlAssertGreaterOrEqual 'soft limit is big enought' $soft $hard_limit
+      rlAssertGreaterOrEqual 'soft limit is big enought' $hard $hard_limit
     rlPhaseEnd; }
 
     rlPhaseStartCleanup
