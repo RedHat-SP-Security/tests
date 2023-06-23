@@ -9,6 +9,7 @@ duration: 5m
 enabled: true
 tag:
   - Tier2
+  - CI-Tier-1
 tier: 2
 adjust+:
   - enabled: false
@@ -20,4 +21,6 @@ extra-summary: tests/fapolicyd/Sanity/trusted-execution - test execution of trus
 extra-task: /CoreOS/fapolicyd/Sanity/trusted-execution
 link:
   - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2181472
+  - verifies: https://issues.redhat.com/browse/RHEL-622
+  - verifies: https://issues.redhat.com/browse/RHEL-630
 id: 53dbf9ca-8763-4cc5-9a57-353dfb8c396f
