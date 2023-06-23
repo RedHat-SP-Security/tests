@@ -4,6 +4,7 @@ test: ./runtest.sh
 require+:
   - library(ControlFlow/Cleanup)
   - library(distribution/testUser)
+  - audit
 duration: 5m
 enabled: true
 tag:
