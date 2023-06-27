@@ -25,7 +25,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = fap
-#   library-version = 25
+#   library-version = 26
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 true <<'=cut'
@@ -133,36 +133,44 @@ fapResetServiceOutTimestamp() {
 }
 
 fapStart() {
-  local res fapolicyd_path tail_pid FADEBUG SYSTEMD_RELOAD
+  local res fapolicyd_path tail_pid FAPOPTS SYSTEMD_RELOAD
   res=0
-  FADEBUG='--debug-deny'
-  if [[ "$1" == "--debug" ]]; then
-    FADEBUG='--debug '
-    shift
-  elif [[ "$1" == "--no-debug" ]]; then
-    FADEBUG=''
-    [[ -s /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf ]] && {
-      rm -f /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf
-      SYSTEMD_RELOAD=1
-    }
-    shift
+  FAPOPTS='--debug-deny'
+  if [[ "${1:0:2}" == "--" ]]; then
+    while [[ "${1:0:2}" == "--" ]]; do
+      [[ "$1" =~ debug ]] && {
+          FAPOPTS="$(echo "$FAPOPTS" | sed -r 's/--debug[^ ]*//g')"
+      }
+      [[ "$1" == "--no-debug" ]] && {
+        shift
+        continue
+      }
+      FAPOPTS+=" $1"
+      shift
+    done
   fi
   fapolicyd_path="$1"
   if [[ -n "$fapolicyd_path" ]]; then
     [[ "$fapolicyd_path" =~ /$ ]] || fapolicyd_path+="/"
     rlLogInfo "running fapolicyd from alternative path $fapolicyd_path"
   fi
-  [[ -z "$fapolicyd_path" ]] && fapolicyd_path="/usr/sbin/"
-  if [[ -n "$FADEBUG" ]]; then
+
+  if [[ -z "$FAPOPTS" && -z "$fapolicyd_path" ]]; then
+    [[ -s /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf ]] && {
+      rm -f /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf
+      SYSTEMD_RELOAD=1
+    }
+  else
+    [[ -z "$fapolicyd_path" ]] && fapolicyd_path="/usr/sbin/"
     mkdir -p /etc/systemd/system/fapolicyd.service.d
     ! grep -q -- "${fapolicyd_path}" /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf 2>/dev/null || \
-    ! grep -q -- "$FADEBUG" /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf 2>/dev/null && {
+    ! grep -q -- "$FAPOPTS" /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf 2>/dev/null && {
       cat > /etc/systemd/system/fapolicyd.service.d/10-debug-deny.conf <<EOF
 [Service]
 Type=simple
 Restart=no
 ExecStart=
-ExecStart=${fapolicyd_path}fapolicyd $FADEBUG
+ExecStart=${fapolicyd_path}fapolicyd $FAPOPTS
 EOF
       SYSTEMD_RELOAD=1
     }
