@@ -67,13 +67,13 @@ rlJournalStart
     STAMP=`LC_ALL=en_US.UTF-8 date "+%x %T"`
     sleep 1
     rlRun "su -c '$PWD/ls' - $testUser" 126
-    rlRun -s "LC_ALL='en_US.UTF-8' ausearch --input-logs -m FANOTIFY -ts $STAMP"
+    rlRun -s "LC_ALL='en_US.UTF-8' ausearch --input-logs -i -m FANOTIFY -ts $STAMP"
     rlAssertGrep 'fan_info=1 ' "$rlRun_LOG"
     sleep 1
     STAMP=`LC_ALL=en_US.UTF-8 date "+%x %T"`
     sleep 1
     rlRun "su -c '$PWD/ls2' - $testUser" 126
-    rlRun -s "LC_ALL='en_US.UTF-8' ausearch --input-logs -m FANOTIFY -ts $STAMP"
+    rlRun -s "LC_ALL='en_US.UTF-8' ausearch --input-logs -i -m FANOTIFY -ts $STAMP"
     rlAssertGrep 'fan_info=2 ' "$rlRun_LOG"
   rlPhaseEnd; }
 
@@ -83,7 +83,7 @@ rlJournalStart
     STAMP=`LC_ALL=en_US.UTF-8 date "+%x %T"`
     sleep 1
     rlRun "su -c '$PWD/ls11' - $testUser" 126
-    rlRun -s "LC_ALL='en_US.UTF-8' ausearch --input-logs -m FANOTIFY -ts $STAMP"
+    rlRun -s "LC_ALL='en_US.UTF-8' ausearch --input-logs -i -m FANOTIFY -ts $STAMP"
     rlAssertGrep 'fan_info=11 ' "$rlRun_LOG"
   rlPhaseEnd; }
 
