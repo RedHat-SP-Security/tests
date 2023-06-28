@@ -1,3 +1,4 @@
-component: libfastjson
+component:
+  - libfastjson
 require:
-- libfastjson
+  - libfastjson

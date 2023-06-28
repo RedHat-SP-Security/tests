@@ -1,3 +1,4 @@
-component: librdkafka
+component:
+  - librdkafka
 require+:
-- librdkafka
+  - librdkafka

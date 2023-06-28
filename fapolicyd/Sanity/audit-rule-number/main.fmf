@@ -1,5 +1,7 @@
 description: chech the decision rule number is sent to audit
 contact: Dalibor Pospíšil <dapospis@redhat.com>
+component+:
+  - audit
 test: ./runtest.sh
 require+:
   - library(ControlFlow/Cleanup)

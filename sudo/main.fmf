@@ -1,3 +1,4 @@
-component: sudo
+component:
+  - sudo
 require:
-- sudo
+  - sudo

@@ -1,9 +1,10 @@
-component: usbguard
+component:
+  - usbguard
 adjust:
-- enabled: false
-  when: arch == s390x
-  continue: false
+  - enabled: false
+    when: arch == s390x
+    continue: false
 require:
-- usbguard
+  - usbguard
 recommend:
-- usbguard-selinux
+  - usbguard-selinux
