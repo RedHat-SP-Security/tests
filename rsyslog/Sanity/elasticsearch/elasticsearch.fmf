@@ -12,6 +12,9 @@ execute:
   - how: tmt
 
 /v1.3.1:
+    adjust:
+      - enabled: false
+        when: distro >= rhel-9
     prepare:
       - how: shell
         script:
@@ -23,6 +26,9 @@ execute:
         script:
           - yum remove -y elasticsearch
 /v7.3.0:
+    adjust:
+      - enabled: false
+        when: distro >= rhel-9
     prepare:
       - how: shell
         script:
