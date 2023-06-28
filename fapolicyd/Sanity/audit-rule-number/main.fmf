@@ -18,3 +18,7 @@ adjust+:
 link:
   - verifies: https://issues.redhat.com/browse/RHEL-624
   - verifies: https://issues.redhat.com/browse/RHEL-628
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2216668
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2216666
+extra-nitrate: TC#0615506
+id: e5ea5841-8f6f-4e7a-a68e-6f57f61f6984
