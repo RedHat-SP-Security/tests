@@ -61,6 +61,7 @@ QUAY_FILE_NAME_TO_FILL="daemons_v1alpha1_tangserver_secret_registry_redhat_io.ya
 QUAY_FILE_NAME_PATH="${QUAY_PATH}/${QUAY_FILE_NAME_TO_FILL}"
 QUAY_FILE_NAME_TO_FILL_UNFILLED_MD5="db099cc0b92220feb7a38783b02df897"
 OC_DEFAULT_CLIENT="kubectl"
+TOP_SECRET_WORDS="top secret"
 
 test -z "${VERSION}" && VERSION="latest"
 test -z "${OPERATOR_NAMESPACE}" && OPERATOR_NAMESPACE="default"
@@ -354,19 +355,19 @@ getServiceIp() {
     local namespace=$2
     local iterations=$3
     counter=0
-    dumpVerbose "Getting SERVICE:[${service_name}](Namespace:[${namespace}]) IP ..."
+    dumpVerbose "Getting SERVICE:[${service_name}](Namespace:[${namespace}]) IP/HOST ..."
     if [ ${EXECUTION_MODE} == "CRC" ];
     then
         local crc_service_ip
         crc_service_ip=$(crc ip)
-        dumpVerbose "CRC MODE, SERVICE IP:[${crc_service_ip}]"
+        dumpVerbose "CRC MODE, SERVICE IP/HOST:[${crc_service_ip}]"
         echo "${crc_service_ip}"
         return 0
     elif [ ${EXECUTION_MODE} == "MINIKUBE" ];
     then
         local minikube_service_ip
         minikube_service_ip=$(minikube ip)
-        dumpVerbose "MINIKUBE MODE, SERVICE IP:[${minikube_service_ip}]"
+        dumpVerbose "MINIKUBE MODE, SERVICE IP/HOST:[${minikube_service_ip}]"
         echo "${minikube_service_ip}"
         return 0
     fi
@@ -374,13 +375,13 @@ getServiceIp() {
     do
         local service_ip
         service_ip=$("${OC_CLIENT}" -n "${namespace}" describe service "${service_name}" | grep -i "LoadBalancer Ingress:" | awk -F ':' '{print $2}' | tr -d ' ')
-        dumpVerbose "SERVICE IP:[${service_ip}](Namespace:[${namespace}])"
+        dumpVerbose "SERVICE IP/HOST:[${service_ip}](Namespace:[${namespace}])"
         if [ -n "${service_ip}" ] && [ "${service_ip}" != "<pending>" ];
         then
             echo "${service_ip}"
             return 0
         else
-            dumpVerbose "PENDING OR EMPTY IP:[${service_ip}], COUNTER[${counter}/${iterations}]"
+            dumpVerbose "PENDING OR EMPTY IP/HOST:[${service_ip}], COUNTER[${counter}/${iterations}]"
         fi
         counter=$((counter+1))
         sleep 1
@@ -700,6 +701,7 @@ rlJournalStart
         rlRun "${OC_CLIENT} apply -f ${TEST_NAMESPACE_FILE}" 0 "Creating test namespace:${TEST_NAMESPACE}"
         rlRun "${OC_CLIENT} get namespace ${TEST_NAMESPACE}" 0 "Checking test namespace:${TEST_NAMESPACE}"
         rlRun "installSecret" 0 "Installing secret if necessary"
+        rlRun "tmpdir=\$(mktemp -d)" 0 "Creating tmp directory"
     rlPhaseEnd
 
     ########## CHECK CONTROLLER RUNNING #########
@@ -839,7 +841,29 @@ rlJournalStart
         service_ip=$(getServiceIp "${service_name}" "${TEST_NAMESPACE}" "${TO_EXTERNAL_IP}")
         service_port=$(getServicePort "${service_name}" "${TEST_NAMESPACE}")
 	rlRun "checkServiceUp ${service_ip} ${service_port} ${TO_SERVICE_UP}" 0 "Checking Service:[${service_ip}] UP"
-        rlRun "serviceAdv ${service_ip} ${service_port}" 0 "Checking Service Advertisement [IP:${service_ip} PORT:${service_port}]"
+        rlRun "serviceAdv ${service_ip} ${service_port}" 0 "Checking Service Advertisement [IP/HOST:${service_ip} PORT:${service_port}]"
+        rlRun "${OC_CLIENT} delete -f reg_test/func_test/unique_deployment_test/" 0 "Deleting unique deployment"
+        rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
+        rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
+    rlPhaseEnd
+
+    rlPhaseStartTest "Unique deployment functional test (with clevis encryption/decryption)"
+        rlRun "${OC_CLIENT} apply -f reg_test/func_test/unique_deployment_test/" 0 "Creating unique deployment"
+        rlRun "checkPodAmount 1 ${TO_POD_START} ${TEST_NAMESPACE}" 0 "Checking 1 POD is started [Timeout=${TO_POD_START} secs.]"
+        pod_name=$(getPodNameWithPrefix "tang" "${TEST_NAMESPACE}" 5 1)
+        rlAssertNotEquals "Checking pod name not empty" "${pod_name}" ""
+        rlRun "checkPodState Running ${TO_POD_START} ${TEST_NAMESPACE} ${pod_name}" 0 "Checking POD in Running state [Timeout=${TO_POD_START} secs.]"
+        rlRun "checkServiceAmount 1 ${TO_SERVICE_START} ${TEST_NAMESPACE}" 0 "Checking 1 Service is started [Timeout=${TO_SERVICE_START} secs.]"
+        service_name=$(getServiceNameWithPrefix "service" "${TEST_NAMESPACE}" 5 1)
+        service_ip=$(getServiceIp "${service_name}" "${TEST_NAMESPACE}" "${TO_EXTERNAL_IP}")
+        service_port=$(getServicePort "${service_name}" "${TEST_NAMESPACE}")
+	rlRun "checkServiceUp ${service_ip} ${service_port} ${TO_SERVICE_UP}" 0 "Checking Service:[${service_ip}] UP"
+        rlRun "serviceAdv ${service_ip} ${service_port}" 0 "Checking Service Advertisement [IP/HOST:${service_ip} PORT:${service_port}]"
+
+        rlRun "echo \"${TOP_SECRET_WORDS}\" | clevis encrypt tang '{\"url\":\"http://${service_ip}:${service_port}\"}' -y > ${tmpdir}/test_secret_words.jwe"
+        rlRun "decrypted=\$(clevis decrypt < ${tmpdir}/test_secret_words.jwe)"
+        rlAssertEquals "Checking clevis decryption worked properly" "${decrypted}" "${TOP_SECRET_WORDS}"
+
         rlRun "${OC_CLIENT} delete -f reg_test/func_test/unique_deployment_test/" 0 "Deleting unique deployment"
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
         rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
@@ -864,7 +888,7 @@ rlJournalStart
 	rlRun "checkServiceUp ${service1_ip} ${service1_port} ${TO_SERVICE_UP}" 0 "Checking Service:[${service1_ip}] UP"
 	rlRun "checkServiceUp ${service2_ip} ${service2_port} ${TO_SERVICE_UP}" 0 "Checking Service:[${service2_ip}] UP"
         rlRun "serviceAdvCompare ${service1_ip} ${service1_port} ${service2_ip} ${service2_port}" 0 \
-              "Checking Services Advertisement [IP1:${service1_ip} PORT1:${service1_port}][IP2:${service2_ip} PORT2:${service2_port}]"
+              "Checking Services Advertisement [IP1/HOST1:${service1_ip} PORT1:${service1_port}][IP2/HOST2:${service2_ip} PORT2:${service2_port}]"
         rlRun "${OC_CLIENT} delete -f reg_test/func_test/multiple_deployment_test/" 0 "Deleting multiple deployment"
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
         rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
@@ -882,7 +906,7 @@ rlJournalStart
         service_port=$(getServicePort "${service_name}" "${TEST_NAMESPACE}")
 	rlRun "checkServiceUp ${service_ip} ${service_port} ${TO_SERVICE_UP}" 0 "Checking Service:[${service_ip}] UP"
         rlRun "checkKeyRotation ${service_ip} ${service_port} ${TEST_NAMESPACE}" 0\
-              "Checking Key Rotation [IP:${service_ip} PORT:${service_port}]"
+              "Checking Key Rotation [IP/HOST:${service_ip} PORT:${service_port}]"
         rlRun "${OC_CLIENT} delete -f reg_test/func_test/key_rotation/" 0 "Deleting key rotation deployment"
         rlRun "checkPodAmount 0 ${TO_POD_STOP} ${TEST_NAMESPACE}" 0 "Checking no PODs continue running [Timeout=${TO_POD_STOP} secs.]"
         rlRun "checkServiceAmount 0 ${TO_SERVICE_STOP} ${TEST_NAMESPACE}" 0 "Checking no Services continue running [Timeout=${TO_SERVICE_STOP} secs.]"
@@ -1004,6 +1028,7 @@ rlJournalStart
               rlRun "checkPodKilled ${controller_name} ${OPERATOR_NAMESPACE} ${TO_POD_CONTROLLER_TERMINATE}" 0 "Checking controller POD not available any more [Timeout=${TO_POD_CONTROLLER_TERMINATE} secs.]"
         fi
         rlRun "${OC_CLIENT} delete -f ${TEST_NAMESPACE_FILE}" 0 "Deleting test namespace:${TEST_NAMESPACE}"
+        rlRun "rm -rf ${tmpdir}" 0 "Removing tmp \(${tmpdir}\) directory"
     rlPhaseEnd
 
 rlJournalPrintText
