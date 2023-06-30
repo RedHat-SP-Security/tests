@@ -6,11 +6,13 @@ component:
 test: ./tang_operator_test.sh
 recommend:
   - tang
+  - clevis
 duration: 30m
 enabled: true
 tag:
   - NoRHEL6
   - NoRHEL7
+  - NoRHEL8
   - Tier3
 tier: '3'
 adjust:
