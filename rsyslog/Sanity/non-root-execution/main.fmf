@@ -1,0 +1,16 @@
+summary: run rsyslog under a non-root user
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+  - library(ControlFlow/Cleanup)
+  - library(distribution/testUser)
+duration: 5m
+enabled: true
+tag:
+  - Tier1
+  - CI-Tier-1
+tier: 1
+link:
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2216919
+extra-nitrate: TC#0615515
+id: a80982aa-31e9-4d29-90c5-1fc514e54b93
