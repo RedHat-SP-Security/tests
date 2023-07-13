@@ -87,9 +87,7 @@ rlJournalStart
 
         rlRun "packageVersion=$(rpm -q ${PACKAGE} --qf '%{name}-%{version}-%{release}\n')"
         if rlTestVersion "${packageVersion}" '>=' 'clevis-15-8'; then
-            rlAssertGrep "Error communicating with the server http://localhost" $rlRun_LOG
-        else
-            rlAssertGrep "Error communicating with the server!" $rlRun_LOG
+            rlAssertGrep "Error communicating with .*server http://localhost" $rlRun_LOG -Eq
         fi
         rm $rlRun_LOG
 
