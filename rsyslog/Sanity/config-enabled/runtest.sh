@@ -60,6 +60,7 @@ check_config_startservice_and_check_log() {
       [[ -n "$1" ]] && rlAssertGrep "$1" $rlRun_LOG
       [[ -n "$2" ]] && rlAssertNotGrep "$2" $rlRun_LOG
       rm -f $rlRun_LOG
+      rlRun "systemctl reset-failed rsyslog"
       rlRun "rsyslogServiceStart"
       rlRun -s "rsyslogServiceStatus"
       rlAssertNotGrep "parameter 'config.enabled' not known" $rlRun_LOG
