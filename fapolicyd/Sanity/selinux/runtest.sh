@@ -94,6 +94,11 @@ rlJournalStart && {
       rlSESearchRule "allow fapolicyd_t fapolicyd_var_run_t : file { create open read write } [ ]"
     rlPhaseEnd; }
 
+    rlPhaseStartTest "RHEL-816, RHEL-820" && {
+      rlSESearchRule "allow fapolicyd_t cert_t : lnk_file { read getattr } [ ]"
+      rlSESearchRule "allow fapolicyd_t file : lnk_file { read getattr } [ ]"
+    rlPhaseEnd; }
+
     ! rlIsRHELLike '<9' && rlPhaseStartTest "policy rules for allow_filesystem_mark" && {
       # this is implemented since RHEL 9 because of lack of kernel support on RHEL 8
       rlSESearchRule "allow fapolicyd_t filesystem_type:filesystem watch [ ]"

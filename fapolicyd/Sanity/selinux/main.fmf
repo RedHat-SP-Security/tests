@@ -5,32 +5,34 @@ description: |
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
-- library(distribution/dpcommon)
-- library(selinux-policy/common)
-- fapolicyd
-- fapolicyd-selinux
-- /usr/sbin/mkfs.ext4
-- /usr/bin/dd
+  - library(distribution/dpcommon)
+  - library(selinux-policy/common)
+  - fapolicyd
+  - fapolicyd-selinux
+  - /usr/sbin/mkfs.ext4
+  - /usr/bin/dd
 environment:
-  AVC_ERROR: +no_avc_check
+   AVC_ERROR: +no_avc_check
 duration: 15m
 enabled: true
 tag:
-- CI-Tier-1
-- NoRHEL4
-- NoRHEL5
-- TIPfail
-- rhel-8.3.0
-- Tier1
+  - CI-Tier-1
+  - NoRHEL4
+  - NoRHEL5
+  - TIPfail
+  - rhel-8.3.0
+  - Tier1
 tier: 1
 extra-summary: /CoreOS/fapolicyd/Sanity/selinux
 extra-task: /CoreOS/fapolicyd/Sanity/selinux
 extra-nitrate: TC#0607391
 link:
-- verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1714529
-- verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1841518
-- verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1932225
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1714529
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1841518
+  - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1932225
+  - verifies: https://issues.redhat.com/browse/RHEL-816
+  - verifies: https://issues.redhat.com/browse/RHEL-820
 adjust+:
--   enabled: false
+  - enabled: false
     when: distro < rhel-8.3
     continue: false
