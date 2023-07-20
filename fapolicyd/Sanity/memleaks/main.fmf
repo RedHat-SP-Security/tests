@@ -1,0 +1,22 @@
+description: test memory leaks
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+  - gcc
+  - valgrind
+  - library(ControlFlow/Cleanup)
+  - library(distribution/testUser)
+  - library(distribution/dpcommon)
+duration: 60m
+enabled: true
+tag:
+  - Tier2
+  - CI-Tier-1
+tier: 2
+adjust+:
+  - enabled: false
+    when: distro < rhel-8.4
+    continue: false
+link:
+  - verifies: https://issues.redhat.com/browse/RHEL-519
+  - verifies: https://issues.redhat.com/browse/RHEL-430
