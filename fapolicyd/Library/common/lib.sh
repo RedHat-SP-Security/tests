@@ -25,7 +25,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = fap
-#   library-version = 26
+#   library-version = 27
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 true <<'=cut'
@@ -133,9 +133,10 @@ fapResetServiceOutTimestamp() {
 }
 
 fapStart() {
-  local res fapolicyd_path tail_pid FAPOPTS SYSTEMD_RELOAD
+  local res fapolicyd_path tail_pid FAPOPTS SYSTEMD_RELOAD Timeout
   res=0
   FAPOPTS='--debug-deny'
+  Timeout=120
   if [[ "${1:0:2}" == "--" ]]; then
     while [[ "${1:0:2}" == "--" ]]; do
       [[ "$1" =~ debug ]] && {
@@ -143,6 +144,11 @@ fapStart() {
       }
       [[ "$1" == "--no-debug" ]] && {
         shift
+        continue
+      }
+      [[ "$1" == "--timeout" ]] && {
+        Timeout=$2
+        shift 2
         continue
       }
       FAPOPTS+=" $1"
@@ -186,7 +192,7 @@ EOF
   fapServiceOut -b -f
   tail_pid=$!
 
-  local t=$(($(date +%s) + 120))
+  local t=$(($(date +%s) + $Timeout))
   while ! fapServiceOut | grep -q 'Starting to listen for events' \
         && systemctl status fapolicyd > /dev/null; do
     sleep 1
