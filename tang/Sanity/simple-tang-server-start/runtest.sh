@@ -41,6 +41,11 @@ rlJournalStart
           rlRun "systemctl start ${TANG}"
           rlRun "sleep 1"
         }
+
+        # Backup any possibly existing keys then remove them.
+        rlRun "rlFileBackup --clean /var/db/tang/"
+        rlRun "rm -f /var/db/tang/*.jwk"
+        rlRun "rm -f /var/db/tang/.*.jwk"
     rlPhaseEnd
 
     rlPhaseStartTest "Check for active socket"
@@ -48,6 +53,26 @@ rlJournalStart
     rlPhaseEnd
 
     rlPhaseStartTest "Force server to generate advertisment and get it by curl"
+        # Make sure there are no leftover keys.
+        rlRun "rm -f /var/db/tang/*.jwk"
+        rlRun "rm -f /var/db/tang/.*.jwk"
+
+        rlRun -s "curl -sS http://localhost/adv" 0
+        rlAssertGrep '"payload":' $rlRun_LOG
+        rlAssertGrep '"protected":' $rlRun_LOG
+        rlAssertGrep '"signature":' $rlRun_LOG
+        rm -f $rlRun_LOG
+    rlPhaseEnd
+
+    rlPhaseStartTest "Test tangd-keygen"
+        # Make sure there are no leftover keys.
+        rlRun "rm -f /var/db/tang/*.jwk"
+        rlRun "rm -f /var/db/tang/.*.jwk"
+
+        # Run the keygen.
+        KEYGEN=/usr/libexec/tangd-keygen
+        rlRun "${KEYGEN} /var/db/tang" 0
+
         rlRun -s "curl -sS http://localhost/adv" 0
         rlAssertGrep '"payload":' $rlRun_LOG
         rlAssertGrep '"protected":' $rlRun_LOG
@@ -60,6 +85,7 @@ rlJournalStart
           rlRun "systemctl stop ${TANG}"
           rlRun "sleep 1"
           rlRun "systemctl status ${TANG}" 1-100
+          rlRun "rlFileRestore"
       rlPhaseEnd
     }
 rlJournalPrintText
