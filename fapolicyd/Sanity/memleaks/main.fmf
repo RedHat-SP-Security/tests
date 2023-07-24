@@ -6,7 +6,8 @@ require+:
   - valgrind
   - library(ControlFlow/Cleanup)
   - library(distribution/testUser)
-  - library(distribution/dpcommon)
+  - library(distribution/Log)
+  - library(distribution/tcf)
 duration: 60m
 enabled: true
 tag:
@@ -20,5 +21,18 @@ adjust+:
 link:
   - verifies: https://issues.redhat.com/browse/RHEL-519
   - verifies: https://issues.redhat.com/browse/RHEL-430
-extra-nitrate: TC#0615587
-id: d72186e3-a079-4ce2-a644-95d4c79e0c88
+/integrity-none:
+    environment:
+        INTEGRITY: none
+    extra-nitrate: TC#0615587
+    id: d72186e3-a079-4ce2-a644-95d4c79e0c88
+/integrity-size:
+    environment:
+        INTEGRITY: size
+    extra-nitrate: TC#0615595
+    id: ba62773b-8d23-4ec5-a048-ba87e1d52bd5
+/integrity-sha256:
+    environment:
+        INTEGRITY: sha256
+    extra-nitrate: TC#0615594
+    id: 28a68b72-708c-48fb-b5fc-9f5937c59e69

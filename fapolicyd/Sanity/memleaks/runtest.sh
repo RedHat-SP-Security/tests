@@ -44,6 +44,9 @@ set_config_option() {
 ITER=${ITER:-34 21 13 8 5 3 2 1 1}
 STEPS=${STEPS:-5}
 
+ITER=${ITER:-21 13 8 5 3 2 1 1}
+STEPS=${STEPS:-3}
+
 rlJournalStart
     rlPhaseStartSetup
         rlRun "rlImport --all" || rlDie 'cannot continue'
@@ -57,6 +60,7 @@ rlJournalStart
         CleanupRegister 'rlRun "fapCleanup"'
         rlRun "fapSetup"
         rlRun "cp /bin/ls /tmp/"
+        [[ -n "$INTEGRITY" ]] && set_config_option integrity "$INTEGRITY"
     rlPhaseEnd
 
     rlPhaseStartTest && {
@@ -67,13 +71,14 @@ rlJournalStart
           CleanupRegister --mark 'rlRun "fapStop"'
           rlRun "fapStart --timeout 300 '$(command -v valgrind) /usr/sbin/'"
           iter=( $((iter+iter[1])) $iter )
-          progressHeader $iter 1
+          Log "generate load..."
+          LogProgressHeader $iter 1
           for ((i=1; i<=$iter; i++)); do
-            progressDraw $i
+            LogProgressDraw $i
             su -c 'ls' - $testUser >& /dev/null
             su -c '/tmp/ls' - $testUser >& /dev/null
           done
-          progressFooter
+          LogProgressFooter
           CleanupDo --mark
           rlRun -s "fapServiceOut | tail -n 30"
           val=$(cat $rlRun_LOG | tail -n 20 | grep -A 1000 "LEAK SUMMARY:" )
