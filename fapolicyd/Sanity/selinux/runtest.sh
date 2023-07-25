@@ -96,7 +96,7 @@ rlJournalStart && {
 
     rlPhaseStartTest "RHEL-816, RHEL-820" && {
       rlSESearchRule "allow fapolicyd_t cert_t : lnk_file { read getattr } [ ]"
-      rlSESearchRule "allow fapolicyd_t file : lnk_file { read getattr } [ ]"
+      rlSESearchRule "allow fapolicyd_t file_type : lnk_file { read getattr } [ ]"
     rlPhaseEnd; }
 
     ! rlIsRHELLike '<9' && rlPhaseStartTest "policy rules for allow_filesystem_mark" && {
