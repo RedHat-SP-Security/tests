@@ -1,0 +1,18 @@
+summary: Check ownership of the /var/lib/rpm/__* files
+contact: Dalibor Pospisil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+  - library(ControlFlow/Cleanup)
+duration: 5m
+enabled: true
+tag:
+  - CI-Tier-1
+  - Tier3
+tier: '3'
+adjust+:
+  - enabled: false
+    when: distro < rhel-8.2
+link:
+    verifies: https://issues.redhat.com/browse/RHEL-829
+extra-nitrate: TC#0615601
+id: de273408-2056-45a9-b326-8fe338118516
