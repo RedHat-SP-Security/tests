@@ -69,7 +69,14 @@ EOF
       [[ -z "$USER" && -z "$USER_ID" ]]   && { USER='root';  USER_ID='0';  }
       [[ -z "$GROUP" && -z "$GROUP_ID" ]] && { GROUP='root'; GROUP_ID='0'; }
       if [[ "$USER" == "root" ]]; then
-        rlAssertEquals "check the actual list of capabilities" "$caps" "$exp_caps"
+        rlAssertEquals "check the actual list of capabilities" "$caps" "$exp_caps" \
+        || {
+          rlLog "diff: "
+          diff -U0 <(echo "$exp_caps" | tr ' ' '\n') <(echo "$caps" | tr ' ' '\n') | grep -vE '^(---|\+\+\+|@@) ' \
+          | while read -r line; do
+              rlLog "  $line"
+            done
+        }
       else
         rlAssertEquals "check the actual list of capabilities" "$caps" ""
       fi
