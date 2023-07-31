@@ -27,17 +27,21 @@ adjust+:
             rsyslogSyntax: old
         /x509_name:
             extra-nitrate: TC#0612984
+            id: 8e2d09dd-7901-4132-b200-1cadb5b7d373
         /client_anon:
             environment+:
                 CLIENT_NO_CERT: 1
             extra-nitrate: TC#0612982
+            id: ad195370-2ec3-47ab-9bc4-7674c3bb9859
         /server_anon:
+            enabled: false
             environment+:
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612983
             link:
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077421
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077423
+            id: cd8ed81d-b81e-487c-9e64-15e38942d19f
         /both_anon:
             adjust+:
               - enabled: false
@@ -47,6 +51,7 @@ adjust+:
                 CLIENT_NO_CERT: 1
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612981
+            id: 969afd26-caec-466e-a427-d957b1c19683
     /new-syntax:
         adjust+:
           - enabled: false
@@ -56,17 +61,21 @@ adjust+:
             rsyslogSyntax: new
         /x509_name:
             extra-nitrate: TC#0610733
+            id: 3d2f3d72-5df9-42ed-8214-5f6ea9b79eb8
         /client_anon:
             environment+:
                 CLIENT_NO_CERT: 1
             extra-nitrate: TC#0612979
+            id: ebee37ca-078b-4a30-8f19-9aebaa471760
         /server_anon:
+            enabled: false
             environment+:
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612980
             link:
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077421
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077423
+            id: bbfa73cf-ea49-4ffc-bac3-123d3805fd3e
         /both_anon:
             adjust+:
               - enabled: false
@@ -76,6 +85,7 @@ adjust+:
                 CLIENT_NO_CERT: 1
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612978
+            id: 31203522-199d-4ff9-8480-80cb846e3985
 /ossl:
     require+:
       - rsyslog-openssl
@@ -90,22 +100,27 @@ adjust+:
             rsyslogSyntax: old
         /x509_name:
             extra-nitrate: TC#0612998
+            id: 778ede9b-d620-443e-9ec0-8a14d51194f9
         /client_anon:
             environment+:
                 CLIENT_NO_CERT: 1
             extra-nitrate: TC#0612996
+            id: 031a21b6-2c85-4a10-b2bf-bbfa812b5695
         /server_anon:
+            enabled: false
             environment+:
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612997
             link:
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077421
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077423
+            id: a20e0603-59a5-4451-8a10-1b07adb5321f
         /both_anon:
             environment+:
                 CLIENT_NO_CERT: 1
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612995
+            id: c94a8116-4a14-4f8a-8406-6a3626b041e2
     /new-syntax:
         environment+:
             rsyslogSyntax: new
@@ -116,22 +131,27 @@ adjust+:
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1891458
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1972058
             extra-nitrate: TC#0610735
+            id: 6d852aa5-7e01-4f14-9d08-36fbba09347d
         /client_anon:
             environment+:
                 CLIENT_NO_CERT: 1
             extra-nitrate: TC#0612993
+            id: 0ee25c90-6179-413c-aead-46795de1154b
         /server_anon:
+            enabled: false
             environment+:
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612994
             link:
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077421
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077423
+            id: 519d0298-0bfc-4ce5-9f75-316c9873fd06
         /both_anon:
             environment+:
                 CLIENT_NO_CERT: 1
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612992
+            id: ee929f65-a56f-481c-be29-a3cde02ed2f3
 /interoperability:
     require+:
       - rsyslog-gnutls
@@ -147,22 +167,27 @@ adjust+:
             rsyslogSyntax: old
         /x509_name:
             extra-nitrate: TC#0612991
+            id: 6a476ac2-5333-408c-b8c0-ef497ae47dbf
         /client_anon:
             environment+:
                 CLIENT_NO_CERT: 1
             extra-nitrate: TC#0612989
+            id: 3aadb37c-5dda-41ea-8a81-75644ab093ca
         /server_anon:
+            enabled: false
             environment+:
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612990
             link:
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077421
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077423
+            id: 2d892384-a078-44f2-9a78-20d1edb0f6ea
         /both_anon:
             environment+:
                 CLIENT_NO_CERT: 1
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612988
+            id: 03cdffaa-a5a9-4834-a8de-47daa01891ee
     /new-syntax:
         environment+:
             rsyslogSyntax: new
@@ -173,19 +198,24 @@ adjust+:
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1891458
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=1972058
             extra-nitrate: TC#0610734
+            id: 7998f1a3-f009-4c23-9009-176b9f9d471c
         /client_anon:
             environment+:
                 CLIENT_NO_CERT: 1
             extra-nitrate: TC#0612986
+            id: 678a5be7-5c5b-4422-999e-1134027f66af
         /server_anon:
+            enabled: false
             environment+:
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612987
             link:
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077421
               - verifies: https://bugzilla.redhat.com/show_bug.cgi?id=2077423
+            id: bcc29927-c547-4b5f-aff8-6d066320875f
         /both_anon:
             environment+:
                 CLIENT_NO_CERT: 1
                 SERVER_NO_CERT: 1
             extra-nitrate: TC#0612985
+            id: 8c3c8ad6-1ea4-4452-9138-2016749578e1
