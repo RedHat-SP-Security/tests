@@ -1,18 +1,10 @@
 description: Tests various upgrade scenarios
 contact: Dalibor Pospíšil <dapospis@redhat.com>
-test: ./runtest.sh
 require+:
   - library(ControlFlow/Cleanup)
   - library(ControlFlow/SessionControl)
   - library(distribution/tcf)
   - library(vm/common)
-  - qemu-kvm
-  - libvirt-daemon-kvm
-  - libvirt-daemon
-  - libvirt-daemon-config-network
-  - /usr/bin/virsh
-  - /usr/bin/virt-install
-  - /usr/bin/unbuffer
 recommend:
   - library(vm/RHEL)
 tag:
@@ -55,13 +47,12 @@ extra-hardware: |
             from the beaker-tasks repo
     execute:
         how: tmt
-    extra-nitrate: TC#0615664
-    id: cf7765d0-6b18-4249-8c49-93438b0c2cc8
 /all-supported:
     enabled: false
     extra-nitrate: TC#0611592
     id: 693fd0b6-2fe3-4c6b-8644-f2eade7a3663
 /from-rhel-8.3:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-8.3 and distro <= rhel-8.6
@@ -81,6 +72,7 @@ extra-hardware: |
         id: ce12ed05-cbfa-41d0-bb86-81ae26f40cd2
         extra-nitrate: TC#0614158
 /from-rhel-8.4:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-8.4 and distro <= rhel-8.7
@@ -100,6 +92,7 @@ extra-hardware: |
         extra-nitrate: TC#0614075
         id: b875c02a-fb94-4f2b-b1a3-0a22b456e86f
 /from-rhel-8.5:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-8.5 and distro <= rhel-8.8
@@ -119,6 +112,7 @@ extra-hardware: |
         extra-nitrate: TC#0614077
         id: 13fbd4f0-2746-4e1b-b904-8ed45d6e5b2e
 /from-rhel-8.6:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-8.6 and distro <= rhel-8.9
@@ -138,6 +132,7 @@ extra-hardware: |
         extra-nitrate: TC#0614079
         id: 1ec835b2-b8b1-4fb0-9baf-efcdab6c010e
 /from-rhel-8.7:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-8.7 and distro <= rhel-8.10
@@ -157,6 +152,7 @@ extra-hardware: |
         extra-nitrate: TC#0615629
         id: 7da4be6c-6d7c-4472-921a-06f563c36cc0
 /from-rhel-8.8:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-8.8 and distro <= rhel-8.11
@@ -176,6 +172,7 @@ extra-hardware: |
         extra-nitrate: TC#0615632
         id: 7be47008-f96a-45e3-a93a-27338d8f126e
 /from-rhel-8.9:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-8.9 and distro <= rhel-8.12
@@ -195,6 +192,7 @@ extra-hardware: |
         extra-nitrate: TC#0615635
         id: bdc76c15-01ab-4fa6-a952-eb73c9e467c6
 /from-rhel-9.0:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-9.0 and distro <= rhel-9.3
@@ -214,6 +212,7 @@ extra-hardware: |
         extra-nitrate: TC#0614081
         id: 9f0d16fc-52a4-4b48-ab32-6fecc3b43b53
 /from-rhel-9.1:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-9.1 and distro <= rhel-9.4
@@ -233,6 +232,7 @@ extra-hardware: |
         extra-nitrate: TC#0615638
         id: 2bccb38a-f553-4f42-a770-dc813cb50756
 /from-rhel-9.2:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-9.2 and distro <= rhel-9.5
@@ -252,6 +252,7 @@ extra-hardware: |
         extra-nitrate: TC#0615641
         id: 3ce5f671-f95a-4a55-9c84-de22460af892
 /from-rhel-9.3:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-9.3 and distro <= rhel-9.6
@@ -271,6 +272,7 @@ extra-hardware: |
         extra-nitrate: TC#0615644
         id: 32a71fbd-8e25-4f20-ac95-4d9157adc72a
 /from-rhel-9.4:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-9.4 and distro <= rhel-9.7
@@ -290,6 +292,7 @@ extra-hardware: |
         extra-nitrate: TC#0615647
         id: 9726a1a4-f421-4879-8706-5edcd9440cf0
 /from-rhel-9.5:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-9.5 and distro <= rhel-9.8
@@ -309,6 +312,7 @@ extra-hardware: |
         extra-nitrate: TC#0615650
         id: 34d40208-43f5-4c93-84b1-e4e773628751
 /from-rhel-9.6:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-9.6 and distro <= rhel-9.9
@@ -328,6 +332,7 @@ extra-hardware: |
         extra-nitrate: TC#0615653
         id: 29cccb1b-fc67-41f8-8aa6-98a2c1c82927
 /from-rhel-9.7:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-9.7 and distro <= rhel-9.10
@@ -347,6 +352,7 @@ extra-hardware: |
         extra-nitrate: TC#0615656
         id: 7514f813-4c63-486c-a011-1faeb2ac2c66
 /from-rhel-9.8:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-9.8 and distro <= rhel-9.11
@@ -366,6 +372,7 @@ extra-hardware: |
         extra-nitrate: TC#0615659
         id: 3cd8dfd8-02ee-46b9-9b53-ea04b4b97151
 /from-rhel-9.9:
+    test: ./runtest.sh
     adjust+:
       - enabled: true
         when: distro > rhel-9.9 and distro <= rhel-9.12

@@ -19,3 +19,18 @@ adjust:
   when: distro ~< rhel-7 || distro = fedora
 duration: 60m
 enabled: true
+
+/plan:
+    discover:
+      - how: fmf
+        test:
+          - /rsyslog/Multihost/rsyslog-send-messages-to-remote/ansible-normal
+    provision:
+      - role: client
+        how: connect
+        guest: sopos-rhel9-brq.usersys.redhat.com
+      - role: server
+        how: connect
+        guest: sopos-rhel93-brq.usersys.redhat.com
+    execute:
+        how: tmt
