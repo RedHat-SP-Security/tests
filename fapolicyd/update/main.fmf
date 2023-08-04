@@ -26,7 +26,7 @@ extra-hardware: |
     discover:
       - how: fmf
         test:
-          - upgrade
+          - update
     provision:
       - how: minute
         flavor: ci.nested.virt.m1.large
