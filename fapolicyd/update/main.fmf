@@ -1,0 +1,386 @@
+description: Tests various upgrade scenarios
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+test: ./runtest.sh
+require+:
+  - library(ControlFlow/Cleanup)
+  - library(ControlFlow/SessionControl)
+  - library(distribution/tcf)
+  - library(vm/common)
+  - qemu-kvm
+  - libvirt-daemon-kvm
+  - libvirt-daemon
+  - libvirt-daemon-config-network
+  - /usr/bin/virsh
+  - /usr/bin/virt-install
+  - /usr/bin/unbuffer
+recommend:
+  - library(vm/RHEL)
+tag:
+  - Tier2
+tier: 2
+duration: 3h
+enabled: false
+adjust:
+  - enabled: false
+    when: arch != x86_64
+    continue: false
+extra-hardware: |
+    # kvm needs to be supported by machine
+    keyvalue=HVM=1
+    hostrequire = memory>=3700
+    hostrequire = disk>=40000
+/plan:
+    enabled: true
+    discover:
+      - how: fmf
+        test:
+          - upgrade
+    provision:
+      - how: minute
+        flavor: ci.nested.virt.m1.large
+        image: fedora
+        hardware:
+            arch: x86_64
+            memory: '>= 4 GB'
+            virtualization:
+                is-supported: true
+            disk:
+                size: '>= 40 GB'
+    prepare:
+      - how: shell
+        script: yum-config-manager --enable beaker-tasks
+        order: 50
+        note: |
+            this is to enabled installation of the internal linrary
+            from the beaker-tasks repo
+    execute:
+        how: tmt
+    extra-nitrate: TC#0615664
+    id: cf7765d0-6b18-4249-8c49-93438b0c2cc8
+/all-supported:
+    enabled: false
+    extra-nitrate: TC#0611592
+    id: 693fd0b6-2fe3-4c6b-8644-f2eade7a3663
+/from-rhel-8.3:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-8.3 and distro <= rhel-8.6
+    environment:
+        SRC_DISTRO: rhel-8.3
+    /base:
+        extra-nitrate: TC#0612754
+        id: fe222545-8f0a-4639-bf8d-6abb081a089e
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        id: 555c5bac-8dae-45d2-a57b-dede993f4d99
+        extra-nitrate: TC#0614159
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        id: ce12ed05-cbfa-41d0-bb86-81ae26f40cd2
+        extra-nitrate: TC#0614158
+/from-rhel-8.4:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-8.4 and distro <= rhel-8.7
+    environment:
+        SRC_DISTRO: rhel-8.4
+    /base:
+        extra-nitrate: TC#0612755
+        id: 50f12070-5f4c-41e0-9568-10c21cb04de9
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0614076
+        id: 662fbef0-aa11-4c76-a0a2-11622448366b
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0614075
+        id: b875c02a-fb94-4f2b-b1a3-0a22b456e86f
+/from-rhel-8.5:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-8.5 and distro <= rhel-8.8
+    environment:
+        SRC_DISTRO: rhel-8.5
+    /base:
+        extra-nitrate: TC#0612756
+        id: 60694f33-0f9b-49ba-b604-4da26b471fa8
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0614078
+        id: 6bf72b13-597e-44bd-a866-0bff4307c9b3
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0614077
+        id: 13fbd4f0-2746-4e1b-b904-8ed45d6e5b2e
+/from-rhel-8.6:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-8.6 and distro <= rhel-8.9
+    environment:
+        SRC_DISTRO: rhel-8.6
+    /base:
+        extra-nitrate: TC#0612757
+        id: a4ced5bb-d1f5-4673-950a-54e2e1226854
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0614080
+        id: 64db46a7-fd5f-4cf4-ba3c-9ed48eafdca9
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0614079
+        id: 1ec835b2-b8b1-4fb0-9baf-efcdab6c010e
+/from-rhel-8.7:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-8.7 and distro <= rhel-8.10
+    environment:
+        SRC_DISTRO: rhel-8.7
+    /base:
+        extra-nitrate: TC#0615628
+        id: a0bb734a-162c-494a-afcc-b08218ff4633
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0615630
+        id: b05b2f40-eb9e-4e05-ba63-bcb750c0d449
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0615629
+        id: 7da4be6c-6d7c-4472-921a-06f563c36cc0
+/from-rhel-8.8:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-8.8 and distro <= rhel-8.11
+    environment:
+        SRC_DISTRO: rhel-8.8
+    /base:
+        extra-nitrate: TC#0615631
+        id: 5c72ad3d-8e71-4bb7-8b0c-f78ff30e7daa
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0615633
+        id: 427fd274-4bc9-4a60-95dc-7dd37382b2e2
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0615632
+        id: 7be47008-f96a-45e3-a93a-27338d8f126e
+/from-rhel-8.9:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-8.9 and distro <= rhel-8.12
+    environment:
+        SRC_DISTRO: rhel-8.9
+    /base:
+        extra-nitrate: TC#0615634
+        id: 8a5032a1-071f-46d9-8831-027be2a964f8
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0615636
+        id: 015fe56b-44a1-4f6a-8abe-bb4a87d6f4c8
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0615635
+        id: bdc76c15-01ab-4fa6-a952-eb73c9e467c6
+/from-rhel-9.0:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-9.0 and distro <= rhel-9.3
+    environment:
+        SRC_DISTRO: rhel-9.0
+    /base:
+        extra-nitrate: TC#0612758
+        id: 62704a64-8967-48d4-a6ac-d4a1e14d4818
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0614082
+        id: 9ce8e4fe-9f9f-496b-93cf-c9a14b0af364
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0614081
+        id: 9f0d16fc-52a4-4b48-ab32-6fecc3b43b53
+/from-rhel-9.1:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-9.1 and distro <= rhel-9.4
+    environment:
+        SRC_DISTRO: rhel-9.1
+    /base:
+        extra-nitrate: TC#0615637
+        id: d018ed52-b913-46bc-a1f6-151d0128755a
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0615639
+        id: 92f98b1b-c987-433e-b2a2-389f6d006b9a
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0615638
+        id: 2bccb38a-f553-4f42-a770-dc813cb50756
+/from-rhel-9.2:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-9.2 and distro <= rhel-9.5
+    environment:
+        SRC_DISTRO: rhel-9.2
+    /base:
+        extra-nitrate: TC#0615640
+        id: fd34ec98-ec37-4e1f-bfe3-33299a18cbcf
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0615642
+        id: e562bd80-126e-481d-ad0a-7cb9ee70afc0
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0615641
+        id: 3ce5f671-f95a-4a55-9c84-de22460af892
+/from-rhel-9.3:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-9.3 and distro <= rhel-9.6
+    environment:
+        SRC_DISTRO: rhel-9.3
+    /base:
+        extra-nitrate: TC#0615643
+        id: e87725aa-36ce-4c52-bc85-ca8bc9179563
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0615645
+        id: 9d8bb92d-d17d-4666-87ce-9afd412602fc
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0615644
+        id: 32a71fbd-8e25-4f20-ac95-4d9157adc72a
+/from-rhel-9.4:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-9.4 and distro <= rhel-9.7
+    environment:
+        SRC_DISTRO: rhel-9.4
+    /base:
+        extra-nitrate: TC#0615646
+        id: ddde1b87-bc1a-4a10-83f8-8c4680682784
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0615648
+        id: a8ee5e0b-ac8f-4c73-8bac-fcb7a7532faa
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0615647
+        id: 9726a1a4-f421-4879-8706-5edcd9440cf0
+/from-rhel-9.5:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-9.5 and distro <= rhel-9.8
+    environment:
+        SRC_DISTRO: rhel-9.5
+    /base:
+        extra-nitrate: TC#0615649
+        id: ade06971-1526-4632-b1c2-1ae6e89d555e
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0615651
+        id: 35cfdce9-bc09-46f7-b5c4-ae16b41f2b91
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0615650
+        id: 34d40208-43f5-4c93-84b1-e4e773628751
+/from-rhel-9.6:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-9.6 and distro <= rhel-9.9
+    environment:
+        SRC_DISTRO: rhel-9.6
+    /base:
+        extra-nitrate: TC#0615652
+        id: a2a345ac-f171-490d-96a6-0636e2233b11
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0615654
+        id: ee5a9588-375a-4cd5-88f0-19a7a773412a
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0615653
+        id: 29cccb1b-fc67-41f8-8aa6-98a2c1c82927
+/from-rhel-9.7:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-9.7 and distro <= rhel-9.10
+    environment:
+        SRC_DISTRO: rhel-9.7
+    /base:
+        extra-nitrate: TC#0615655
+        id: cb7883cc-50e6-406e-a686-75220cca4ce1
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0615657
+        id: d415d3f0-1e9b-4287-bbc2-40a92cce7712
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0615656
+        id: 7514f813-4c63-486c-a011-1faeb2ac2c66
+/from-rhel-9.8:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-9.8 and distro <= rhel-9.11
+    environment:
+        SRC_DISTRO: rhel-9.8
+    /base:
+        extra-nitrate: TC#0615658
+        id: c941939b-4a32-4364-8abf-a3ecc475900c
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0615660
+        id: 2c840b24-aef8-4f62-bbfb-db2e0feef77e
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0615659
+        id: 3cd8dfd8-02ee-46b9-9b53-ea04b4b97151
+/from-rhel-9.9:
+    adjust+:
+      - enabled: true
+        when: distro > rhel-9.9 and distro <= rhel-9.12
+    environment:
+        SRC_DISTRO: rhel-9.9
+    /base:
+        extra-nitrate: TC#0615661
+        id: 3af2e28b-c208-4638-b499-bccab5525c7b
+    /update_first:
+        environment+:
+            FAPOLICYD_UPDATE_FIRST: 1
+        extra-nitrate: TC#0615663
+        id: b0c9add5-2aa3-4cb4-a6ff-3476510e2f41
+    /no_update:
+        environment+:
+            FAPOLICYD_NO_UPDATE: 1
+        extra-nitrate: TC#0615662
+        id: 492b519f-c80e-4c97-9050-99a931b98483
