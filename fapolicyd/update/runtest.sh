@@ -41,10 +41,8 @@ rlJournalStart
         CleanupRegister 'rlRun "rlFileRestore"'
         rlRun "rlFileBackup /etc/rsyslog.conf"
         CleanupRegister "sessionCleanup"
-        CleanupRegister 'rlRun "rlServiceRestore libvirtd"'
-        rlRun "rlServiceStart libvirtd"
-        CleanupRegister 'rlRun "rlServiceRestore virtlogd"'
-        rlRun "rlServiceStart virtlogd"
+        CleanupRegister 'rlRun "vmCleanup"'
+        rlRun "vmSetup"
     rlPhaseEnd
 
     sessionRunTIMEOUT=3600
