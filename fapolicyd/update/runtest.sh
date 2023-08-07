@@ -158,7 +158,7 @@ rlJournalStart
           rlRun "sessionRun 'id'"
           rlRun "sessionRun 'hostname'"
           [[ -z "$NO_FAPOLICYD" ]] && rlRun "sessionRun 'systemctl --no-pager -l status fapolicyd'"
-          rlRun "sessionSend '$CR'; sessionWaitAPrompt; sessionRun 'shutdown now$CR'"
+          rlRun "sessionSend '$CR'; sessionWaitAPrompt; sessionSend 'shutdown now$CR'"
           rlRun "sessionWaitAPrompt"
           rlRun "DEBUG=1 sessionClose"
           break
