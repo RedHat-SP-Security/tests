@@ -56,7 +56,7 @@ rlJournalStart
       fi
       rlPhaseStartTest "test $vmName" && {
         while :; do
-          CleanupRegister --mark "vmDestroy '$vmName'"
+          CleanupRegister --mark "vmDestroy '$vmName'; vmRemove '$vmName'"
           rlRun "vmPrepareKs $vmName"
 
           rlRun "vmInstall $vmName $vmName.ks" || break
