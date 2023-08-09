@@ -1,0 +1,12 @@
+description: test mount, umount after fapolicyd-cli --update
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+require+:
+  - library(ControlFlow/Cleanup)
+  - library(ControlFlow/SessionControl)
+  - library(distribution/tcf)
+  - library(distribution/Log)
+  - name: /fapolicyd/destructive/library
+    type: library
+    path: ../tests
+duration: 5m
+test: ./runtest.sh

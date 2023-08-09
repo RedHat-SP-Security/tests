@@ -1,0 +1,25 @@
+enabled: true
+context:
+    destructiveTests: 1
+discover:
+  - how: fmf
+    test:
+      - /fapolicyd/destructive/library
+  - how: fmf
+    test:
+      - /fapolicyd/destructive/.*
+    exclude:
+      - /fapolicyd/destructive/library
+provision:
+  - how: minute
+    flavor: ci.nested.virt.m1.large
+    image: fedora
+    hardware:
+        arch: x86_64
+        memory: '>= 4 GB'
+        virtualization:
+            is-supported: true
+        disk:
+            size: '>= 40 GB'
+execute:
+    how: tmt

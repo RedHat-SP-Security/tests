@@ -1,0 +1,12 @@
+enabled: false
+adjust:
+  - enabled: true
+    when: destructiveTests == 1
+  - enabled: false
+    when: arch != x86_64
+    continue: false
+extra-hardware: |
+    # kvm needs to be supported by machine
+    keyvalue=HVM=1
+    hostrequire = memory>=3700
+    hostrequire = disk>=40000
