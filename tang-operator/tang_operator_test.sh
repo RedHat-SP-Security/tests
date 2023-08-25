@@ -24,7 +24,7 @@ echo "================ /INFO ==============="
 
 result=1
 ./tools/dependency_install.sh
-let dep_res=$?
+dep_res=$?
 echo "Dependency installation result:${dep_res}"
 echo "======= DIRECTORY:$(pwd) ========"
 
@@ -33,19 +33,19 @@ then
     # Architecture unsupported, just let it go in this arch
     echo "Architecture execution bypassed"
     ./runnotest.sh
-    let result=$?
+    result=$?
 elif [ ${dep_res} -eq 0 ];
 then
-    chown minikube.minikube -R $(pwd)
+    chown minikube.minikube -R "$(pwd)"
     # Ugly, but the way paths are managed (root dir not directory where running):
     # /var/tmp/tmt/run-019/plans/default/discover/default/tests/tang/Sanity/tang-operator ========
     # /var/tmp/tmt/run-019/plans/default/execute/data/tang/Sanity/tang-operator/journal.txt: Permission denied
-    chown minikube.minikube -R $(pwd)/../../../../../..
+    chown minikube.minikube -R "$(pwd)"/../../../../../..
     # User minikube should have been installed, execute test as minikube user
     su minikube -c '. ~/.bashrc && ./runtest.sh'
-    let run_result=$?
+    run_result=$?
     echo "TEST EXECUTION RESULT:[${run_result}]"
-    let result=${run_result}
+    result=${run_result}
 fi
 echo "RESULT:[${result}]"
 exit "${result}"
