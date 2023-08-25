@@ -40,7 +40,7 @@ then
     # Ugly, but the way paths are managed (root dir not directory where running):
     # /var/tmp/tmt/run-019/plans/default/discover/default/tests/tang/Sanity/tang-operator ========
     # /var/tmp/tmt/run-019/plans/default/execute/data/tang/Sanity/tang-operator/journal.txt: Permission denied
-    chown minikube.minikube -R "$(pwd)"/../../../../../..
+    chown minikube.minikube -R "$(pwd)/../../../../../.."
     # User minikube should have been installed, execute test as minikube user
     su minikube -c '. ~/.bashrc && ./runtest.sh'
     run_result=$?
