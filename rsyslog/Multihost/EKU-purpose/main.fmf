@@ -2,7 +2,6 @@ summary: Test for extended key usage purpose
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 require+:
-- library(rsyslog/basic)
 - rsyslog-gnutls
 - gnutls-utils
 recommend:

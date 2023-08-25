@@ -14,8 +14,6 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 component:
 - rsyslog
 test: ./runtest.sh
-require+:
-- library(rsyslog/basic)
 recommend:
 - rsyslog
 - rsyslog-gssapi

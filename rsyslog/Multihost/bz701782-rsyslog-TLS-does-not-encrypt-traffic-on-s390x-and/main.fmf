@@ -17,7 +17,6 @@ component:
 - rsyslog
 test: ./runtest.sh
 require+:
-- library(rsyslog/basic)
 - library(distribution/dpcommon)
 - library(distribution/epel)
 recommend:

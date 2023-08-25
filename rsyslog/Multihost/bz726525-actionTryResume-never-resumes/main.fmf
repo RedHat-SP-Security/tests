@@ -21,9 +21,8 @@ component:
 test: ./runtest.sh
 require+:
 - library(distribution/dpcommon)
-- library(distribution/Cleanup)
+- library(ControlFlow/Cleanup)
 - library(selinux-policy/common)
-- library(rsyslog/basic)
 recommend:
 - rsyslog
 - psmisc

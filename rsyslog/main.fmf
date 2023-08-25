@@ -3,4 +3,5 @@ component:
 require:
   - url: https://github.com/RedHat-SP-Security/tests.git
     name: /rsyslog/Library/basic
+    type: library
   - rsyslog

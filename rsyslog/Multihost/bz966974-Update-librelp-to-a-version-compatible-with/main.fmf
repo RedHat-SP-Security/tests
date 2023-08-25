@@ -11,7 +11,6 @@ test: ./runtest.sh
 require+:
 - library(distribution/dpcommon)
 - library(selinux-policy/common)
-- library(rsyslog/basic)
 recommend:
 - librelp
 - rsyslog

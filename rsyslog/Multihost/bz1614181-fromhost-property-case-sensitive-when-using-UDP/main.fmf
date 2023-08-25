@@ -8,7 +8,6 @@ component:
 test: ./runtest.sh
 require+:
 - library(distribution/dpcommon)
-- library(rsyslog/basic)
 recommend:
 - rsyslog
 duration: 120m
