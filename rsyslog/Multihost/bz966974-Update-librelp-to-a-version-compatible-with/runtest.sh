@@ -89,6 +89,8 @@ rlJournalStart && {
   rlPhaseStartSetup && {
     rlRun "rlImport --all" 0 "Import libraries" || rlDie "cannot continue"
     tcfTry "Setup phase" && {
+      CleanupRegister 'tcfRun "rlSEPortRestore"'
+      tcfRun "rlSEPortAdd tcp 2514 syslogd_port_t"
       CleanupRegister 'tcfRun "rsyslogCleanup"'
       tcfRun "rsyslogSetup"
       rlLog "Server: $SERVERS"
@@ -97,8 +99,6 @@ rlJournalStart && {
       CleanupRegister "rlRun 'rm -r $TmpDir' 0 'Removing tmp directory'"
       CleanupRegister 'rlRun "popd"'
       rlRun "pushd $TmpDir"
-      CleanupRegister 'tcfRun "rlSEPortRestore"'
-      tcfRun "rlSEPortAdd tcp 2514 syslogd_port_t"
     tcfFin; }
   rlPhaseEnd; }
 
