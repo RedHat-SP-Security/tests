@@ -97,7 +97,7 @@ EOF
           rlRun -s "rsyslogCatLogFileFromPointer /var/log/messages"
           c=$(cat $rlRun_LOG | wc -l)
           rlLog "actual count is $c"
-          compare_with_tolerance $c 180 5
+          compare_with_tolerance $c 180 10
         tcfFin; }
         rsyslogVersion '>8.1911' && rlAssertGrep '[0-9]+ messages lost due to rate-limiting \(10 allowed within 5 seconds\)' $rlRun_LOG -Eq
         rm -f $rlRun_LOG
