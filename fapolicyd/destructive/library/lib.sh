@@ -46,7 +46,6 @@ destructiveSetup() {
   done
   local sessionRunTIMEOUT=180 sessionExpectTIMEOUT=600 res=0
   CR=$'\r'
-  destructiveVMName=destructiveVM
   if ! virsh list --all | grep -q "$destructiveVMName"; then
     while :; do
       vmRepos=$(vmGetCurrentRepos)
@@ -104,6 +103,7 @@ destructiveWipe() {
 
 
 destructiveLibraryLoaded() {
+  destructiveVMName=destructiveVM
   return 0
 }
 
