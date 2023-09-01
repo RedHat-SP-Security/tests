@@ -1,8 +1,6 @@
 description: helper library for the destructive tests
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 require+:
-  - library(ControlFlow/Cleanup)
-  - library(ControlFlow/SessionControl)
   - library(vm/common)
 duration: 3h
 test: ./runtest.sh

@@ -10,3 +10,10 @@ extra-hardware: |
     keyvalue=HVM=1
     hostrequire = memory>=3700
     hostrequire = disk>=40000
+require:
+  - name: /fapolicyd/destructive/library
+    type: library
+    url: https://github.com/RedHat-SP-Security/tests
+    #path: ../tests
+  - library(ControlFlow/Cleanup)
+  - library(ControlFlow/SessionControl)
