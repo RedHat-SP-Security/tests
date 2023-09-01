@@ -44,6 +44,10 @@ rlJournalStart
     rlRun "sessionOpen"
   rlPhaseEnd
 
+  rlPhaseStartTest "wipe VM"
+    rlRun "destructiveWipe" 0-255
+  rlPhaseEnd
+
   rlPhaseStartTest "install VM"
     CleanupRegister 'rlRun "destructiveCleanup"'
     rlRun "destructiveSetup"
