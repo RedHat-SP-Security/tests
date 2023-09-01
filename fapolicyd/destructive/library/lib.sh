@@ -65,6 +65,7 @@ destructiveSetup() {
       sessionSend "redhat$CR" || { let res++; break; }
       sessionRun 'yum install -y fapolicyd' || { let res++; break; }
       sessionSend "shutdown now$CR" || { let res++; break; }
+      sessionSend "$CR" || { let res++; break; }
       sessionWaitAPrompt || { let res++; break; }
       for (( i=0; i<60; i++)); do
         virsh domstate $destructiveVMName | grep -q "shut off" && break
