@@ -26,7 +26,7 @@ extra-hardware: |
     discover:
       - how: fmf
         test:
-          - update
+          - fapolicyd/update
     provision:
       - how: minute
         flavor: ci.nested.virt.m1.large
@@ -40,7 +40,7 @@ extra-hardware: |
                 size: '>= 40 GB'
     prepare:
       - how: shell
-        script: yum-config-manager --enable beaker-tasks
+        script: "yum-config-manager --enable beaker-tasks || :"
         order: 50
         note: |
             this is to enabled installation of the internal linrary

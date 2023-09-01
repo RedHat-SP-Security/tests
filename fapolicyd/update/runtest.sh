@@ -62,7 +62,7 @@ rlJournalStart
           rlRun "vmInstall $vmName $vmName.ks" || break
           rlRun "vmStart $vmName" || break
           rlRun "sessionOpen"
-          rlRun "sessionSend '$CR'; sessionWaitAPrompt; sessionSend 'virsh console $vmName --force$CR'"
+          rlRun "sessionRun true"; rlRun "sessionSend 'virsh console $vmName --force$CR'"
           res=$?; [[ $res -eq 0 || $res -eq 254 ]] || break
           sleep 2
           rlRun 'sessionExpect -nocase "login:"' || break
