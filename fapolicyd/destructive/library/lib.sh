@@ -66,10 +66,11 @@ destructiveSetup() {
       sessionSend "shutdown now$CR" || { let res++; break; }
       sessionSend "$CR" || { let res++; break; }
       sessionWaitAPrompt || { let res++; break; }
-      for (( i=0; i<60; i++)); do
+      for (( i=0; i<120; i++)); do
         virsh domstate $destructiveVMName | grep -q "shut off" && break
         sleep 1
       done
+      vmDestroy $destructiveVMName
       vmSnapshotCreate "$destructiveVMName" "snapshot0" || { let res++; break; }
       break
     done
