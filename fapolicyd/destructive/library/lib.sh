@@ -50,7 +50,7 @@ destructiveSetup() {
     while :; do
       vmRepos=$(vmGetCurrentRepos)
       base=$(echo "$vmRepos" | grep '1$' | grep -im1 'baseos')
-      others=$(echo "$vmRepos" | grep -vF "$base" | grep -vF "beaker.engineering.redhat.com" )
+      others=$(echo "$vmRepos" | grep -vF "$base" | grep -vF "beaker.engineering" )
       vmRepos="$base"$'\n'"$others"
       vmPrepareKs $destructiveVMName || { let res++; break; }
       vmInstall $destructiveVMName $destructiveVMName.ks || { let res++; break; }
