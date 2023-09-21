@@ -2,7 +2,7 @@
 # vim: dict+=/usr/share/beakerlib/dictionary.vim cpt=.,w,b,u,t,i,k
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#   runtest.sh of /CoreOS/tang/Sanity/tang-operator
+#   runtest.sh of /CoreOS/tang-operator/Sanity
 #   Description: Basic functionality tests of the tang operator
 #   Author: Martin Zeleny <mzeleny@redhat.com>
 #   Author: Sergio Arroutbi <sarroutb@redhat.com>

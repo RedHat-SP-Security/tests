@@ -23,7 +23,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-export TEST=/CoreOS/tang/Sanity/tang-operator
+export TEST=/CoreOS/tang-operator/Sanity
 export TESTVERSION=1.0
 
 BUILT_FILES=
