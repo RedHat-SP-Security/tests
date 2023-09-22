@@ -23,5 +23,5 @@ adjust:
     when: distro == rhel-alt-7
     continue: false
 extra-nitrate: TC#0611619
-extra-summary: /CoreOS/tang/Sanity/tang-operator
-extra-task: /CoreOS/tang/Sanity/tang-operator
+extra-summary: /CoreOS/tang-operator/Sanity
+extra-task: /CoreOS/tang-operator/Sanity
