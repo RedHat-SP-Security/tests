@@ -43,6 +43,7 @@ EXECUTION_MODE=
 TO_POD_START=120 #seconds
 TO_POD_SCALEIN_WAIT=120 #seconds
 TO_LEGACY_POD_RUNNING=120 #seconds
+TO_DAST_POD_COMPLETED=180 #seconds (DAST lasts around 60 seconds)
 TO_POD_STOP=5 #seconds
 TO_POD_TERMINATE=120 #seconds
 TO_POD_CONTROLLER_TERMINATE=180 #seconds (for controller to end must wait longer)
@@ -62,6 +63,7 @@ QUAY_FILE_NAME_PATH="${QUAY_PATH}/${QUAY_FILE_NAME_TO_FILL}"
 QUAY_FILE_NAME_TO_FILL_UNFILLED_MD5="db099cc0b92220feb7a38783b02df897"
 OC_DEFAULT_CLIENT="kubectl"
 TOP_SECRET_WORDS="top secret"
+DELETE_TMP_DIR="YES"
 
 test -z "${VERSION}" && VERSION="latest"
 test -z "${OPERATOR_NAMESPACE}" && OPERATOR_NAMESPACE="default"
@@ -1018,6 +1020,68 @@ rlJournalStart
     rlPhaseEnd
     ############# /LEGACY TESTS ###########
 
+    ############# DAST TESTS ############
+    ### Only execute DAST TESTS if helm command exists ...
+    command -v helm >/dev/null && {
+        rlPhaseStartTest "Dynamic Application Security Testing"
+            # 1 - Log helm version
+            dumpVerbose "$(helm version)"
+
+            # 2 - clone rapidast code (development branch)
+            pushd "${tmpdir}" && git clone https://github.com/RedHatProductSecurity/rapidast.git -b development
+
+            # 3 - download configuration file template
+            wget -O tang_operator.yaml https://raw.githubusercontent.com/latchset/tang-operator/main/tools/scan_tools/tang_operator_template.yaml
+
+            # 4 - adapt configuration file template (token, machine)
+            API_HOST_PORT=$("${OC_CLIENT}" whoami --show-server | tr -d  ' ')
+            DEFAULT_TOKEN=$("${OC_CLIENT}" get secret -n "${OPERATOR_NAMESPACE}" $("${OC_CLIENT}" get secret -n "${OPERATOR_NAMESPACE}" | grep ^tang-operator | grep service-account | awk '{print $1}') -o json | jq -Mr '.data.token' | base64 -d)
+            sed -i s@"API_HOST_PORT_HERE"@"${API_HOST_PORT}"@g tang_operator.yaml
+            sed -i s@"AUTH_TOKEN_HERE"@"${DEFAULT_TOKEN}"@g tang_operator.yaml
+            dumpVerbose "API_HOST_PORT:[${API_HOST_PORT}]"
+            dumpVerbose "DEFAULT_TOKEN:[${DEFAULT_TOKEN}]"
+            rlAssertNotEquals "Checking token not empty" "${DEFAULT_TOKEN}" ""
+
+            # 5 - adapt helm
+            pushd rapidast
+            sed -i s@"kubectl --kubeconfig=./kubeconfig "@"${OC_CLIENT} "@g helm/results.sh
+            sed -i s@"secContext: '{}'"@"secContext: '{\"privileged\": true}'"@ helm/chart/values.yaml
+
+            # 6 - run rapidast on adapted configuration file (via helm)
+            rlRun -c "helm install rapidast ./helm/chart/ --set-file rapidastConfig=${tmpdir}/tang_operator.yaml 2>/dev/null" 0 "Installing rapidast helm chart"
+            pod_name=$(getPodNameWithPrefix "rapidast" "default" 5 1)
+            rlRun "checkPodState Completed ${TO_DAST_POD_COMPLETED} default ${pod_name}" 0 "Checking POD ${pod_name} in Completed state [Timeout=${TO_DAST_POD_COMPLETED} secs.]"
+
+            # 7 - extract results
+            rlRun -c "bash ./helm/results.sh 2>/dev/null" 0 "Extracting DAST results"
+
+            # 8 - parse results (do not have to ensure no previous results exist, as this is a temporary directory)
+            # Check no alarm exist ...
+            report_dir=$(ls -1d ${tmpdir}/rapidast/tangservers/DAST*tangservers/ | head -1)
+            alerts=$(cat "${report_dir}/zap/zap-report.json" | jq '.site[0].alerts | length')
+            for ((alert=0; ix<${alerts}; ix++));
+            do
+                risk_desc=$(cat "${report_dir}/zap/zap-report.json" | jq ".site[0].alerts[${alert}].riskdesc" | awk '{print $1}' | tr -d '"' | tr -d " ")
+                rlLog "Alert[${alert}] -> Priority:[${risk_desc}]"
+                rlAssertNotEquals "Checking alarm is not High Risk" "${risk_desc}" "High"
+            done
+            if [ "${alerts}" != "0" ];
+            then
+                DELETE_TMP_DIR="NO"
+                rlLogWarning "Alerts detected! Please, review ZAP report: ${report_dir}/zap/zap-report.json"
+            fi
+
+            # 9 - clean helm installation
+            helm uninstall rapidast
+
+            # 10 - return
+            popd
+            popd
+
+        rlPhaseEnd
+    }
+    ############# /DAST TESTS ###########
+
     rlPhaseStartCleanup
         rlRun "checkClusterStatus" 0 "Checking cluster status"
         controller_name=$(getPodNameWithPrefix "tang-operator-controller" "${OPERATOR_NAMESPACE}" 1)
@@ -1028,7 +1092,10 @@ rlJournalStart
               rlRun "checkPodKilled ${controller_name} ${OPERATOR_NAMESPACE} ${TO_POD_CONTROLLER_TERMINATE}" 0 "Checking controller POD not available any more [Timeout=${TO_POD_CONTROLLER_TERMINATE} secs.]"
         fi
         rlRun "${OC_CLIENT} delete -f ${TEST_NAMESPACE_FILE}" 0 "Deleting test namespace:${TEST_NAMESPACE}"
-        rlRun "rm -rf ${tmpdir}" 0 "Removing tmp \(${tmpdir}\) directory"
+        if [ "${DELETE_TMP_DIR}" = "YES" ];
+        then
+            rlRun "rm -rf ${tmpdir}" 0 "Removing tmp \(${tmpdir}\) directory"
+        fi
     rlPhaseEnd
 
 rlJournalPrintText
