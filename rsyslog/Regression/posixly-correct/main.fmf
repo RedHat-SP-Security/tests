@@ -3,7 +3,7 @@ contact: Dalibor Pospíšil <dapospis@redhat.com>
 test: ./runtest.sh
 duration: 5m
 enabled: true
-require+:
+recommend+:
   - rsyslog-logrotate
 tag:
   - Tier3

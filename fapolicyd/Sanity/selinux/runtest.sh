@@ -99,6 +99,12 @@ rlJournalStart && {
       rlSESearchRule "allow fapolicyd_t file_type : lnk_file { read getattr } [ ]"
     rlPhaseEnd; }
 
+    ! rlIsRHELLike '<9' && rlPhaseStartTest "policy rules for allow watch_mount and watch_with_perm" && {
+      # this is implemented since RHEL 9 because of lack of kernel support on RHEL 8
+      rlSESearchRule "allow fapolicyd_t file_type:dir { watch_mount watch_with_perm } [ ]"
+      rlSESearchRule "allow fapolicyd_t file_type:file { watch_mount watch_with_perm } [ ]"
+    rlPhaseEnd; }
+
     ! rlIsRHELLike '<9' && rlPhaseStartTest "policy rules for allow_filesystem_mark" && {
       # this is implemented since RHEL 9 because of lack of kernel support on RHEL 8
       rlSESearchRule "allow fapolicyd_t filesystem_type:filesystem watch [ ]"
