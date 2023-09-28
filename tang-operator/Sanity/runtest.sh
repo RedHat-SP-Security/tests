@@ -66,12 +66,12 @@ TOP_SECRET_WORDS="top secret"
 DELETE_TMP_DIR="YES"
 
 test -z "${VERSION}" && VERSION="latest"
-test -z "${OPERATOR_NAMESPACE}" && OPERATOR_NAMESPACE="default"
 test -z "${DISABLE_BUNDLE_INSTALL_TESTS}" && DISABLE_BUNDLE_INSTALL_TESTS=0
 test -z "${IMAGE_VERSION}" && IMAGE_VERSION="quay.io/sec-eng-special/tang-operator-bundle:${VERSION}"
-
-## UNCOMMENT TO FORCE VERBOSITY
-# VERBOSE=1
+test -n "${DOWNSTREAM_IMAGE_VERSION}" && {
+    test -z "${OPERATOR_NAMESPACE}" && OPERATOR_NAMESPACE="openshift-operators"
+}
+test -z "${OPERATOR_NAMESPACE}" && OPERATOR_NAMESPACE="default"
 
 dumpVerbose() {
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
@@ -87,7 +87,9 @@ dumpDate() {
 dumpInfo() {
     rlLog "HOSTNAME:$(hostname)"
     rlLog "RELEASE:$(cat /etc/redhat-release)"
-    rlLog "IMAGE_VERSION:${IMAGE_VERSION}"
+    test -n "${DOWNSTREAM_IMAGE_VERSION}" && {
+        rlLog "DOWNSTREAM_IMAGE_VERSION:${DOWNSTREAM_IMAGE_VERSION}"
+    } || rlLog "IMAGE_VERSION:${IMAGE_VERSION}"
     rlLog "OPERATOR NAMESPACE:${OPERATOR_NAMESPACE}"
     rlLog "DISABLE_BUNDLE_INSTALL_TESTS:${DISABLE_BUNDLE_INSTALL_TESTS}"
     rlLog "OC_CLIENT:${OC_CLIENT}"
@@ -555,10 +557,50 @@ checkStatusReadyReplicas() {
     return 1
 }
 
+uninstallDownstreamVersion() {
+    pushd ${tmpdir}/tang-operator/tools/index_tools
+    if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
+    then
+        ./tang_uninstall_catalog.sh || err=1
+    else
+        ./tang_uninstall_catalog.sh 1>/dev/null 2>/dev/null || err=1
+    fi
+    popd || return 1
+    return $?
+}
+
+installDownstreamVersion() {
+    local err=0
+    # Download required tools
+    pushd ${tmpdir}
+    # WARNING: if tang-operator is changed to OpenShift organization, change this
+    git clone https://github.com/latchset/tang-operator
+    pushd tang-operator/tools/index_tools
+    local downstream_version=$(echo ${DOWNSTREAM_IMAGE_VERSION} | awk -F ':' '{print $2}')
+    dumpVerbose "Installing Downstream version: ${DOWNSTREAM_IMAGE_VERSION} DOWNSTREAM_VERSION:[${downstream_version}]"
+    rlLog "Indexing and installing catalog"
+    if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
+    then
+        DO_NOT_LOGIN="1" ./tang_index.sh "${DOWNSTREAM_IMAGE_VERSION}" "${downstream_version}" || err=1
+        ./tang_install_catalog.sh || err=1
+    else
+        DO_NOT_LOGIN="1" ./tang_index.sh "${DOWNSTREAM_IMAGE_VERSION}" "${downstream_version}" 1>/dev/null 2>/dev/null || err=1
+        ./tang_install_catalog.sh 1>/dev/null 2>/dev/null || err=1
+    fi
+    popd || return 1
+    popd || return 1
+    return $err
+}
+
 bundleStart() {
     if [ "${DISABLE_BUNDLE_INSTALL_TESTS}" == "1" ];
     then
       return 0
+    fi
+    if [ -n "${DOWNSTREAM_IMAGE_VERSION}" ];
+    then
+      installDownstreamVersion
+      return $?
     fi
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
     then
@@ -694,6 +736,7 @@ rlJournalStart
     dumpDate
     dumpInfo
     rlPhaseStartSetup
+        rlRun "tmpdir=\$(mktemp -d)" 0 "Creating tmp directory"
         rlRun "dumpOpenShiftClientStatus" 0 "Checking OpenshiftClient installation"
         rlRun "operator-sdk version > /dev/null" 0 "Checking operator-sdk installation"
         rlRun "checkClusterStatus" 0 "Checking cluster status"
@@ -703,13 +746,11 @@ rlJournalStart
         rlRun "${OC_CLIENT} apply -f ${TEST_NAMESPACE_FILE}" 0 "Creating test namespace:${TEST_NAMESPACE}"
         rlRun "${OC_CLIENT} get namespace ${TEST_NAMESPACE}" 0 "Checking test namespace:${TEST_NAMESPACE}"
         rlRun "installSecret" 0 "Installing secret if necessary"
-        rlRun "tmpdir=\$(mktemp -d)" 0 "Creating tmp directory"
     rlPhaseEnd
 
     ########## CHECK CONTROLLER RUNNING #########
     rlPhaseStartTest "Check tang-operator controller is running"
-        sleep 10
-        controller_name=$(getPodNameWithPrefix "tang-operator-controller" "${OPERATOR_NAMESPACE}" 5)
+        controller_name=$(getPodNameWithPrefix "tang-operator-controller" "${OPERATOR_NAMESPACE}" "${TO_POD_START}")
         rlRun "checkPodState Running ${TO_POD_START} "${OPERATOR_NAMESPACE}" ${controller_name}" 0 "Checking controller POD in Running [Timeout=${TO_POD_START} secs.]"
     rlPhaseEnd
 
@@ -1031,6 +1072,7 @@ rlJournalStart
             pushd "${tmpdir}" && git clone https://github.com/RedHatProductSecurity/rapidast.git -b development
 
             # 3 - download configuration file template
+            # WARNING: if tang-operator is changed to OpenShift organization, change this
             wget -O tang_operator.yaml https://raw.githubusercontent.com/latchset/tang-operator/main/tools/scan_tools/tang_operator_template.yaml
 
             # 4 - adapt configuration file template (token, machine)
@@ -1086,6 +1128,10 @@ rlJournalStart
         rlRun "checkClusterStatus" 0 "Checking cluster status"
         controller_name=$(getPodNameWithPrefix "tang-operator-controller" "${OPERATOR_NAMESPACE}" 1)
         dumpVerbose "Controller name:[${controller_name}]"
+        if [ -n "${DOWNSTREAM_IMAGE_VERSION}" ];
+        then
+            uninstallDownstreamVersion
+        fi
         rlRun "bundleStop" 0 "Cleaning installed tang-operator"
         if [ "${DISABLE_BUNDLE_INSTALL_TESTS}" != "1" ]; then
           test -z "${controller_name}" ||
