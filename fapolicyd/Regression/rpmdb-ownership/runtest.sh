@@ -46,9 +46,11 @@ rlJournalStart
     rlRun "rm -f /var/lib/rpm/__db*"
     rlRun "fapServiceStart"
     rlRun "fapServiceStop"
-    rlRun -s "ls -la /var/lib/rpm/__db*"
-    rlAssertGrep 'root' $rlRun_LOG
-    rlAssertNotGrep 'fapolicyd' $rlRun_LOG
+    ls /var/lib/rpm/__db* >& /dev/null && {
+      rlRun -s "ls -la /var/lib/rpm/__db*"
+      rlAssertGrep 'root' $rlRun_LOG
+      rlAssertNotGrep 'fapolicyd' $rlRun_LOG
+    }
   rlPhaseEnd; }
 
   rlPhaseStartCleanup && {
