@@ -158,6 +158,7 @@ rlJournalStart
   rlPhaseStartTest "rpm-plugin pipe without the service" && {
     CleanupRegister --mark 'rlRun "fapStart"'
     rlRun "fapStop"
+    rlRun "mkdir -p /run/fapolicyd"
     rlRun "mkfifo /run/fapolicyd/fapolicyd.fifo"
     rlRun "chmod 660 /run/fapolicyd/fapolicyd.fifo"
     rlRun "chown :fapolicyd /run/fapolicyd/fapolicyd.fifo"
