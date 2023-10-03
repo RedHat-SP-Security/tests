@@ -3,7 +3,7 @@ description: ''
 contact: Martin Zelený <mzeleny@redhat.com>
 component:
   - tang
-test: ./tang_operator_test.sh
+test: ./runtest.sh
 recommend:
   - tang
   - clevis
