@@ -72,11 +72,19 @@ test -n "${DOWNSTREAM_IMAGE_VERSION}" && {
     test -z "${OPERATOR_NAMESPACE}" && OPERATOR_NAMESPACE="openshift-operators"
 }
 test -z "${OPERATOR_NAMESPACE}" && OPERATOR_NAMESPACE="default"
+test -z "${CONTAINER_MGR}" && CONTAINER_MGR="podman"
 
 dumpVerbose() {
     if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
     then
         rlLog "${1}"
+    fi
+}
+
+commandVerbose() {
+    if [ "${V}" == "1" ] || [ "${VERBOSE}" == "1" ];
+    then
+        $*
     fi
 }
 
@@ -730,6 +738,31 @@ installScPv() {
     return 0
 }
 
+getVersion() {
+    if [ -n "${DOWNSTREAM_IMAGE_VERSION}" ];
+    then
+        echo "${DOWNSTREAM_IMAGE_VERSION}"
+    else
+        echo "${IMAGE_VERSION}"
+    fi
+}
+
+analyzeVersion() {
+    dumpVerbose "DETECTING MALWARE ON VERSION:[${1}]"
+    "${CONTAINER_MGR}" pull "${1}"
+    dir_mount=$("${CONTAINER_MGR}" unshare ./mount_image.sh -v "${1}" -c "${CONTAINER_MGR}")
+    rlAssertEquals "Checking image could be mounted appropriately" "$?" "0"
+    analyzed_dir=$(echo "${dir_mount}" | sed -e 's@/merged@@g')
+    dumpVerbose "Analyzing directory:[${analyzed_dir}]"
+    commandVerbose "tree ${analyzed_dir}"
+    prefix=$(echo "${1}" | tr ':' '_' | awk -F "/" '{print $NF}')
+    rlRun "clamscan -o --recursive --infected ${analyzed_dir} --log ${tmpdir}/${prefix}_malware.log" 0 "Checking for malware, logfile:${tmpdir}/${prefix}_malware.log"
+    infected_files=$(grep -i "Infected Files:" "${tmpdir}/${prefix}_malware.log" | awk -F ":" '{print $2}' | tr -d ' ')
+    rlAssertEquals "Checking no infected files" "${infected_files}" "0"
+    "${CONTAINER_MGR}" unshare ./umount_image.sh -v "${1}" -c "${CONTAINER_MGR}"
+    rlAssertEquals "Checking image could be umounted appropriately" "$?" "0"
+}
+
 rlJournalStart
     parseAndDumpMode
     parseAndDumpClient
@@ -1124,11 +1157,31 @@ rlJournalStart
     }
     ############# /DAST TESTS ###########
 
+    ############# MALWARE DETECTION TESTS ############
+    ### Only execute if podman and clamscan commands exist ...
+    command -v "${CONTAINER_MGR}" >/dev/null && command -v clamscan >/dev/null && {
+        rlPhaseStartTest "Malware Detection Testing"
+        installed_version=$(getVersion)
+        ### Bundle Image
+        analyzeVersion "${installed_version}"
+        ### Container Image
+        controller_name=$(getPodNameWithPrefix "tang-operator-controller" "${OPERATOR_NAMESPACE}" 1)
+        rlAssertNotEquals "Checking controller_name is not empty" "${controller_name}" ""
+        container_image=$("${OC_CLIENT}" -n "${OPERATOR_NAMESPACE}" describe pod "${controller_name}" | grep tang | grep "Image:" | awk -F "Image:" '{print $2}' | tr -d ' ')
+        rlAssertEquals "Checking container image could be parsed appropriately" "$?" "0"
+        rlAssertNotEquals "Checking container image is not empty" "${container_image}" ""
+        dumpVerbose "Container Image:[${container_image}]"
+        test -n "${container_image}" && analyzeVersion "${container_image}"
+        DELETE_TMP_DIR="NO"
+        rlPhaseEnd
+    }
+    ############# /MALWARE DETECTION TESTS ###########
+
     rlPhaseStartCleanup
         rlRun "checkClusterStatus" 0 "Checking cluster status"
         controller_name=$(getPodNameWithPrefix "tang-operator-controller" "${OPERATOR_NAMESPACE}" 1)
         dumpVerbose "Controller name:[${controller_name}]"
-        if [ -n "${DOWNSTREAM_IMAGE_VERSION}" ];
+        if [ -n "${DOWNSTREAM_IMAGE_VERSION}" ] && [ "${DISABLE_BUNDLE_INSTALL_TESTS}" != "1" ];
         then
             uninstallDownstreamVersion
         fi
