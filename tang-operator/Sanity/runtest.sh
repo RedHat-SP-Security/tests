@@ -43,7 +43,7 @@ EXECUTION_MODE=
 TO_POD_START=120 #seconds
 TO_POD_SCALEIN_WAIT=120 #seconds
 TO_LEGACY_POD_RUNNING=120 #seconds
-TO_DAST_POD_COMPLETED=180 #seconds (DAST lasts around 60 seconds)
+TO_DAST_POD_COMPLETED=240 #seconds (DAST lasts around 120 seconds)
 TO_POD_STOP=5 #seconds
 TO_POD_TERMINATE=120 #seconds
 TO_POD_CONTROLLER_TERMINATE=180 #seconds (for controller to end must wait longer)
@@ -1114,11 +1114,14 @@ rlJournalStart
 
             # 4 - adapt configuration file template (token, machine)
             API_HOST_PORT=$("${OC_CLIENT}" whoami --show-server | tr -d  ' ')
-            DEFAULT_TOKEN=$("${OC_CLIENT}" get secret -n "${OPERATOR_NAMESPACE}" $("${OC_CLIENT}" get secret -n "${OPERATOR_NAMESPACE}" | grep ^tang-operator | grep service-account | awk '{print $1}') -o json | jq -Mr '.data.token' | base64 -d)
+            DEFAULT_TOKEN=$("${OC_CLIENT}" get secret -n "${OPERATOR_NAMESPACE}" $("${OC_CLIENT}" get secret -n "${OPERATOR_NAMESPACE}"\
+                            | grep ^tang-operator | grep service-account | awk '{print $1}') -o json | jq -Mr '.data.token' | base64 -d)
             sed -i s@"API_HOST_PORT_HERE"@"${API_HOST_PORT}"@g tang_operator.yaml
             sed -i s@"AUTH_TOKEN_HERE"@"${DEFAULT_TOKEN}"@g tang_operator.yaml
+            sed -i s@"OPERATOR_NAMESPACE_HERE"@"${OPERATOR_NAMESPACE}"@g tang_operator.yaml
             dumpVerbose "API_HOST_PORT:[${API_HOST_PORT}]"
             dumpVerbose "DEFAULT_TOKEN:[${DEFAULT_TOKEN}]"
+            dumpVerbose "OPERATOR_NAMESPACE provided to DAST:[${OPERATOR_NAMESPACE}]"
             rlAssertNotEquals "Checking token not empty" "${DEFAULT_TOKEN}" ""
 
             # 5 - adapt helm
@@ -1136,7 +1139,8 @@ rlJournalStart
 
             # 8 - parse results (do not have to ensure no previous results exist, as this is a temporary directory)
             # Check no alarm exist ...
-            report_dir=$(ls -1d ${tmpdir}/rapidast/tangservers/DAST*tangservers/ | head -1)
+            report_dir=$(ls -1d ${tmpdir}/rapidast/tangservers/DAST*tangservers/ | head -1 | sed -e 's@/$@@g')
+            dumpVerbose "REPORT DIR:${report_dir}"
             alerts=$(cat "${report_dir}/zap/zap-report.json" | jq '.site[0].alerts | length')
             for ((alert=0; ix<${alerts}; ix++));
             do
