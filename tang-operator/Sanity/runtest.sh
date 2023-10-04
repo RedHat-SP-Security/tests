@@ -759,6 +759,10 @@ analyzeVersion() {
     rlRun "clamscan -o --recursive --infected ${analyzed_dir} --log ${tmpdir}/${prefix}_malware.log" 0 "Checking for malware, logfile:${tmpdir}/${prefix}_malware.log"
     infected_files=$(grep -i "Infected Files:" "${tmpdir}/${prefix}_malware.log" | awk -F ":" '{print $2}' | tr -d ' ')
     rlAssertEquals "Checking no infected files" "${infected_files}" "0"
+    if [ "${infected_files}" != "0" ]; then
+        rlLogWarning "${infected_files} Infected Files Detected!"
+        rlLogWarning "Please, review Malware Detection log file: ${tmpdir}/${prefix}_malware.log"
+    fi
     "${CONTAINER_MGR}" unshare ./umount_image.sh -v "${1}" -c "${CONTAINER_MGR}"
     rlAssertEquals "Checking image could be umounted appropriately" "$?" "0"
 }
