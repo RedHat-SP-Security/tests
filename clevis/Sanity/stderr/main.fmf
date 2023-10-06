@@ -1,0 +1,18 @@
+summary: Test that clevis displays eventual error messages when unlocking fails.
+contact: Sergio Correia <scorreia@redhat.com>
+test: ./test.sh
+recommend:
+- clevis-luks
+- tang
+- util-linux
+duration: 5m
+enabled: true
+tag:
+- NoRHEL4
+- NoRHEL5
+- NoRHEL6
+- NoRHEL7
+adjust:
+-   enabled: false
+    when: distro < rhel-8
+    continue: false
