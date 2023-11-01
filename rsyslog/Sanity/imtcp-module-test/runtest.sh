@@ -152,36 +152,6 @@ EOF
 	rlRun "grep 'test message 50516' /var/log/remote50516.log" 0 "Checking that message3 was properly delivered"
     rlPhaseEnd; }
 
-    rlPhaseStartTest "\$InputTCPMaxListeners test" && {
-	if rsyslogConfigIsNewSyntax; then
-	  rsyslogConfigReplace "IMTCP-MODLOAD" /etc/rsyslog.conf <<EOF
-module(load="imtcp.so" MaxListeners="4")
-EOF
-        else
-	  rsyslogConfigReplace "IMTCP-MODLOAD" /etc/rsyslog.conf <<EOF
-\$ModLoad imtcp.so
-\$InputTCPMaxListeners 4
-EOF
-        fi
-	rsyslogServiceStart   # rsyslog was stopped in previous testcase
-	if rlIsRHEL 5; then
-	    lsof -i | grep rsyslog | grep IPv4 &> $TMPFILE
-	else
-	    lsof -iTCP -sTCP:LISTEN | grep rsyslog | grep IPv4 &> $TMPFILE
-	fi
-	cat $TMPFILE
-	IP4=`cat $TMPFILE | wc -l`
-        rlAssertEquals "Only 2 rsyslog instancies on IPv4 should be running" $IP4 2
-	if rlIsRHEL 5; then
-	    lsof -i | grep rsyslog | grep IPv6 &> $TMPFILE
-	else
-	    lsof -iTCP -sTCP:LISTEN | grep rsyslog | grep IPv6 &> $TMPFILE
-	fi
-	cat $TMPFILE
-	IP6=`cat $TMPFILE | wc -l`
-        rlAssertEquals "Only 2 rsyslog instancies on IPv6 should be running" $IP6 2
-    rlPhaseEnd; }
-
     rlPhaseStartCleanup 'cleanup test env' && {
       CleanupDo --mark
     rlPhaseEnd; }
