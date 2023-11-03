@@ -386,6 +386,7 @@ EOF
         for i in {1..10}; do rlAssertGrep "Test $i" /var/log/rsyslog-stats.log; done # First 10 messages delivered
         for i in {11..20}; do rlAssertNotGrep "Test $i" /var/log/rsyslog-stats.log; done # Other messages are being dropped
         rm -f /var/log/rsyslog-stats.log /var/log/rsyslog-imfile.log
+        sleep 6
         rlRun "rsyslogServiceStop"
     rlPhaseEnd; }
 
@@ -412,6 +413,8 @@ EOF
         for i in {1..10}; do rlAssertGrep "Test $i" /var/log/rsyslog-stats.log; done # First 10 messages delivered
         for i in {11..20}; do rlAssertNotGrep "Test $i" /var/log/rsyslog-stats.log; done # Other messages are being dropped
         rm -f /var/log/rsyslog-stats.log /var/log/rsyslog-imfile.log
+        sleep 6
+        rlRun "rsyslogServiceStop"
     rlPhaseEnd; }
 
     rlPhaseStartTest "immark: ruleset, mark message content, interval" && {
