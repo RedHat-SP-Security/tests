@@ -8,7 +8,7 @@ require+:
 - library(distribution/ConditionalPhases)
 recommend:
 - rsyslog
-duration: 5m
+duration: 10m
 enabled: true
 tag:
 - CI-Tier-1
