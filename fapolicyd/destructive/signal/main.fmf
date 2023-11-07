@@ -1,0 +1,40 @@
+description: test the service stability on a signal
+contact: Dalibor Pospíšil <dapospis@redhat.com>
+require+:
+  - library(distribution/Log)
+duration: 5m
+test: ./runtest.sh
+link:
+  - verifies: https://issues.redhat.com/browse/RHEL-15498
+
+/ABRT:
+/ALRM:
+/BUS:
+/CHLD:
+/CONT:
+/FPE:
+/HUP:
+/ILL:
+/INT:
+/IO:
+/KILL:
+/PIPE:
+/PROF:
+/PWR:
+/QUIT:
+/SEGV:
+/STKFLT:
+/STOP:
+/TSTP:
+/SYS:
+/TERM:
+/TRAP:
+/TTIN:
+/TTOU:
+/URG:
+/USR1:
+/USR2:
+/VTALRM:
+/XCPU:
+/XFSZ:
+/WINCH:
