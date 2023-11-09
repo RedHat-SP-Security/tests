@@ -1,7 +1,6 @@
 summary: rsystlog testing library
 contact: Dalibor Pospíšil <dapospis@redhat.com>
 require:
-- library(distribution/dpcommon)
 - library(distribution/Log)
 - /usr/sbin/semanage
 - patch

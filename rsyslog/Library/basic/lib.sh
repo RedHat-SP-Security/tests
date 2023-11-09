@@ -26,10 +26,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   library-prefix = rsyslog
-#   library-version = 64
+#   library-version = 66
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 __INTERNAL_rsyslog_LIB_NAME="rsyslog/basic"
-__INTERNAL_rsyslog_LIB_VERSION=64
+__INTERNAL_rsyslog_LIB_VERSION=65
 
 : <<'=cut'
 =pod
@@ -1355,10 +1355,10 @@ rsyslogWaitTillGrowing() {
   [[ -n "$command" ]] && {
     rlLog " or '$command' returns 0"
   }
-  progressHeader $timeout
+  LogProgressHeader $timeout
   i=1
   while :; do
-    progressDraw $((i++))
+    LogProgressDraw $((i++))
     let fsize=$(stat -c '%s' $file)+1
     [[ -n "$pattern" ]] && {
       LogMore "looking for pattern"
@@ -1395,7 +1395,6 @@ rsyslogWaitTillGrowing() {
     fsize_prev=$fsize
     sleep 1
   done
-  progressFooter
   return $res
 }
 
@@ -1420,10 +1419,10 @@ rsyslogCheckDelivered() {
   LogMore "processing numbers '${msgs[*]}'"
   missing=()
   duplicates=()
-  progressHeader $max $min
+  LogProgressHeader $max $min
   j=0
   for ((i=min; i<max; i++)); do
-    progressDraw $i
+    LogProgressDraw $i
     count=0
     while [[ "$i" == "${msgs[j]}" ]]; do
       let j++
@@ -1438,7 +1437,7 @@ rsyslogCheckDelivered() {
       res=$((res | 1))
     }
   done
-  progressFooter
+  LogProgressFooter
   rlLogInfo "number of delivered: ${#msgs[@]}"
   [[ ${#missing[@]} -gt 0 ]] && rlLogWarning "missing: $(echo "${missing[*]}" | sed 's/ /, /g')"
   [[ ${#duplicates[@]} -gt 0 ]] && rlLogWarning "duplicit: $(echo "${duplicates[*]}" | sed 's/ /, /g')"
