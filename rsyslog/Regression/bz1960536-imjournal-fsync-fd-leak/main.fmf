@@ -4,6 +4,7 @@ test: ./runtest.sh
 duration: 10m
 require+:
 - /usr/bin/lsof
+- library(distribution/dpcommon)
 tag:
 - Tier3
 - CI-Tier-1
