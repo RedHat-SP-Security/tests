@@ -1,0 +1,23 @@
+summary: sanity test for rdkafka library
+description: 'Librdkafka consumer producer test'
+contact: Attila Lakatos <alakatos@redhat.com>
+duration: 10m
+test: ./runtest.sh
+require:
+- library(distribution/dpcommon)
+- library(selinux-policy/common)
+recommend:
+- librdkafka
+- librdkafka-devel
+- java-1.8.0-openjdk
+enabled: true
+extra-summary:
+extra-task:
+extra-nitrate:
+adjust:
+-   enabled: false
+    when: distro < rhel-8.10
+#    continue: false
+# -   enabled: false
+#     when: arch == s390x
+#     continue: false
