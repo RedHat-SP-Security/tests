@@ -56,7 +56,7 @@ rlJournalStart && {
     rlRun "rlFileBackup --clean /tmp/kafka-logs /tmp/zookeeper"
     rlRun "rm -rf /tmp/kafka-logs /tmp/zookeeper"
 
-    rlRun "rlDownload kafka_2.11-2.1.0.tgz http://download.eng.bos.redhat.com/qa/rhts/lookaside/kafka_2.11-2.1.0.tgz"
+    rlRun "rlDownload kafka_2.11-2.1.0.tgz https://archive.apache.org/dist/kafka/2.1.0/kafka_2.11-2.1.0.tgz"
     rlRun "tar -xzf kafka_2.11-2.1.0.tgz"
     rlRun "cd kafka_2.11-2.1.0"
     rlRun "bin/zookeeper-server-start.sh config/zookeeper.properties &"
