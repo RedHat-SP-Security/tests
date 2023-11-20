@@ -11,9 +11,6 @@ require:
 recommend:
 - java-1.8.0-openjdk
 enabled: true
-extra-summary:
-extra-task:
-extra-nitrate:
 adjust:
 -   enabled: false
     when: distro < rhel-8.10
@@ -21,3 +18,5 @@ adjust:
 # -   enabled: false
 #     when: arch == s390x
 #     continue: false
+extra-nitrate: TC#0615946
+id: c00b3a65-4ce3-4f6e-af11-8f9c1e316a3b
