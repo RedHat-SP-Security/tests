@@ -53,7 +53,7 @@ rlJournalStart && {
     rlRun "cp Makefile kafka-prog.c $TmpDir"
     rlRun "pushd $TmpDir"
     CleanupRegister 'rlRun "rlFileRestore"'
-    rlRun "rlFileBackup --clean /var/log/imkafka.log /tmp/kafka-logs /tmp/zookeeper"
+    rlRun "rlFileBackup --clean /tmp/kafka-logs /tmp/zookeeper"
     rlRun "rm -rf /tmp/kafka-logs /tmp/zookeeper"
 
     rlRun "rlDownload kafka_2.11-2.1.0.tgz http://download.eng.bos.redhat.com/qa/rhts/lookaside/kafka_2.11-2.1.0.tgz"
@@ -99,9 +99,8 @@ rlJournalStart && {
       rlRun "./kafka-prog producer 127.0.0.1:9092 TestTopic < /tmp/kafka-producer-input.log > /tmp/kafka-producer.log 2>&1 &"
       CleanupRegister "rlRun 'kill -SIGINT $!' 0-1 'kill kafka producer'"
       CleanupRegister "rlRun 'rm -f /tmp/kafka-producer.log /tmp/kafka-producer-input.log' "
-
-
       sleep 10
+
       rlRun "cat /tmp/kafka-consumer.log"
       rlRun "cat /tmp/kafka-producer.log"
       for i in `seq $ITER`; do

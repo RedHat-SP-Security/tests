@@ -6,9 +6,9 @@ test: ./runtest.sh
 require:
 - library(distribution/dpcommon)
 - library(selinux-policy/common)
-recommend:
 - librdkafka
 - librdkafka-devel
+recommend:
 - java-1.8.0-openjdk
 enabled: true
 extra-summary:
