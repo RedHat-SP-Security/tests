@@ -8,7 +8,8 @@ require:
 - library(selinux-policy/common)
 - librdkafka
 - librdkafka-devel
-recommend:
+- gcc
+- make
 - java-1.8.0-openjdk
 enabled: true
 adjust:
